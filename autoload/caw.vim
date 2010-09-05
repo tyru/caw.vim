@@ -122,15 +122,36 @@ endfunction "}}}
 " Implementation {{{
 
 function! s:get_comment_string(filetype) "{{{
+    for fn in [
+    \   's:get_comment_string_vars',
+    \   's:get_comment_string_builtin',
+    \]
+        let r = call(fn, [a:filetype])
+        if r != ''
+            return r
+        endif
+    endfor
+endfunction "}}}
+
+function! s:get_comment_string_vars(filetype) "{{{
+    for ns in [b:, w:, t:, g:]
+        if has_key(ns, 'caw_oneline_comment_string')
+        \   && has_key(ns.caw_oneline_comment_string, a:filetype)
+            return ns.caw_oneline_comment_string[a:filetype]
+        endif
+    endfor
+    return ''
+endfunction "}}}
+
+function! s:get_comment_string_builtin(filetype) "{{{
     if a:filetype =~# 'c\|cpp'
         return '//'
     elseif a:filetype =~# 'perl\|ruby\|python\|php'
         return '#'
     elseif a:filetype =~# 'vim'
         return '"'
-    else
-        return ''
     endif
+    return ''
 endfunction "}}}
 
 function! s:assert(cond, msg) "{{{
