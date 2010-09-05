@@ -20,7 +20,7 @@ function! s:sandbox_call(Fn, args, ...) "{{{
         return a:0 ? call(a:Fn, a:args, a:1) : call(a:Fn, a:args)
     catch
         echohl ErrorMsg
-        echomsg v:exception
+        echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
     endtry
 endfunction "}}}
