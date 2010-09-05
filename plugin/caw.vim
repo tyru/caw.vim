@@ -12,12 +12,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
-" Global Variables {{{
-if !exists('g:CommentAnyWay_debug')
-    let g:CommentAnyWay_debug = 0
-endif
-" }}}
-
 
 if !exists('g:caw_no_default_keymappings')
     let g:caw_no_default_keymappings = 0
