@@ -165,6 +165,7 @@ function! s:caw.i.comment_visual() "{{{
     endfor
 endfunction "}}}
 
+
 function! s:caw.i.toggle(mode) "{{{
     if self.commented(a:mode)
         call self.uncomment(a:mode)
@@ -172,6 +173,7 @@ function! s:caw.i.toggle(mode) "{{{
         call self.comment(a:mode)
     endif
 endfunction "}}}
+
 
 function! s:caw.i.commented(mode, ...) "{{{
     if a:mode ==# 'n'
@@ -195,6 +197,7 @@ function! s:caw.i.commented_visual() "{{{
     endfor
     return 0
 endfunction "}}}
+
 
 function! s:caw.i.uncomment(mode) "{{{
     if a:mode ==# 'n'
