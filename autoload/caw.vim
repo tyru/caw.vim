@@ -237,9 +237,8 @@ let s:base = {}
 " s:base.commented() and s:base.commented_visual() requires:
 " - s:base.commented_normal()
 "
-" s:base.uncomment() requires:
+" s:base.uncomment() and s:base.uncomment_visual() requires:
 " - s:base.uncomment_normal()
-" - s:base.uncomment_visual()
 
 
 function! s:base.comment(mode) "{{{
@@ -292,6 +291,12 @@ function! s:base.uncomment(mode) "{{{
     endif
 endfunction "}}}
 
+function! s:base.uncomment_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.uncomment_normal(lnum)
+    endfor
+endfunction "}}}
+
 " }}}
 
 
@@ -334,12 +339,6 @@ function! s:caw.i.uncomment_normal(lnum) "{{{
             call setline(a:lnum, indent . line)
         endif
     endif
-endfunction "}}}
-
-function! s:caw.i.uncomment_visual() "{{{
-    for lnum in range(line("'<"), line("'>"))
-        call self.uncomment_normal(lnum)
-    endfor
 endfunction "}}}
 
 " }}}
@@ -417,12 +416,6 @@ function! s:caw.a.uncomment_normal(lnum) "{{{
 
         call setline(a:lnum, before)
     endif
-endfunction "}}}
-
-function! s:caw.a.uncomment_visual() "{{{
-    for lnum in range(line("'<"), line("'>"))
-        call self.uncomment_normal(lnum)
-    endfor
 endfunction "}}}
 
 " }}}
