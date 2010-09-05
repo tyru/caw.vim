@@ -189,6 +189,19 @@ function! s:get_var(varname) "{{{
 endfunction "}}}
 
 
+function! s:get_indent_num(lnum) "{{{
+    return &lisp ? lispindent(a:lnum) : indent(a:lnum)
+endfunction "}}}
+
+function! s:get_indent(lnum) "{{{
+    if &expandtab
+        return repeat(' ', s:get_indent_num(a:lnum))
+    else
+        return repeat("\t", s:get_indent_num(a:lnum) / &tabstop)
+    endif
+endfunction "}}}
+
+
 " s:comments {{{
 " TODO Multiline
 let s:comments = {'oneline': {}, 'wrap': {}}
@@ -346,15 +359,31 @@ endfunction "}}}
 " i {{{
 let s:caw.i = deepcopy(s:base)
 
-function! s:caw.i.comment_normal(lnum) "{{{
+function! s:caw.i.comment_normal(lnum, ...) "{{{
+    let startinsert = a:0 ? a:1 : s:get_var('caw_i_startinsert_at_blank_line')
     let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
-        let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
-        if empty(m)
-            throw 'caw: s:caw.i.comment_normal(): internal error'
+        let line = getline(a:lnum)
+        if line =~# '^\s*$'
+            let indent = s:get_indent(a:lnum)
+            call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i'))
+            if startinsert
+                call feedkeys('A', 'n')
+            endif
+        else
+            let m = matchlist(line, '^\([ \t]*\)\(.*\)')
+            if empty(m)
+                throw 'caw: s:caw.i.comment_normal(): internal error'
+            endif
+            call setline(a:lnum, m[1] . cmt . s:get_var('caw_sp_i') . m[2])
         endif
-        call setline(a:lnum, m[1] . cmt . s:get_var('caw_sp_i') . m[2])
     endif
+endfunction "}}}
+
+function! s:caw.i.comment_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.comment_normal(lnum, 0)
+    endfor
 endfunction "}}}
 
 
