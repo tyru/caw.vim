@@ -47,61 +47,61 @@ endfunction "}}}
 
 
 " wrap
-function! caw#do_wrap_comment() "{{{
+function! caw#do_wrap_comment(mode) "{{{
     " TODO
 endfunction "}}}
 
-function! caw#do_wrap_one_comment() "{{{
+function! caw#do_wrap_one_comment(mode) "{{{
     " TODO
 endfunction "}}}
 
-function! caw#do_wrap_multi_comment() "{{{
+function! caw#do_wrap_multi_comment(mode) "{{{
     " TODO
 endfunction "}}}
 
-function! caw#do_wrap_toggle() "{{{
+function! caw#do_wrap_toggle(mode) "{{{
     " TODO
 endfunction "}}}
 
-function! caw#do_wrap_one_toggle() "{{{
+function! caw#do_wrap_one_toggle(mode) "{{{
     " TODO
 endfunction "}}}
 
-function! caw#do_wrap_multi_toggle() "{{{
+function! caw#do_wrap_multi_toggle(mode) "{{{
     " TODO
 endfunction "}}}
 
 
 
 " uncomment
-function! caw#do_uncomment() "{{{
+function! caw#do_uncomment(mode) "{{{
     " TODO
 endfunction "}}}
 
 
-function! caw#do_uncomment_i() "{{{
-    " TODO
+function! caw#do_uncomment_i(mode) "{{{
+    return s:sandbox_call(s:caw.i.uncomment, [a:mode], s:caw.i)
 endfunction "}}}
 
-function! caw#do_uncomment_a() "{{{
-    " TODO
-endfunction "}}}
-
-
-function! caw#do_uncomment_wrap() "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_uncomment_wrap_one() "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_uncomment_wrap_multi() "{{{
-    " TODO
+function! caw#do_uncomment_a(mode) "{{{
+    return s:sandbox_call(s:caw.a.uncomment, [a:mode], s:caw.a)
 endfunction "}}}
 
 
-function! caw#do_uncomment_input() "{{{
+function! caw#do_uncomment_wrap(mode) "{{{
+    " TODO
+endfunction "}}}
+
+function! caw#do_uncomment_wrap_one(mode) "{{{
+    " TODO
+endfunction "}}}
+
+function! caw#do_uncomment_wrap_multi(mode) "{{{
+    " TODO
+endfunction "}}}
+
+
+function! caw#do_uncomment_input(mode) "{{{
     " TODO
 endfunction "}}}
 
