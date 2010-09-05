@@ -64,9 +64,8 @@ nnoremap <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('n')<CR>
 vnoremap <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('v')<CR>
 
 if !g:caw_no_default_keymappings
-    " TODO: As default do map ":toggle" not ":comment".
-    call s:map('gci', '<Plug>(caw:i:comment)')
-    call s:map('gca', '<Plug>(caw:a:comment)')
+    call s:map('gci', '<Plug>(caw:i:toggle)')
+    call s:map('gca', '<Plug>(caw:a:toggle)')
 endif
 
 

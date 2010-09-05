@@ -165,6 +165,65 @@ function! s:caw.i.comment_visual() "{{{
     endfor
 endfunction "}}}
 
+function! s:caw.i.toggle(mode) "{{{
+    if self.commented(a:mode)
+        call self.uncomment(a:mode)
+    else
+        call self.comment(a:mode)
+    endif
+endfunction "}}}
+
+function! s:caw.i.commented(mode, ...) "{{{
+    if a:mode ==# 'n'
+        return self.commented_normal(line('.'))
+    else
+        return self.commented_visual()
+    endif
+endfunction "}}}
+
+function! s:caw.i.commented_normal(lnum) "{{{
+    let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
+    let cmt = s:get_comment_string(&filetype)
+    return stridx(line_without_indent, cmt) == 0
+endfunction "}}}
+
+function! s:caw.i.commented_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        if self.commented_normal(lnum)
+            return 1
+        endif
+    endfor
+    return 0
+endfunction "}}}
+
+function! s:caw.i.uncomment(mode) "{{{
+    if a:mode ==# 'n'
+        call self.uncomment_normal(line('.'))
+    else
+        call self.uncomment_visual()
+    endif
+endfunction "}}}
+
+function! s:caw.i.uncomment_normal(lnum) "{{{
+    let cmt = s:get_comment_string(&filetype)
+    if cmt != ''
+        let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
+        if empty(m)
+            throw 'caw: s:caw.i.uncomment_normal(): internal error'
+        endif
+        " Ignore "caw_sp_i".
+        if stridx(m[2], cmt) == 0
+            call setline(a:lnum, m[1] . m[2][strlen(cmt) :])
+        endif
+    endif
+endfunction "}}}
+
+function! s:caw.i.uncomment_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.uncomment_normal(lnum)
+    endfor
+endfunction "}}}
+
 " }}}
 
 " a {{{
