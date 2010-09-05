@@ -222,9 +222,10 @@ function! s:comments.oneline.get_comment(filetype) "{{{
     \   'get_comment_builtin',
     \]
         let r = self[method](a:filetype)
-        if r != ''
+        if !empty(r)
             return r
         endif
+        unlet r
     endfor
 endfunction "}}}
 
@@ -273,12 +274,14 @@ let s:comments.wrap.get_comment_detect = s:comments.oneline.get_comment_detect
 
 " TODO Remove builtin
 function! s:comments.wrap.get_comment_builtin(filetype) "{{{
-    if a:filetype =~# 'c\|cpp'
-        return {'begin': '/*', 'end': '*/'}
-    elseif a:filetype =~# 'perl'
-        return {'begin': '=pod', 'end': '=cut'}
+    if a:filetype =~# '\<c\|cpp\>'
+        " TODO
+        " return {'top': '#if 0', 'bottom': '#endif'}
+        return {'begin_left': '/*', 'middule_left': '*', 'end_left': '*/'}
+    elseif a:filetype =~# '\<perl\>'
+        return {'top': '=pod', 'bottom': '=cut'}
     endif
-    return ''
+    return {}
 endfunction "}}}
 
 " }}}
@@ -370,7 +373,7 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
     let comment_col = get(a:000, 1, -1)
 
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if cmt != ''
+    if !empty(cmt)
         let line = getline(a:lnum)
         if line =~# '^\s*$'
             let indent = s:get_indent(a:lnum)
@@ -419,14 +422,14 @@ endfunction "}}}
 function! s:caw.i.commented_normal(lnum) "{{{
     let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
     let cmt = s:comments.oneline.get_comment(&filetype)
-    return stridx(line_without_indent, cmt) == 0
+    return !empty(cmt) && stridx(line_without_indent, cmt) == 0
 endfunction "}}}
 
 
 
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if cmt != ''
+    if !empty(cmt)
         let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
         if empty(m)
             throw 'caw: s:caw.i.uncomment_normal(): internal error'
@@ -451,7 +454,7 @@ function! s:caw.a.comment_normal(lnum, ...) "{{{
     let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
 
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if cmt != ''
+    if !empty(cmt)
         call setline(
         \   a:lnum,
         \   getline(a:lnum)
@@ -474,8 +477,11 @@ endfunction "}}}
 
 function! s:caw_a_get_commented_col(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    let line = getline(a:lnum)
+    if empty(cmt)
+        return -1
+    endif
 
+    let line = getline(a:lnum)
     let cols = []
     while 1
         let idx = stridx(line, cmt, empty(cols) ? 0 : idx + 1)
@@ -506,7 +512,7 @@ endfunction "}}}
 
 function! s:caw.a.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if cmt != ''
+    if !empty(cmt)
         let col = s:caw_a_get_commented_col(a:lnum)
         if col <= 0
             return
@@ -532,7 +538,7 @@ let s:caw.jump = deepcopy(s:base)
 
 function! s:caw.jump.comment(next) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if cmt == ''
+    if empty(cmt)
         return
     endif
 
@@ -566,7 +572,7 @@ function! s:caw.input.comment(mode) "{{{
     let default_cmt = s:comments.oneline.get_comment(&filetype)
     let cmt = s:caw_input_get_comment_string(default_cmt)
 
-    if default_cmt !=# cmt
+    if !empty(default_cmt) && default_cmt !=# cmt
         let org_status = s:set_and_save_comment_string(&filetype, cmt)
     endif
     try
@@ -576,7 +582,7 @@ function! s:caw.input.comment(mode) "{{{
             call self.comment_visual(pos)
         endif
     finally
-        if default_cmt !=# cmt
+        if !empty(default_cmt) && default_cmt !=# cmt
             call s:restore_comment_string(org_status)
         endif
     endtry
