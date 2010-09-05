@@ -148,21 +148,21 @@ function! s:set_and_save_comment_string(filetype, comment_string) "{{{
     let EXISTS = 2
     let EMPTY = 0
 
-    if !exists('b:caw_oneline_comment_string')
+    if !exists('b:caw_oneline_comment')
         let stash.status = NONEXISTS
         let cmt = EMPTY
-    elseif type(b:caw_oneline_comment_string) != type({})
+    elseif type(b:caw_oneline_comment) != type({})
         let stash.status = INVALID
-        let stash.org_value = copy(b:caw_oneline_comment_string)
+        let stash.org_value = copy(b:caw_oneline_comment)
         let cmt = EMPTY
     else
         let stash.status = EXISTS
-        let stash.org_value = copy(b:caw_oneline_comment_string)
-        let cmt = get(b:caw_oneline_comment_string, a:filetype, EMPTY)
+        let stash.org_value = copy(b:caw_oneline_comment)
+        let cmt = get(b:caw_oneline_comment, a:filetype, EMPTY)
     endif
 
-    let b:caw_oneline_comment_string = extend(
-    \   (cmt is EMPTY ? {} : b:caw_oneline_comment_string),
+    let b:caw_oneline_comment = extend(
+    \   (cmt is EMPTY ? {} : b:caw_oneline_comment),
     \   {a:filetype : a:comment_string},
     \   'force'
     \)
@@ -176,19 +176,19 @@ function! s:restore_comment_string(stash) "{{{
     let EXISTS = 2
 
     if a:stash.status ==# NONEXISTS
-        unlet b:caw_oneline_comment_string
+        unlet b:caw_oneline_comment
     elseif a:stash.status ==# INVALID
-        let b:caw_oneline_comment_string = a:stash.org_value
+        let b:caw_oneline_comment = a:stash.org_value
     elseif a:stash.status ==# EXISTS
-        let b:caw_oneline_comment_string = a:stash.org_value
+        let b:caw_oneline_comment = a:stash.org_value
     endif
 endfunction "}}}
 
 function! s:get_comment_string_vars(filetype) "{{{
     for ns in [b:, w:, t:, g:]
-        if has_key(ns, 'caw_oneline_comment_string')
-        \   && has_key(ns.caw_oneline_comment_string, a:filetype)
-            return ns.caw_oneline_comment_string[a:filetype]
+        if has_key(ns, 'caw_oneline_comment')
+        \   && has_key(ns.caw_oneline_comment, a:filetype)
+            return ns.caw_oneline_comment[a:filetype]
         endif
     endfor
     return ''
