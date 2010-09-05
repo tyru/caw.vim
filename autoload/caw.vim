@@ -48,27 +48,11 @@ endfunction "}}}
 
 " wrap
 function! caw#do_wrap_comment(mode) "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_wrap_one_comment(mode) "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_wrap_multi_comment(mode) "{{{
-    " TODO
+    return s:sandbox_call(s:caw.wrap.comment, [a:mode], s:caw.wrap)
 endfunction "}}}
 
 function! caw#do_wrap_toggle(mode) "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_wrap_one_toggle(mode) "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_wrap_multi_toggle(mode) "{{{
-    " TODO
+    return s:sandbox_call(s:caw.wrap.toggle, [a:mode], s:caw.wrap)
 endfunction "}}}
 
 
@@ -107,15 +91,7 @@ endfunction "}}}
 
 
 function! caw#do_uncomment_wrap(mode) "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_uncomment_wrap_one(mode) "{{{
-    " TODO
-endfunction "}}}
-
-function! caw#do_uncomment_wrap_multi(mode) "{{{
-    " TODO
+    return s:sandbox_call(s:caw.wrap.uncomment, [a:mode], s:caw.wrap)
 endfunction "}}}
 
 
@@ -546,6 +522,58 @@ function! s:caw.a.uncomment_normal(lnum) "{{{
 
         call setline(a:lnum, before)
     endif
+endfunction "}}}
+
+" }}}
+
+" wrap {{{
+let s:caw.wrap = deepcopy(s:base)
+
+function! s:caw.wrap.comment_normal(lnum) "{{{
+    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    if !empty(cmt)
+        let [left, right] = cmt
+        let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
+        call setline(
+        \   a:lnum,
+        \   s:get_indent(a:lnum)
+        \       . left
+        \       . s:get_var('caw_sp_wrap_left')
+        \       . line_without_indent
+        \       . s:get_var('caw_sp_wrap_right')
+        \       . right
+        \)
+    endif
+endfunction "}}}
+
+function! s:caw.wrap.comment_visual() "{{{
+    " TODO:
+    "
+    " Not:
+    " /* line1 */
+    " /* line2 */
+    " /* line3 */
+    "
+    " Doit:
+    " /*********
+    "  * line1 *
+    "  * line2 *
+    "  * line3 *
+    "  *********/
+
+    for lnum in range(line("'<"), line("'>"))
+        call self.comment_normal(lnum, 0)
+    endfor
+endfunction "}}}
+
+
+function! s:caw.wrap.commented_normal(lnum) "{{{
+    " TODO
+endfunction "}}}
+
+
+function! s:caw.wrap.uncomment_normal(lnum) "{{{
+    " TODO
 endfunction "}}}
 
 " }}}

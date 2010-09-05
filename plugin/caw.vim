@@ -37,6 +37,13 @@ if !exists('g:caw_a_startinsert')
     let g:caw_a_startinsert = 1
 endif
 
+if !exists('g:caw_sp_wrap_left')
+    let g:caw_sp_wrap_left = ' '
+endif
+if !exists('g:caw_sp_wrap_right')
+    let g:caw_sp_wrap_right = ' '
+endif
+
 if !exists('g:caw_sp_jump')
     let g:caw_sp_jump = ' '
 endif
@@ -78,24 +85,11 @@ endif
 nnoremap <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('n')<CR>
 vnoremap <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('v')<CR>
 
-nnoremap <Plug>(caw:wrap-one:comment)       :<C-u>call caw#do_wrap_one_comment('n')<CR>
-vnoremap <Plug>(caw:wrap-one:comment)       :<C-u>call caw#do_wrap_one_comment('v')<CR>
-
-nnoremap <Plug>(caw:wrap-multi:comment)     :<C-u>call caw#do_wrap_multi_comment('n')<CR>
-vnoremap <Plug>(caw:wrap-multi:comment)     :<C-u>call caw#do_wrap_multi_comment('v')<CR>
-
 nnoremap <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('n')<CR>
 vnoremap <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('v')<CR>
 
-nnoremap <Plug>(caw:wrap-one:toggle)        :<C-u>call caw#do_wrap_one_toggle('n')<CR>
-vnoremap <Plug>(caw:wrap-one:toggle)        :<C-u>call caw#do_wrap_one_toggle('v')<CR>
-
-nnoremap <Plug>(caw:wrap-multi:toggle)      :<C-u>call caw#do_wrap_multi_toggle('n')<CR>
-vnoremap <Plug>(caw:wrap-multi:toggle)      :<C-u>call caw#do_wrap_multi_toggle('v')<CR>
-
 if !g:caw_no_default_keymappings
-    " TODO: As default do map ":toggle" not ":comment".
-    call s:map('gcw', '<Plug>(caw:wrap:comment)')
+    call s:map('gcw', '<Plug>(caw:wrap:toggle)')
 endif
 
 
