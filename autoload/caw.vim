@@ -131,6 +131,9 @@ function! s:get_var(varname) "{{{
     call s:assert(0, "s:get_var(): this must be reached")
 endfunction "}}}
 
+function! s:list_has(list, expr) "{{{
+    return !empty(filter(a:list, a:expr))
+endfunction "}}}
 
 
 " s:caw {{{
@@ -262,6 +265,98 @@ function! s:caw.a.comment_visual() "{{{
     for lnum in range(line("'<"), line("'>"))
         call self.comment_normal(lnum, do_feedkeys)
         let do_feedkeys = 0
+    endfor
+endfunction "}}}
+
+
+function! s:caw.a.toggle(mode) "{{{
+    if self.commented(a:mode)
+        call self.uncomment(a:mode)
+    else
+        call self.comment(a:mode)
+    endif
+endfunction "}}}
+
+
+function! s:caw.a.get_commented_col(lnum) "{{{
+    let cmt = s:get_comment_string(&filetype)
+    let line = getline(a:lnum)
+
+    let cols = []
+    while 1
+        let idx = stridx(line, cmt, empty(cols) ? 0 : idx + 1)
+        if idx == -1
+            break
+        endif
+        call add(cols, idx + 1)
+    endwhile
+
+    if empty(cols)
+        return -1
+    endif
+
+    for col in cols
+        if s:list_has(synstack(a:lnum, col), 'synIDattr(v:val, "name") ==# "Comment"')
+            return col
+        endif
+    endfor
+    return -1
+endfunction "}}}
+
+
+function! s:caw.a.commented(mode) "{{{
+    if a:mode ==# 'n'
+        return self.commented_normal(line('.'))
+    else
+        return self.commented_visual()
+    endif
+endfunction "}}}
+
+function! s:caw.a.commented_normal(lnum) "{{{
+    return self.get_commented_col(a:lnum) > 0
+endfunction "}}}
+
+function! s:caw.a.commented_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        if self.commented_normal(lnum)
+            return 1
+        endif
+    endfor
+    return 0
+endfunction "}}}
+
+
+function! s:caw.a.uncomment(mode) "{{{
+    if a:mode ==# 'n'
+        call self.uncomment_normal(line('.'))
+    else
+        call self.uncomment_visual()
+    endif
+endfunction "}}}
+
+function! s:caw.a.uncomment_normal(lnum) "{{{
+    let cmt = s:get_comment_string(&filetype)
+    if cmt != ''
+        let col = self.get_commented_col(a:lnum)
+        if col <= 0
+            return
+        endif
+
+        let line = getline(a:lnum)
+        let [l, r] = [line[col : col + strlen(cmt) - 1], cmt]
+        call s:assert(l ==# r, "s:caw.a.uncomment_normal(): ".string(l).' ==# '.string(r))
+
+        let before = line[0 : col - 1]
+        " 'caw_sp_a_left'
+        let before = substitute(before, '\s\+$', '', '')
+
+        call setline(a:lnum, before)
+    endif
+endfunction "}}}
+
+function! s:caw.a.uncomment_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.uncomment_normal(lnum)
     endfor
 endfunction "}}}
 
