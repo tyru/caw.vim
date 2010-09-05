@@ -128,18 +128,6 @@ endfunction "}}}
 
 " Implementation {{{
 
-function! s:get_comment_string(filetype) "{{{
-    for fn in [
-    \   's:get_comment_string_vars',
-    \   's:get_comment_string_builtin',
-    \]
-        let r = call(fn, [a:filetype])
-        if r != ''
-            return r
-        endif
-    endfor
-endfunction "}}}
-
 function! s:set_and_save_comment_string(filetype, comment_string) "{{{
     let stash = {}
 
@@ -184,26 +172,6 @@ function! s:restore_comment_string(stash) "{{{
     endif
 endfunction "}}}
 
-function! s:get_comment_string_vars(filetype) "{{{
-    for ns in [b:, w:, t:, g:]
-        if has_key(ns, 'caw_oneline_comment')
-        \   && has_key(ns.caw_oneline_comment, a:filetype)
-            return ns.caw_oneline_comment[a:filetype]
-        endif
-    endfor
-    return ''
-endfunction "}}}
-
-function! s:get_comment_string_builtin(filetype) "{{{
-    if a:filetype =~# 'c\|cpp'
-        return '//'
-    elseif a:filetype =~# 'perl\|ruby\|python\|php'
-        return '#'
-    elseif a:filetype =~# 'vim'
-        return '"'
-    endif
-    return ''
-endfunction "}}}
 
 function! s:assert(cond, msg) "{{{
     if !a:cond
@@ -219,6 +187,81 @@ function! s:get_var(varname) "{{{
     endfor
     call s:assert(0, "s:get_var(): this must be reached")
 endfunction "}}}
+
+
+" s:comments {{{
+" TODO Multiline
+let s:comments = {'oneline': {}, 'wrap': {}}
+
+" oneline
+function! s:comments.oneline.get_comment(filetype) "{{{
+    " TODO Remove builtin
+    for method in [
+    \   'get_comment_vars',
+    \   'get_comment_detect',
+    \   'get_comment_builtin',
+    \]
+        let r = self[method](a:filetype)
+        if r != ''
+            return r
+        endif
+    endfor
+endfunction "}}}
+
+let s:comments.oneline.__get_comment_vars_varname = 'caw_oneline_comment'
+function! s:comments.oneline.get_comment_vars(filetype) "{{{
+    for ns in [b:, w:, t:, g:]
+        if has_key(ns, self.__get_comment_vars_varname)
+        \   && has_key(ns[self.__get_comment_vars_varname], a:filetype)
+            return ns[self.__get_comment_vars_varname][a:filetype]
+        endif
+    endfor
+    return ''
+endfunction "}}}
+
+function! s:comments.oneline.get_comment_detect(filetype) "{{{
+    let comments_default = "s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-"
+    if &comments ==# comments_default
+        return ''
+    endif
+
+    " TODO
+
+    return ''
+endfunction "}}}
+
+" TODO Remove builtin
+function! s:comments.oneline.get_comment_builtin(filetype) "{{{
+    if a:filetype =~# 'c\|cpp'
+        return '//'
+    elseif a:filetype =~# 'perl\|ruby\|python\|php'
+        return '#'
+    elseif a:filetype =~# 'vim'
+        return '"'
+    endif
+    return ''
+endfunction "}}}
+
+
+" wrap
+let s:comments.wrap.get_comment = s:comments.oneline.get_comment
+
+let s:comments.wrap.__get_comment_vars_varname = 'caw_wrap_comment'
+let s:comments.wrap.get_comment_vars = s:comments.oneline.get_comment_vars
+
+let s:comments.wrap.get_comment_detect = s:comments.oneline.get_comment_detect
+
+" TODO Remove builtin
+function! s:comments.wrap.get_comment_builtin(filetype) "{{{
+    if a:filetype =~# 'c\|cpp'
+        return {'begin': '/*', 'end': '*/'}
+    elseif a:filetype =~# 'perl'
+        return {'begin': '=pod', 'end': '=cut'}
+    endif
+    return ''
+endfunction "}}}
+
+" }}}
 
 
 " s:caw {{{
@@ -304,7 +347,7 @@ endfunction "}}}
 let s:caw.i = deepcopy(s:base)
 
 function! s:caw.i.comment_normal(lnum) "{{{
-    let cmt = s:get_comment_string(&filetype)
+    let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
         let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
         if empty(m)
@@ -317,14 +360,14 @@ endfunction "}}}
 
 function! s:caw.i.commented_normal(lnum) "{{{
     let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
-    let cmt = s:get_comment_string(&filetype)
+    let cmt = s:comments.oneline.get_comment(&filetype)
     return stridx(line_without_indent, cmt) == 0
 endfunction "}}}
 
 
 
 function! s:caw.i.uncomment_normal(lnum) "{{{
-    let cmt = s:get_comment_string(&filetype)
+    let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
         let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
         if empty(m)
@@ -348,7 +391,7 @@ let s:caw.a = deepcopy(s:base)
 
 function! s:caw.a.comment_normal(lnum, ...) "{{{
     let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
-    let cmt = s:get_comment_string(&filetype)
+    let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
         let line = getline(a:lnum) . s:get_var('caw_sp_a_left') . cmt . s:get_var('caw_sp_a_right')
         call setline(a:lnum, line)
@@ -366,7 +409,7 @@ endfunction "}}}
 
 
 function! s:caw_a_get_commented_col(lnum) "{{{
-    let cmt = s:get_comment_string(&filetype)
+    let cmt = s:comments.oneline.get_comment(&filetype)
     let line = getline(a:lnum)
 
     let cols = []
@@ -398,7 +441,7 @@ endfunction "}}}
 
 
 function! s:caw.a.uncomment_normal(lnum) "{{{
-    let cmt = s:get_comment_string(&filetype)
+    let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
         let col = s:caw_a_get_commented_col(a:lnum)
         if col <= 0
@@ -424,7 +467,7 @@ endfunction "}}}
 let s:caw.jump = deepcopy(s:base)
 
 function! s:caw.jump.comment(next) "{{{
-    let cmt = s:get_comment_string(&filetype)
+    let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt == ''
         return
     endif
@@ -456,7 +499,7 @@ function! s:caw.input.comment(mode) "{{{
         return
     endif
 
-    let default_cmt = s:get_comment_string(&filetype)
+    let default_cmt = s:comments.oneline.get_comment(&filetype)
     let cmt = s:caw_input_get_comment_string(default_cmt)
 
     if default_cmt !=# cmt
