@@ -234,9 +234,8 @@ let s:base = {}
 " s:base.comment() requires:
 " - s:base.comment_normal()
 "
-" s:base.commented() requires:
+" s:base.commented() and s:base.commented_visual() requires:
 " - s:base.commented_normal()
-" - s:base.commented_visual()
 "
 " s:base.uncomment() requires:
 " - s:base.uncomment_normal()
@@ -275,6 +274,15 @@ function! s:base.commented(mode) "{{{
     endif
 endfunction "}}}
 
+function! s:base.commented_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        if self.commented_normal(lnum)
+            return 1
+        endif
+    endfor
+    return 0
+endfunction "}}}
+
 
 function! s:base.uncomment(mode) "{{{
     if a:mode ==# 'n'
@@ -306,15 +314,6 @@ function! s:caw.i.commented_normal(lnum) "{{{
     let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
     let cmt = s:get_comment_string(&filetype)
     return stridx(line_without_indent, cmt) == 0
-endfunction "}}}
-
-function! s:caw.i.commented_visual() "{{{
-    for lnum in range(line("'<"), line("'>"))
-        if self.commented_normal(lnum)
-            return 1
-        endif
-    endfor
-    return 0
 endfunction "}}}
 
 
@@ -396,15 +395,6 @@ endfunction "}}}
 
 function! s:caw.a.commented_normal(lnum) "{{{
     return s:caw_a_get_commented_col(a:lnum) > 0
-endfunction "}}}
-
-function! s:caw.a.commented_visual() "{{{
-    for lnum in range(line("'<"), line("'>"))
-        if self.commented_normal(lnum)
-            return 1
-        endif
-    endfor
-    return 0
 endfunction "}}}
 
 
