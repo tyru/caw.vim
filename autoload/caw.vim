@@ -184,6 +184,14 @@ function! s:get_indent(lnum) "{{{
 endfunction "}}}
 
 
+function! s:trim_whitespaces(str) "{{{
+    let str = a:str
+    let str = substitute(str, '^\s\+', '', '')
+    let str = substitute(str, '\s\+$', '', '')
+    return str
+endfunction "}}}
+
+
 
 " s:comments {{{
 " TODO Multiline
@@ -568,12 +576,39 @@ endfunction "}}}
 
 
 function! s:caw.wrap.commented_normal(lnum) "{{{
-    " TODO
+    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    if empty(cmt)
+        return 0
+    endif
+
+    let line = s:trim_whitespaces(getline(a:lnum))
+
+    " line begins with left, ends with right.
+    let [left, right] = cmt
+    return
+    \   line[: strlen(left) - 1] ==# left
+    \   && line[strlen(line) - strlen(right) :] ==# right
 endfunction "}}}
 
 
 function! s:caw.wrap.uncomment_normal(lnum) "{{{
-    " TODO
+    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    if !empty(cmt) && self.commented_normal(a:lnum)
+        let [left, right] = cmt
+
+        let line = s:trim_whitespaces(getline(a:lnum))
+
+        let [left, right] = cmt
+
+        let [l, r] = [line[: strlen(left) - 1], left]
+        call s:assert(l ==# r, string(l).' ==# '.string(r))
+        let [l, r] = [line[strlen(line) - strlen(right) :], right]
+        call s:assert(l ==# r, string(l).' ==# '.string(r))
+
+        let body = line[strlen(left) : -strlen(right) - 1]
+        let body = s:trim_whitespaces(body)
+        call setline(a:lnum, s:get_indent(a:lnum) . body)
+    endif
 endfunction "}}}
 
 " }}}
