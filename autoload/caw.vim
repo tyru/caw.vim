@@ -230,18 +230,22 @@ endfunction "}}}
 let s:caw.a = {}
 
 function! s:caw.a.comment(mode, ...) "{{{
-    let lnum = a:0 ? a:1 : line('.')
     if a:mode ==# 'n'
+        let lnum = get(a:000, 0, line('.'))
+        let do_feedkeys = get(a:000, 1, s:get_var('caw_a_startinsert'))
+
         let cmt = s:get_comment_string(&filetype)
         if cmt != ''
             call setline(lnum, getline(lnum) . s:get_var('caw_sp_a_left') . cmt . s:get_var('caw_sp_a_right'))
-            if s:get_var('caw_a_startinsert')
+            if do_feedkeys
                 call feedkeys('A', 'n')
             endif
         endif
     else
+        let do_feedkeys = 1
         for lnum in range(line("'<"), line("'>"))
-            call self.comment('n', lnum)
+            call self.comment('n', lnum, do_feedkeys)
+            let do_feedkeys = 0
         endfor
     endif
 endfunction "}}}
