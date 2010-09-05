@@ -211,7 +211,7 @@ endfunction "}}}
 
 " s:comments {{{
 " TODO Multiline
-let s:comments = {'oneline': {}, 'wrap': {}}
+let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
 " oneline
 function! s:comments.oneline.get_comment(filetype) "{{{
@@ -264,16 +264,33 @@ function! s:comments.oneline.get_comment_builtin(filetype) "{{{
 endfunction "}}}
 
 
-" wrap
-let s:comments.wrap.get_comment = s:comments.oneline.get_comment
+" wrap_oneline
+let s:comments.wrap_oneline.get_comment = s:comments.oneline.get_comment
 
-let s:comments.wrap.__get_comment_vars_varname = 'caw_wrap_comment'
-let s:comments.wrap.get_comment_vars = s:comments.oneline.get_comment_vars
+let s:comments.wrap_oneline.__get_comment_vars_varname = 'caw_wrap_oneline_comment'
+let s:comments.wrap_oneline.get_comment_vars = s:comments.oneline.get_comment_vars
 
-let s:comments.wrap.get_comment_detect = s:comments.oneline.get_comment_detect
+let s:comments.wrap_oneline.get_comment_detect = s:comments.oneline.get_comment_detect
 
 " TODO Remove builtin
-function! s:comments.wrap.get_comment_builtin(filetype) "{{{
+function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
+    if a:filetype =~# '\<c\|cpp\>'
+        return ['/*', '*/']
+    endif
+    return []
+endfunction "}}}
+
+
+" wrap_multiline
+let s:comments.wrap_multiline.get_comment = s:comments.oneline.get_comment
+
+let s:comments.wrap_multiline.__get_comment_vars_varname = 'caw_wrap_multiline_comment'
+let s:comments.wrap_multiline.get_comment_vars = s:comments.oneline.get_comment_vars
+
+let s:comments.wrap_multiline.get_comment_detect = s:comments.oneline.get_comment_detect
+
+" TODO Remove builtin
+function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
     if a:filetype =~# '\<c\|cpp\>'
         " TODO
         " return {'top': '#if 0', 'bottom': '#endif'}
