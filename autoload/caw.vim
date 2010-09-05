@@ -349,22 +349,20 @@ endfunction "}}}
 let s:caw.a = deepcopy(s:base)
 
 function! s:caw.a.comment_normal(lnum, ...) "{{{
-    let do_feedkeys = a:0 ? a:1 : s:get_var('caw_a_startinsert')
+    let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
     let cmt = s:get_comment_string(&filetype)
     if cmt != ''
         let line = getline(a:lnum) . s:get_var('caw_sp_a_left') . cmt . s:get_var('caw_sp_a_right')
         call setline(a:lnum, line)
-        if do_feedkeys
+        if startinsert
             call feedkeys('A', 'n')
         endif
     endif
 endfunction "}}}
 
 function! s:caw.a.comment_visual() "{{{
-    let do_feedkeys = 1
     for lnum in range(line("'<"), line("'>"))
-        call self.comment_normal(lnum, do_feedkeys)
-        let do_feedkeys = 0
+        call self.comment_normal(lnum, 0)
     endfor
 endfunction "}}}
 
