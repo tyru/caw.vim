@@ -139,7 +139,7 @@ let s:caw = {}
 " i {{{
 let s:caw.i = {}
 
-function! s:caw.i.comment(mode, ...) "{{{
+function! s:caw.i.comment(mode) "{{{
     if a:mode ==# 'n'
         let lnum = a:0 ? a:1 : line('.')
         call self.comment_normal(lnum)
@@ -175,7 +175,7 @@ function! s:caw.i.toggle(mode) "{{{
 endfunction "}}}
 
 
-function! s:caw.i.commented(mode, ...) "{{{
+function! s:caw.i.commented(mode) "{{{
     if a:mode ==# 'n'
         return self.commented_normal(line('.'))
     else
@@ -236,7 +236,7 @@ endfunction "}}}
 " a {{{
 let s:caw.a = {}
 
-function! s:caw.a.comment(mode, ...) "{{{
+function! s:caw.a.comment(mode) "{{{
     if a:mode ==# 'n'
         let lnum = a:0 ? a:1 : line('.')
         call self.comment_normal(lnum)
