@@ -231,23 +231,31 @@ let s:caw.a = {}
 
 function! s:caw.a.comment(mode, ...) "{{{
     if a:mode ==# 'n'
-        let lnum = get(a:000, 0, line('.'))
-        let do_feedkeys = get(a:000, 1, s:get_var('caw_a_startinsert'))
-
-        let cmt = s:get_comment_string(&filetype)
-        if cmt != ''
-            call setline(lnum, getline(lnum) . s:get_var('caw_sp_a_left') . cmt . s:get_var('caw_sp_a_right'))
-            if do_feedkeys
-                call feedkeys('A', 'n')
-            endif
-        endif
+        let lnum = a:0 ? a:1 : line('.')
+        call self.comment_normal(lnum)
     else
-        let do_feedkeys = 1
-        for lnum in range(line("'<"), line("'>"))
-            call self.comment('n', lnum, do_feedkeys)
-            let do_feedkeys = 0
-        endfor
+        call self.comment_visual()
     endif
+endfunction "}}}
+
+function! s:caw.a.comment_normal(lnum, ...) "{{{
+    let do_feedkeys = a:0 ? a:1 : s:get_var('caw_a_startinsert')
+    let cmt = s:get_comment_string(&filetype)
+    if cmt != ''
+        let line = getline(a:lnum) . s:get_var('caw_sp_a_left') . cmt . s:get_var('caw_sp_a_right')
+        call setline(a:lnum, line)
+        if do_feedkeys
+            call feedkeys('A', 'n')
+        endif
+    endif
+endfunction "}}}
+
+function! s:caw.a.comment_visual() "{{{
+    let do_feedkeys = 1
+    for lnum in range(line("'<"), line("'>"))
+        call self.comment_normal(lnum, do_feedkeys)
+        let do_feedkeys = 0
+    endfor
 endfunction "}}}
 
 " }}}
