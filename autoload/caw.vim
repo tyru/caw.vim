@@ -122,6 +122,12 @@ function! s:get_comment_string(filetype) "{{{
     endif
 endfunction "}}}
 
+function! s:assert(cond, msg) "{{{
+    if !a:cond
+        throw 'caw: assertion failure: ' . a:msg
+    endif
+endfunction "}}}
+
 function! s:get_var(varname) "{{{
     for ns in [b:, w:, t:, g:]
         if has_key(ns, a:varname)
