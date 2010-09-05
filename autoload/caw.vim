@@ -140,21 +140,29 @@ let s:caw = {}
 let s:caw.i = {}
 
 function! s:caw.i.comment(mode, ...) "{{{
-    let lnum = a:0 ? a:1 : line('.')
     if a:mode ==# 'n'
-        let cmt = s:get_comment_string(&filetype)
-        if cmt != ''
-            let m = matchlist(getline(lnum), '^\([ \t]*\)\(.*\)')
-            if empty(m)
-                throw 'caw: s:caw.i.comment(): internal error'
-            endif
-            call setline(lnum, m[1] . cmt . s:get_var('caw_sp_i') . m[2])
-        endif
+        let lnum = a:0 ? a:1 : line('.')
+        call self.comment_normal(lnum)
     else
-        for lnum in range(line("'<"), line("'>"))
-            call self.comment('n', lnum)
-        endfor
+        call self.comment_visual()
     endif
+endfunction "}}}
+
+function! s:caw.i.comment_normal(lnum) "{{{
+    let cmt = s:get_comment_string(&filetype)
+    if cmt != ''
+        let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
+        if empty(m)
+            throw 'caw: s:caw.i.comment(): internal error'
+        endif
+        call setline(a:lnum, m[1] . cmt . s:get_var('caw_sp_i') . m[2])
+    endif
+endfunction "}}}
+
+function! s:caw.i.comment_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.comment_normal(lnum)
+    endfor
 endfunction "}}}
 
 " }}}
