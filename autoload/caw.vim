@@ -366,7 +366,9 @@ endfunction "}}}
 let s:caw.i = deepcopy(s:base)
 
 function! s:caw.i.comment_normal(lnum, ...) "{{{
-    let startinsert = a:0 ? a:1 : s:get_var('caw_i_startinsert_at_blank_line')
+    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
+    let comment_col = get(a:000, 1, -1)
+
     let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
         let line = getline(a:lnum)
@@ -376,6 +378,12 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
             if startinsert
                 call feedkeys('A', 'n')
             endif
+        elseif comment_col > 0
+            let idx = comment_col - 1
+            call s:assert(idx < strlen(line), idx.' is accessible to '.string(line).'.')
+            let before = idx ==# 0 ? '' : line[: idx]
+            let after  = idx ==# 0 ? line : line[idx + 1 :]
+            call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
         else
             let m = matchlist(line, '^\([ \t]*\)\(.*\)')
             if empty(m)
@@ -387,8 +395,23 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
 endfunction "}}}
 
 function! s:caw.i.comment_visual() "{{{
+    let min_indent_num = 1/0
+    if g:caw_i_align
+        for lnum in range(line("'<"), line("'>"))
+            let n = strlen(matchstr(getline(lnum), '^\s\+'))
+            if n < min_indent_num
+                let min_indent_num = n
+            endif
+        endfor
+    endif
+    let min_col = min_indent_num + 1
+
     for lnum in range(line("'<"), line("'>"))
-        call self.comment_normal(lnum, 0)
+        call call(
+        \   self.comment_normal,
+        \   [lnum, 0] + (min_col > 0 ? [min_col] : []),
+        \   self
+        \)
     endfor
 endfunction "}}}
 
