@@ -153,7 +153,7 @@ function! s:caw.i.comment_normal(lnum) "{{{
     if cmt != ''
         let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
         if empty(m)
-            throw 'caw: s:caw.i.comment(): internal error'
+            throw 'caw: s:caw.i.comment_normal(): internal error'
         endif
         call setline(a:lnum, m[1] . cmt . s:get_var('caw_sp_i') . m[2])
     endif
