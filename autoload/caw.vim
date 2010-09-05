@@ -84,6 +84,13 @@ endfunction "}}}
 
 
 
+" input
+function! caw#do_input_comment(mode) "{{{
+    return s:sandbox_call(s:caw.input.comment, [a:mode], s:caw.input)
+endfunction "}}}
+
+
+
 " uncomment
 function! caw#do_uncomment(mode) "{{{
     " TODO
@@ -131,6 +138,50 @@ function! s:get_comment_string(filetype) "{{{
             return r
         endif
     endfor
+endfunction "}}}
+
+function! s:set_and_save_comment_string(filetype, comment_string) "{{{
+    let stash = {}
+
+    let NONEXISTS = 0
+    let INVALID = 1
+    let EXISTS = 2
+    let EMPTY = 0
+
+    if !exists('b:caw_oneline_comment_string')
+        let stash.status = NONEXISTS
+        let cmt = EMPTY
+    elseif type(b:caw_oneline_comment_string) != type({})
+        let stash.status = INVALID
+        let stash.org_value = copy(b:caw_oneline_comment_string)
+        let cmt = EMPTY
+    else
+        let stash.status = EXISTS
+        let stash.org_value = copy(b:caw_oneline_comment_string)
+        let cmt = get(b:caw_oneline_comment_string, a:filetype, EMPTY)
+    endif
+
+    let b:caw_oneline_comment_string = extend(
+    \   (cmt is EMPTY ? {} : b:caw_oneline_comment_string),
+    \   {a:filetype : a:comment_string},
+    \   'force'
+    \)
+
+    return stash
+endfunction "}}}
+
+function! s:restore_comment_string(stash) "{{{
+    let NONEXISTS = 0
+    let INVALID = 1
+    let EXISTS = 2
+
+    if a:stash.status ==# NONEXISTS
+        unlet b:caw_oneline_comment_string
+    elseif a:stash.status ==# INVALID
+        let b:caw_oneline_comment_string = a:stash.org_value
+    elseif a:stash.status ==# EXISTS
+        let b:caw_oneline_comment_string = a:stash.org_value
+    endif
 endfunction "}}}
 
 function! s:get_comment_string_vars(filetype) "{{{
@@ -408,6 +459,99 @@ function! s:caw.jump.comment(next) "{{{
         call cursor(line('.') - 1, 1)
         startinsert!
     endif
+endfunction "}}}
+
+" }}}
+
+" input {{{
+let s:caw.input = {}
+
+function! s:caw.input.comment(mode) "{{{
+    let [pos, pos_opt] = s:caw_input_get_pos()
+    if !has_key(s:caw, pos) || !has_key(s:caw[pos], 'comment')
+        echohl WarningMsg
+        echomsg pos . ': Invalid pos.'
+        echohl None
+        return
+    endif
+
+    let default_cmt = s:get_comment_string(&filetype)
+    let cmt = s:caw_input_get_comment_string(default_cmt)
+
+    if default_cmt !=# cmt
+        let org_status = s:set_and_save_comment_string(&filetype, cmt)
+    endif
+    try
+        if a:mode ==# 'n'
+            call self.comment_normal(line('.'), pos)
+        else
+            call self.comment_visual(pos)
+        endif
+    finally
+        if default_cmt !=# cmt
+            call s:restore_comment_string(org_status)
+        endif
+    endtry
+endfunction "}}}
+
+function! s:caw.input.comment_normal(lnum, pos) "{{{
+    call s:caw[a:pos].comment_normal(a:lnum)
+endfunction "}}}
+
+function! s:caw.input.comment_visual(pos) "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.comment_normal(lnum, a:pos)
+    endfor
+endfunction "}}}
+
+function! s:caw_input_get_pos() "{{{
+    let NONE = ['', '']
+
+    let pos = get({
+    \   'i': 'i',
+    \   'a': 'a',
+    \   'j': 'jump',
+    \   'w': 'wrap',
+    \}, s:getchar(), '')
+
+    if pos == ''
+        return NONE
+    elseif pos ==# 'jump'
+        let next_or_prev = get({
+        \   'o': 'next',
+        \   'O': 'prev',
+        \}, s:getchar(), '')
+        if next_or_prev == ''
+            return NONE
+        else
+            return [pos, next_or_prev]
+        endif
+    else
+        return [pos, '']
+    endif
+endfunction "}}}
+
+function! s:getchar(...) "{{{
+    call inputsave()
+    try
+        let c = call('getchar', a:000)
+        return type(c) == type("") ? c : nr2char(c)
+    finally
+        call inputrestore()
+    endtry
+endfunction "}}}
+
+function! s:caw_input_get_comment_string(default_cmt) "{{{
+    return s:input('any comment?:', a:default_cmt)
+endfunction "}}}
+
+function! s:input(...) "{{{
+    call inputsave()
+    try
+        return call('input', a:000)
+    finally
+        call inputrestore()
+    endtry
 endfunction "}}}
 
 " }}}
