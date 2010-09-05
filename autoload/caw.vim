@@ -575,7 +575,7 @@ endfunction "}}}
 " }}}
 
 " input {{{
-let s:caw.input = {}
+let s:caw.input = deepcopy(s:base)
 
 function! s:caw.input.comment(mode) "{{{
     let [pos, pos_opt] = s:caw_input_get_pos()
