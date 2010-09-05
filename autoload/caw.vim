@@ -137,10 +137,6 @@ function! s:get_var(varname) "{{{
     call s:assert(0, "s:get_var(): this must be reached")
 endfunction "}}}
 
-function! s:list_has(list, expr) "{{{
-    return !empty(filter(a:list, a:expr))
-endfunction "}}}
-
 
 " s:caw {{{
 let s:caw = {}
@@ -302,9 +298,11 @@ function! s:caw.a.get_commented_col(lnum) "{{{
     endif
 
     for col in cols
-        if s:list_has(synstack(a:lnum, col), 'synIDattr(v:val, "name") ==# "Comment"')
-            return col
-        endif
+        for id in synstack(a:lnum, col)
+            if synIDattr(synIDtrans(id), 'name') ==# 'Comment'
+                return col
+            endif
+        endfor
     endfor
     return -1
 endfunction "}}}
