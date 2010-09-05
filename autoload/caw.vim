@@ -214,9 +214,13 @@ function! s:caw.i.uncomment_normal(lnum) "{{{
         if empty(m)
             throw 'caw: s:caw.i.uncomment_normal(): internal error'
         endif
-        " Ignore "caw_sp_i".
-        if stridx(m[2], cmt) == 0
-            call setline(a:lnum, m[1] . m[2][strlen(cmt) :])
+        let [indent, line] = m[1:2]
+        if stridx(line, cmt) == 0
+            " Remove comment.
+            let line = line[strlen(cmt) :]
+            " 'caw_sp_i'
+            let line = substitute(line, '^[ \t]\+', '', '')
+            call setline(a:lnum, indent . line)
         endif
     endif
 endfunction "}}}
