@@ -141,17 +141,71 @@ endfunction "}}}
 " s:caw {{{
 let s:caw = {}
 
-" i {{{
-let s:caw.i = {}
+" s:base {{{
+let s:base = {}
 
-function! s:caw.i.comment(mode) "{{{
+" NOTE:
+" These methods are missing in s:base.
+" Derived object must implement those.
+"
+" s:base.comment() requires:
+" - s:base.comment_normal()
+"
+" s:base.commented() requires:
+" - s:base.commented_normal()
+" - s:base.commented_visual()
+"
+" s:base.uncomment() requires:
+" - s:base.uncomment_normal()
+" - s:base.uncomment_visual()
+
+
+function! s:base.comment(mode) "{{{
     if a:mode ==# 'n'
-        let lnum = a:0 ? a:1 : line('.')
-        call self.comment_normal(lnum)
+        call self.comment_normal(line('.'))
     else
         call self.comment_visual()
     endif
 endfunction "}}}
+
+function! s:base.comment_visual() "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.comment_normal(lnum)
+    endfor
+endfunction "}}}
+
+
+function! s:base.toggle(mode) "{{{
+    if self.commented(a:mode)
+        call self.uncomment(a:mode)
+    else
+        call self.comment(a:mode)
+    endif
+endfunction "}}}
+
+
+function! s:base.commented(mode) "{{{
+    if a:mode ==# 'n'
+        return self.commented_normal(line('.'))
+    else
+        return self.commented_visual()
+    endif
+endfunction "}}}
+
+
+function! s:base.uncomment(mode) "{{{
+    if a:mode ==# 'n'
+        call self.uncomment_normal(line('.'))
+    else
+        call self.uncomment_visual()
+    endif
+endfunction "}}}
+
+" }}}
+
+
+" i {{{
+let s:caw.i = deepcopy(s:base)
 
 function! s:caw.i.comment_normal(lnum) "{{{
     let cmt = s:get_comment_string(&filetype)
@@ -164,29 +218,6 @@ function! s:caw.i.comment_normal(lnum) "{{{
     endif
 endfunction "}}}
 
-function! s:caw.i.comment_visual() "{{{
-    for lnum in range(line("'<"), line("'>"))
-        call self.comment_normal(lnum)
-    endfor
-endfunction "}}}
-
-
-function! s:caw.i.toggle(mode) "{{{
-    if self.commented(a:mode)
-        call self.uncomment(a:mode)
-    else
-        call self.comment(a:mode)
-    endif
-endfunction "}}}
-
-
-function! s:caw.i.commented(mode) "{{{
-    if a:mode ==# 'n'
-        return self.commented_normal(line('.'))
-    else
-        return self.commented_visual()
-    endif
-endfunction "}}}
 
 function! s:caw.i.commented_normal(lnum) "{{{
     let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
@@ -204,13 +235,6 @@ function! s:caw.i.commented_visual() "{{{
 endfunction "}}}
 
 
-function! s:caw.i.uncomment(mode) "{{{
-    if a:mode ==# 'n'
-        call self.uncomment_normal(line('.'))
-    else
-        call self.uncomment_visual()
-    endif
-endfunction "}}}
 
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:get_comment_string(&filetype)
@@ -239,16 +263,7 @@ endfunction "}}}
 " }}}
 
 " a {{{
-let s:caw.a = {}
-
-function! s:caw.a.comment(mode) "{{{
-    if a:mode ==# 'n'
-        let lnum = a:0 ? a:1 : line('.')
-        call self.comment_normal(lnum)
-    else
-        call self.comment_visual()
-    endif
-endfunction "}}}
+let s:caw.a = deepcopy(s:base)
 
 function! s:caw.a.comment_normal(lnum, ...) "{{{
     let do_feedkeys = a:0 ? a:1 : s:get_var('caw_a_startinsert')
@@ -268,15 +283,6 @@ function! s:caw.a.comment_visual() "{{{
         call self.comment_normal(lnum, do_feedkeys)
         let do_feedkeys = 0
     endfor
-endfunction "}}}
-
-
-function! s:caw.a.toggle(mode) "{{{
-    if self.commented(a:mode)
-        call self.uncomment(a:mode)
-    else
-        call self.comment(a:mode)
-    endif
 endfunction "}}}
 
 
@@ -307,15 +313,6 @@ function! s:caw_a_get_commented_col(lnum) "{{{
     return -1
 endfunction "}}}
 
-
-function! s:caw.a.commented(mode) "{{{
-    if a:mode ==# 'n'
-        return self.commented_normal(line('.'))
-    else
-        return self.commented_visual()
-    endif
-endfunction "}}}
-
 function! s:caw.a.commented_normal(lnum) "{{{
     return s:caw_a_get_commented_col(a:lnum) > 0
 endfunction "}}}
@@ -329,14 +326,6 @@ function! s:caw.a.commented_visual() "{{{
     return 0
 endfunction "}}}
 
-
-function! s:caw.a.uncomment(mode) "{{{
-    if a:mode ==# 'n'
-        call self.uncomment_normal(line('.'))
-    else
-        call self.uncomment_visual()
-    endif
-endfunction "}}}
 
 function! s:caw.a.uncomment_normal(lnum) "{{{
     let cmt = s:get_comment_string(&filetype)
