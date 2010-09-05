@@ -345,12 +345,13 @@ function! s:caw.a.uncomment_normal(lnum) "{{{
         if col <= 0
             return
         endif
+        let idx = col - 1
 
         let line = getline(a:lnum)
-        let [l, r] = [line[col : col + strlen(cmt) - 1], cmt]
+        let [l, r] = [line[idx : idx + strlen(cmt) - 1], cmt]
         call s:assert(l ==# r, "s:caw.a.uncomment_normal(): ".string(l).' ==# '.string(r))
 
-        let before = line[0 : col - 1]
+        let before = line[0 : idx - 1]
         " 'caw_sp_a_left'
         let before = substitute(before, '\s\+$', '', '')
 
