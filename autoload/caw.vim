@@ -428,7 +428,7 @@ endfunction "}}}
 
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if !empty(cmt)
+    if !empty(cmt) && self.commented_normal(a:lnum)
         let indent = s:get_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
         if stridx(line, cmt) == 0
@@ -508,7 +508,7 @@ endfunction "}}}
 
 function! s:caw.a.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if !empty(cmt)
+    if !empty(cmt) && self.commented_normal(a:lnum)
         let col = s:caw_a_get_commented_col(a:lnum)
         if col <= 0
             return
