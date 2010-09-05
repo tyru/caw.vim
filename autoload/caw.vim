@@ -389,11 +389,9 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
             let after  = idx ==# 0 ? line : line[idx + 1 :]
             call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
         else
-            let m = matchlist(line, '^\([ \t]*\)\(.*\)')
-            if empty(m)
-                throw 'caw: s:caw.i.comment_normal(): internal error'
-            endif
-            call setline(a:lnum, m[1] . cmt . s:get_var('caw_sp_i') . m[2])
+            let indent = s:get_indent(a:lnum)
+            let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
+            call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i') . line)
         endif
     endif
 endfunction "}}}
@@ -421,7 +419,7 @@ endfunction "}}}
 
 
 function! s:caw.i.commented_normal(lnum) "{{{
-    let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
+    let line_without_indent = substitute(getline(a:lnum), '^[ \t]\+', '', '')
     let cmt = s:comments.oneline.get_comment(&filetype)
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
 endfunction "}}}
@@ -431,11 +429,8 @@ endfunction "}}}
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if !empty(cmt)
-        let m = matchlist(getline(a:lnum), '^\([ \t]*\)\(.*\)')
-        if empty(m)
-            throw 'caw: s:caw.i.uncomment_normal(): internal error'
-        endif
-        let [indent, line] = m[1:2]
+        let indent = s:get_indent(a:lnum)
+        let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
         if stridx(line, cmt) == 0
             " Remove comment.
             let line = line[strlen(cmt) :]
@@ -623,12 +618,12 @@ function! s:caw.jump.comment(next) "{{{
     endif
 
     if a:next
-        let indent = matchstr(getline('.'), '^\s\+')
+        let indent = s:get_indent('.')
         call append(line('.'), indent . cmt . g:caw_sp_jump)
         call cursor(line('.') + 1, 1)
         startinsert!
     else
-        let indent = matchstr(getline('.'), '^\s\+')
+        let indent = s:get_indent('.')
         call append(line('.') - 1, indent . cmt . g:caw_sp_jump)
         call cursor(line('.') - 1, 1)
         startinsert!
