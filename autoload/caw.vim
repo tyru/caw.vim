@@ -251,11 +251,11 @@ endfunction "}}}
 
 " TODO Remove builtin
 function! s:comments.oneline.get_comment_builtin(filetype) "{{{
-    if a:filetype =~# 'c\|cpp'
+    if a:filetype =~# '\<c\|cpp\>'
         return '//'
-    elseif a:filetype =~# 'perl\|ruby\|python\|php'
+    elseif a:filetype =~# '\<perl\|ruby\|python\|php\>'
         return '#'
-    elseif a:filetype =~# 'vim'
+    elseif a:filetype =~# '\<vim\>'
         return '"'
     endif
     return ''
