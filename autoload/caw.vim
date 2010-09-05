@@ -190,7 +190,13 @@ endfunction "}}}
 
 
 function! s:get_indent_num(lnum) "{{{
-    return &lisp ? lispindent(a:lnum) : indent(a:lnum)
+    if &syntax =~# '\<c\|cpp\>'
+        return cindent(a:lnum)
+    elseif &syntax =~# '\<lisp\|scheme\>'
+        return lispindent(a:lnum)
+    else
+        return indent(a:lnum)
+    endif
 endfunction "}}}
 
 function! s:get_indent(lnum) "{{{
