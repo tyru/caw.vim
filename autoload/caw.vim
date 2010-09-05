@@ -73,6 +73,17 @@ endfunction "}}}
 
 
 
+" jump
+function! caw#do_jump_comment_next() "{{{
+    return s:sandbox_call(s:caw.jump.comment, [1], s:caw.jump)
+endfunction "}}}
+
+function! caw#do_jump_comment_prev() "{{{
+    return s:sandbox_call(s:caw.jump.comment, [0], s:caw.jump)
+endfunction "}}}
+
+
+
 " uncomment
 function! caw#do_uncomment(mode) "{{{
     " TODO
@@ -352,6 +363,30 @@ function! s:caw.a.uncomment_visual() "{{{
     for lnum in range(line("'<"), line("'>"))
         call self.uncomment_normal(lnum)
     endfor
+endfunction "}}}
+
+" }}}
+
+" jump {{{
+let s:caw.jump = deepcopy(s:base)
+
+function! s:caw.jump.comment(next) "{{{
+    let cmt = s:get_comment_string(&filetype)
+    if cmt == ''
+        return
+    endif
+
+    if a:next
+        let indent = matchstr(getline('.'), '^\s\+')
+        call append(line('.'), indent . cmt . g:caw_sp_jump)
+        call cursor(line('.') + 1, 1)
+        startinsert!
+    else
+        let indent = matchstr(getline('.'), '^\s\+')
+        call append(line('.') - 1, indent . cmt . g:caw_sp_jump)
+        call cursor(line('.') - 1, 1)
+        startinsert!
+    endif
 endfunction "}}}
 
 " }}}

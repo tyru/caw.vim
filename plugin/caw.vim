@@ -35,6 +35,9 @@ endif
 if !exists('g:caw_a_startinsert')
     let g:caw_a_startinsert = 1
 endif
+if !exists('g:caw_sp_jump')
+    let g:caw_sp_jump = ' '
+endif
 
 
 
@@ -96,11 +99,9 @@ endif
 
 
 " jump
-nnoremap <Plug>(caw:jump:comment-next)  :<C-u>call caw#do_jump_comment_next('n')<CR>
-vnoremap <Plug>(caw:jump:comment-next)  :<C-u>call caw#do_jump_comment_next('v')<CR>
+nnoremap <Plug>(caw:jump:comment-next)  :<C-u>call caw#do_jump_comment_next()<CR>
 
-nnoremap <Plug>(caw:jump:comment-prev)  :<C-u>call caw#do_jump_comment_prev('n')<CR>
-vnoremap <Plug>(caw:jump:comment-prev)  :<C-u>call caw#do_jump_comment_prev('v')<CR>
+nnoremap <Plug>(caw:jump:comment-prev)  :<C-u>call caw#do_jump_comment_prev()<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gco', '<Plug>(caw:jump:comment-next)')
