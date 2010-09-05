@@ -280,7 +280,7 @@ function! s:caw.a.toggle(mode) "{{{
 endfunction "}}}
 
 
-function! s:caw.a.get_commented_col(lnum) "{{{
+function! s:caw_a_get_commented_col(lnum) "{{{
     let cmt = s:get_comment_string(&filetype)
     let line = getline(a:lnum)
 
@@ -317,7 +317,7 @@ function! s:caw.a.commented(mode) "{{{
 endfunction "}}}
 
 function! s:caw.a.commented_normal(lnum) "{{{
-    return self.get_commented_col(a:lnum) > 0
+    return s:caw_a_get_commented_col(a:lnum) > 0
 endfunction "}}}
 
 function! s:caw.a.commented_visual() "{{{
@@ -341,7 +341,7 @@ endfunction "}}}
 function! s:caw.a.uncomment_normal(lnum) "{{{
     let cmt = s:get_comment_string(&filetype)
     if cmt != ''
-        let col = self.get_commented_col(a:lnum)
+        let col = s:caw_a_get_commented_col(a:lnum)
         if col <= 0
             return
         endif
