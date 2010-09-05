@@ -29,6 +29,7 @@ endif
 if !exists('g:caw_i_startinsert_at_blank_line')
     let g:caw_i_startinsert_at_blank_line = 1
 endif
+
 if !exists('g:caw_sp_a_left')
     let g:caw_sp_a_left = repeat(' ', 4)
 endif
@@ -38,6 +39,7 @@ endif
 if !exists('g:caw_a_startinsert')
     let g:caw_a_startinsert = 1
 endif
+
 if !exists('g:caw_sp_jump')
     let g:caw_sp_jump = ' '
 endif
