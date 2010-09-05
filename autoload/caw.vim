@@ -452,8 +452,13 @@ function! s:caw.a.comment_normal(lnum, ...) "{{{
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
-        let line = getline(a:lnum) . s:get_var('caw_sp_a_left') . cmt . s:get_var('caw_sp_a_right')
-        call setline(a:lnum, line)
+        call setline(
+        \   a:lnum,
+        \   getline(a:lnum)
+        \       . s:get_var('caw_sp_a_left')
+        \       . cmt
+        \       . s:get_var('caw_sp_a_right')
+        \)
         if startinsert
             call feedkeys('A', 'n')
         endif
