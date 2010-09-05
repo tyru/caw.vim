@@ -208,6 +208,7 @@ function! s:get_indent(lnum) "{{{
 endfunction "}}}
 
 
+
 " s:comments {{{
 " TODO Multiline
 let s:comments = {'oneline': {}, 'wrap': {}}
@@ -281,7 +282,6 @@ function! s:comments.wrap.get_comment_builtin(filetype) "{{{
 endfunction "}}}
 
 " }}}
-
 
 " s:caw {{{
 let s:caw = {}
@@ -449,6 +449,7 @@ let s:caw.a = deepcopy(s:base)
 
 function! s:caw.a.comment_normal(lnum, ...) "{{{
     let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
+
     let cmt = s:comments.oneline.get_comment(&filetype)
     if cmt != ''
         let line = getline(a:lnum) . s:get_var('caw_sp_a_left') . cmt . s:get_var('caw_sp_a_right')
