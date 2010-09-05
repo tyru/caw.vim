@@ -190,9 +190,9 @@ endfunction "}}}
 
 
 function! s:get_indent_num(lnum) "{{{
-    if &syntax =~# '\<c\|cpp\>'
+    if has('cindent') && &syntax =~# '\<c\|cpp\>'
         return cindent(a:lnum)
-    elseif &syntax =~# '\<lisp\|scheme\>'
+    elseif has('lispindent') && &syntax =~# '\<lisp\|scheme\>'
         return lispindent(a:lnum)
     else
         return indent(a:lnum)
