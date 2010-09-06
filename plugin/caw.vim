@@ -140,12 +140,6 @@ endif
 nnoremap <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('n')<CR>
 vnoremap <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('v')<CR>
 
-nnoremap <Plug>(caw:uncomment:wrap-one)     :<C-u>call caw#do_uncomment_wrap_one('n')<CR>
-vnoremap <Plug>(caw:uncomment:wrap-one)     :<C-u>call caw#do_uncomment_wrap_one('v')<CR>
-
-nnoremap <Plug>(caw:uncomment:wrap-multi)   :<C-u>call caw#do_uncomment_wrap_multi('n')<CR>
-vnoremap <Plug>(caw:uncomment:wrap-multi)   :<C-u>call caw#do_uncomment_wrap_multi('v')<CR>
-
 if !g:caw_no_default_keymappings
     call s:map('gcuw', '<Plug>(caw:uncomment:wrap)')
 endif
