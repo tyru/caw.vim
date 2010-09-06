@@ -1,0 +1,194 @@
+*caw.txt* *caw*
+
+Author:
+  tyru <tyru.exe@gmail.com>
+Version: 0.0.0
+License:
+" NEW BSD LICENSE {{{
+"   Copyright (c) 2010, tyru
+"   All rights reserved.
+"
+"   Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+"
+"       * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+"       * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+"       * Neither the name of the tyru nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+"
+"   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+" }}}
+
+==============================================================================
+CONTENTS						*caw-contents*
+
+Introduction		|caw-introduction|
+Interface			|caw-interface|
+  Keymappings		|caw-keymappings|
+  Variables			|caw-variables|
+TODO				|caw-todo|
+Changelog			|caw-changelog|
+
+
+==============================================================================
+INTRODUCTION						*caw-introduction* {{{
+
+gcI
+  before:
+      "   testtesttest"
+  after:
+      "#    testtesttest"
+
+gci
+  before:
+      "   <- inserted here"
+  after:
+      "   # <- inserted here"
+
+gca
+  before:
+      "aaaaaaa"
+  after:
+      "aaaaaaa    # "
+
+gcw
+  before:
+      "aaaaaaa"
+  after:
+      "/* aaaaaaa */"
+
+gcv
+  before:
+      "   some code here"
+  after:
+      Type "gcvi", and '// XXX:<CR>'
+      "   // XXX: some code here"
+
+gco
+  before:
+      "   func1();"
+  after:
+      Type "gco", and "func2();"
+      "   func1()"
+      "   // func2();"
+
+gcO
+  before:
+      "   func1();"
+  after:
+      you type 'gcO', and 'call func1()'
+      "   // call func1()"
+      "   func1();"
+
+}}}
+==============================================================================
+INTERFACE				*caw-interface* {{{
+------------------------------------------------------------------------------
+KEYMAPPINGS					*caw-keymappings* {{{
+
+
+(nv) <Plug>(caw:i:comment)			*<Plug>(caw:i:comment)*
+(nv) <Plug>(caw:a:comment)			*<Plug>(caw:a:comment)*
+(nv) <Plug>(caw:i:toggle)			*<Plug>(caw:i:toggle)*
+(nv) <Plug>(caw:a:toggle)			*<Plug>(caw:a:toggle)*
+
+Default mapping		rhs ~
+gci					<Plug>(caw:i:toggle)
+gca					<Plug>(caw:a:toggle)
+
+
+(nv) <Plug>(caw:wrap:comment)		*<Plug>(caw:wrap:comment)*
+(nv) <Plug>(caw:wrap:toggle)		*<Plug>(caw:wrap:toggle)*
+
+Default mapping		rhs ~
+gcw					<Plug>(caw:wrap:toggle)
+
+
+(n) <Plug>(caw:jump:comment-next)		*<Plug>(caw:jump:comment-next)*
+(n) <Plug>(caw:jump:comment-prev)		*<Plug>(caw:jump:comment-prev)*
+
+Default mapping		rhs ~
+gco					<Plug>(caw:jump:comment-next)
+gcO					<Plug>(caw:jump:comment-prev)
+
+
+(nv) <Plug>(caw:input:comment)		*<Plug>(caw:input:comment)*
+
+Default mapping		rhs ~
+gcv					<Plug>(caw:input:comment)
+
+
+(nv) <Plug>(caw:uncomment)			*<Plug>(caw:uncomment)*
+
+Default mapping		rhs ~
+gcuu				<Plug>(caw:uncomment)
+
+
+(nv) <Plug>(caw:uncomment:i)		*<Plug>(caw:uncomment:i)*
+(nv) <Plug>(caw:uncomment:a)		*<Plug>(caw:uncomment:a)*
+
+Default mapping		rhs ~
+gcui				<Plug>(caw:uncomment:i)
+gcua				<Plug>(caw:uncomment:a)
+
+
+(nv) <Plug>(caw:uncomment:wrap)			*<Plug>(caw:uncomment:wrap)*
+
+Default mapping		rhs ~
+gcuw					<Plug>(caw:uncomment:wrap)
+
+
+(nv) <Plug>(caw:uncomment:input)		*<Plug>(caw:uncomment:input)*
+
+Default mapping		rhs ~
+gcuv					<Plug>(caw:uncomment:input)
+
+
+}}}
+------------------------------------------------------------------------------
+VARIABLES					*caw-variables* {{{
+
+g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
+									(Default: 0)
+
+g:caw_sp_i								*g:caw_sp_i*
+									(Default: " ")
+
+g:caw_i_startinsert_at_blank_line		*g:caw_i_startinsert_at_blank_line*
+									(Default: 1)
+
+g:caw_i_align							*g:caw_i_align*
+									(Default: 1)
+
+g:caw_sp_a_left							*g:caw_sp_a_left*
+									(Default: "    ")
+
+g:caw_sp_a_right						*g:caw_sp_a_right*
+									(Default: " ")
+
+g:caw_a_startinsert						*g:caw_a_startinsert*
+									(Default: 1)
+
+g:caw_sp_wrap_left						*g:caw_sp_wrap_left*
+									(Default: " ")
+
+g:caw_sp_wrap_right						*g:caw_sp_wrap_right*
+									(Default: " ")
+
+g:caw_sp_jump							*g:caw_sp_jump*
+									(Default: " ")
+
+}}}
+}}}
+==============================================================================
+TODO						*caw-todo* {{{
+}}}
+==============================================================================
+CHANGELOG						*caw-changelog* {{{
+
+1.0.0:
+- Initial upload.
+1.0.1:
+- Fix bug that CommentAnyWay.Base.GetIndent() can't get proper indent
+
+}}}
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=4:ft=help:norl:noet:fdm=marker:fen
