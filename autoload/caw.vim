@@ -435,7 +435,9 @@ function! s:caw.i.uncomment_normal(lnum) "{{{
             " Remove comment.
             let line = line[strlen(cmt) :]
             " 'caw_sp_i'
-            let line = substitute(line, '^[ \t]\+', '', '')
+            if stridx(line, s:get_var('caw_sp_i')) ==# 0
+                let line = line[strlen(s:get_var('caw_sp_i')) :]
+            endif
             call setline(a:lnum, indent . line)
         endif
     endif
