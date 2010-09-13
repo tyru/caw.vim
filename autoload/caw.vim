@@ -186,7 +186,7 @@ function! s:get_indent(lnum) "{{{
     endif
 endfunction "}}}
 
-function! s:get_real_indent(lnum) "{{{
+function! s:get_inserted_indent(lnum) "{{{
     return matchstr(getline(a:lnum), '^\s\+')
 endfunction "}}}
 
@@ -396,7 +396,7 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
             let after  = idx ==# 0 ? line : line[idx + 1 :]
             call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
         else
-            let indent = s:get_real_indent(a:lnum)
+            let indent = s:get_inserted_indent(a:lnum)
             let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
             call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i') . line)
         endif
@@ -435,7 +435,7 @@ endfunction "}}}
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if !empty(cmt) && self.commented_normal(a:lnum)
-        let indent = s:get_real_indent(a:lnum)
+        let indent = s:get_inserted_indent(a:lnum)
         let line   = substitute(getline(a:lnum), '^[ \t]\+', '', '')
         if stridx(line, cmt) == 0
             " Remove comment.
@@ -547,7 +547,7 @@ function! s:caw.wrap.comment_normal(lnum) "{{{
         let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
         call setline(
         \   a:lnum,
-        \   s:get_real_indent(a:lnum)
+        \   s:get_inserted_indent(a:lnum)
         \       . left
         \       . s:get_var('caw_sp_wrap_left')
         \       . line_without_indent
@@ -610,7 +610,7 @@ function! s:caw.wrap.uncomment_normal(lnum) "{{{
 
         let body = line[strlen(left) : -strlen(right) - 1]
         let body = s:trim_whitespaces(body)
-        call setline(a:lnum, s:get_real_indent(a:lnum) . body)
+        call setline(a:lnum, s:get_inserted_indent(a:lnum) . body)
     endif
 endfunction "}}}
 
