@@ -186,6 +186,10 @@ function! s:get_indent(lnum) "{{{
     endif
 endfunction "}}}
 
+function! s:get_real_indent(lnum) "{{{
+    return matchstr(getline(a:lnum), '^\s\+')
+endfunction "}}}
+
 
 function! s:trim_whitespaces(str) "{{{
     let str = a:str
@@ -431,8 +435,8 @@ endfunction "}}}
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if !empty(cmt) && self.commented_normal(a:lnum)
-        let indent = s:get_indent(a:lnum)
-        let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
+        let indent = s:get_real_indent(a:lnum)
+        let line   = substitute(getline(a:lnum), '^[ \t]\+', '', '')
         if stridx(line, cmt) == 0
             " Remove comment.
             let line = line[strlen(cmt) :]
