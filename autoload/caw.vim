@@ -409,12 +409,11 @@ function! s:caw.i.comment_visual() "{{{
             endif
         endfor
     endif
-    let min_col = min_indent_num + 1
 
     for lnum in range(line("'<"), line("'>"))
         call call(
         \   self.comment_normal,
-        \   [lnum, 0] + (min_col > 0 ? [min_col] : []),
+        \   [lnum, 0] + (min_indent_num > 0 ? [min_indent_num] : []),
         \   self
         \)
     endfor
