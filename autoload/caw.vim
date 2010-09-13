@@ -625,15 +625,22 @@ function! s:caw.jump.comment(next) "{{{
         return
     endif
 
+    let lnum = line('.')
     if a:next
-        let indent = s:get_indent('.')
-        call append(line('.'), indent . cmt . g:caw_sp_jump)
-        call cursor(line('.') + 1, 1)
+        call append(lnum, '')
+        let indent = s:get_indent(lnum + 1)
+
+        call setline(lnum + 1, indent . cmt . g:caw_sp_jump)
+        call cursor(lnum + 1, 1)
         startinsert!
     else
-        let indent = s:get_indent('.')
-        call append(line('.') - 1, indent . cmt . g:caw_sp_jump)
-        call cursor(line('.') - 1, 1)
+        call append(lnum - 1, '')
+        " NOTE: `lnum` is target lnum.
+        " because new line was inserted just now.
+        let indent = s:get_indent(lnum)
+
+        call setline(lnum, indent . cmt . g:caw_sp_jump)
+        call cursor(lnum, 1)
         startinsert!
     endif
 endfunction "}}}
