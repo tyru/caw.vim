@@ -76,8 +76,8 @@ nnoremap <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('n')<CR>
 vnoremap <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('v')<CR>
 
 if !g:caw_no_default_keymappings
-    call s:map('gci', '<Plug>(caw:i:toggle)')
-    call s:map('gca', '<Plug>(caw:a:toggle)')
+    call s:map('gci', '<Plug>(caw:i:comment)')
+    call s:map('gca', '<Plug>(caw:a:comment)')
 endif
 
 
@@ -89,7 +89,7 @@ nnoremap <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('n')<C
 vnoremap <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('v')<CR>
 
 if !g:caw_no_default_keymappings
-    call s:map('gcw', '<Plug>(caw:wrap:toggle)')
+    call s:map('gcw', '<Plug>(caw:wrap:comment)')
 endif
 
 
