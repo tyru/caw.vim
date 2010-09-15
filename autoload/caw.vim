@@ -204,7 +204,7 @@ endfunction "}}}
 " TODO Multiline
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
-" oneline
+" oneline {{{
 function! s:comments.oneline.get_comment(filetype) "{{{
     " TODO Remove builtin
     for method in [
@@ -255,9 +255,9 @@ function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     endif
     return ''
 endfunction "}}}
+" }}}
 
-
-" wrap_oneline
+" wrap_oneline "{{{
 let s:comments.wrap_oneline.get_comment = s:comments.oneline.get_comment
 
 let s:comments.wrap_oneline.__get_comment_vars_varname = 'caw_wrap_oneline_comment'
@@ -272,9 +272,9 @@ function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
     endif
     return []
 endfunction "}}}
+" }}}
 
-
-" wrap_multiline
+" wrap_multiline {{{
 let s:comments.wrap_multiline.get_comment = s:comments.oneline.get_comment
 
 let s:comments.wrap_multiline.__get_comment_vars_varname = 'caw_wrap_multiline_comment'
@@ -293,6 +293,7 @@ function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
     endif
     return {}
 endfunction "}}}
+" }}}
 
 " }}}
 
