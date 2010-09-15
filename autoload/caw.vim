@@ -219,9 +219,26 @@ function! s:create_get_comment_vars(comment) "{{{
     return o
 endfunction "}}}
 
+function! s:create_get_comment_detect() "{{{
+    let o = {}
+    function! o.get_comment_detect(filetype)
+        let comments_default = "s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-"
+        if &comments ==# comments_default
+            return ''
+        endif
+
+        " TODO
+
+        return ''
+    endfunction
+
+    return o
+endfunction "}}}
+
 
 " oneline {{{
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'))
+call extend(s:comments.oneline, s:create_get_comment_detect())
 
 function! s:comments.oneline.get_comment(filetype) "{{{
     " TODO Remove builtin
@@ -240,17 +257,6 @@ function! s:comments.oneline.get_comment(filetype) "{{{
     return g:caw_default_oneline_comment
 endfunction "}}}
 
-function! s:comments.oneline.get_comment_detect(filetype) "{{{
-    let comments_default = "s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-"
-    if &comments ==# comments_default
-        return ''
-    endif
-
-    " TODO
-
-    return ''
-endfunction "}}}
-
 " TODO Remove builtin
 function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     if a:filetype =~# '\<c\|cpp\>'
@@ -266,9 +272,9 @@ endfunction "}}}
 
 " wrap_oneline "{{{
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'))
+call extend(s:comments.wrap_oneline, s:create_get_comment_detect())
 
 let s:comments.wrap_oneline.get_comment = s:comments.oneline.get_comment
-let s:comments.wrap_oneline.get_comment_detect = s:comments.oneline.get_comment_detect
 
 " TODO Remove builtin
 function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
@@ -281,9 +287,9 @@ endfunction "}}}
 
 " wrap_multiline {{{
 call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'))
+call extend(s:comments.wrap_multiline, s:create_get_comment_detect())
 
 let s:comments.wrap_multiline.get_comment = s:comments.oneline.get_comment
-let s:comments.wrap_multiline.get_comment_detect = s:comments.oneline.get_comment_detect
 
 " TODO Remove builtin
 function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
