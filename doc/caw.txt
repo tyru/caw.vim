@@ -91,15 +91,15 @@ KEYMAPPINGS					*caw-keymappings* {{{
 (nv) <Plug>(caw:a:toggle)			*<Plug>(caw:a:toggle)*
 
 Default mapping		rhs ~
-gci					<Plug>(caw:i:toggle)
-gca					<Plug>(caw:a:toggle)
+gci					<Plug>(caw:i:comment)
+gca					<Plug>(caw:a:comment)
 
 
 (nv) <Plug>(caw:wrap:comment)		*<Plug>(caw:wrap:comment)*
 (nv) <Plug>(caw:wrap:toggle)		*<Plug>(caw:wrap:toggle)*
 
 Default mapping		rhs ~
-gcw					<Plug>(caw:wrap:toggle)
+gcw					<Plug>(caw:wrap:comment)
 
 
 (n) <Plug>(caw:jump:comment-next)		*<Plug>(caw:jump:comment-next)*
