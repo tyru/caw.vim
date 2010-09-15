@@ -297,7 +297,7 @@ function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
     if a:filetype =~# '\<c\|cpp\>'
         " TODO
         " return {'top': '#if 0', 'bottom': '#endif'}
-        return {'begin_left': '/*', 'middule_left': '*', 'end_left': '*/'}
+        return {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'}
     elseif a:filetype =~# '\<perl\>'
         return {'top': '=pod', 'bottom': '=cut'}
     endif
