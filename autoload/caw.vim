@@ -256,9 +256,9 @@ endfunction "}}}
 
 
 " oneline {{{
-call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']))
-call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'))
-call extend(s:comments.oneline, s:create_get_comment_detect())
+call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
+call extend(s:comments.oneline, s:create_get_comment_detect(), 'error')
 
 " TODO Remove builtin
 function! s:comments.oneline.get_comment_builtin(filetype) "{{{
@@ -274,9 +274,9 @@ endfunction "}}}
 " }}}
 
 " wrap_oneline "{{{
-call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']))
-call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'))
-call extend(s:comments.wrap_oneline, s:create_get_comment_detect())
+call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
+call extend(s:comments.wrap_oneline, s:create_get_comment_detect(), 'error')
 
 " TODO Remove builtin
 function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
@@ -288,9 +288,9 @@ endfunction "}}}
 " }}}
 
 " wrap_multiline {{{
-call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']))
-call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'))
-call extend(s:comments.wrap_multiline, s:create_get_comment_detect())
+call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'), 'error')
+call extend(s:comments.wrap_multiline, s:create_get_comment_detect(), 'error')
 
 " TODO Remove builtin
 function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
