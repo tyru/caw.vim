@@ -218,6 +218,8 @@ function! s:comments.oneline.get_comment(filetype) "{{{
         endif
         unlet r
     endfor
+
+    return g:caw_default_oneline_comment
 endfunction "}}}
 
 let s:comments.oneline.__get_comment_vars_varname = 'caw_oneline_comment'
