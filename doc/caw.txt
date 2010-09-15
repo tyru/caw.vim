@@ -24,7 +24,6 @@ Introduction		|caw-introduction|
 Interface			|caw-interface|
   Keymappings		|caw-keymappings|
   Variables			|caw-variables|
-TODO				|caw-todo|
 Changelog			|caw-changelog|
 
 
@@ -217,9 +216,6 @@ g:caw_default_wrap_multiline_comment			*g:caw_default_wrap_multiline_comment*
 	TODO: Keymappings which may use this comment string.
 
 }}}
-}}}
-==============================================================================
-TODO						*caw-todo* {{{
 }}}
 ==============================================================================
 CHANGELOG						*caw-changelog* {{{
