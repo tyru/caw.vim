@@ -176,6 +176,15 @@ g:caw_sp_wrap_right						*g:caw_sp_wrap_right*
 g:caw_sp_jump							*g:caw_sp_jump*
 									(Default: " ")
 
+g:caw_default_oneline_comment			*g:caw_default_oneline_comment*
+									(Default: "#")
+
+g:caw_default_wrap_oneline_comment			*g:caw_default_wrap_oneline_comment*
+									(Default: [])
+
+g:caw_default_wrap_multiline_comment			*g:caw_default_wrap_multiline_comment*
+									(Default: {})
+
 }}}
 }}}
 ==============================================================================
