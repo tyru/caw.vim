@@ -148,42 +148,73 @@ VARIABLES					*caw-variables* {{{
 
 g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
 									(Default: 0)
+	If this variable is true,
+	caw does not map default keymappings.
+	See |caw-keymappings| for default keymappings.
 
 g:caw_sp_i								*g:caw_sp_i*
 									(Default: " ")
+	Inserted string after comment with <Plug>(caw:i:comment).
 
 g:caw_i_startinsert_at_blank_line		*g:caw_i_startinsert_at_blank_line*
 									(Default: 1)
+	If this variable is true,
+	if current line is blank line,
+	enter |Insert-mode| after <Plug>(caw:i:comment).
 
 g:caw_i_align							*g:caw_i_align*
 									(Default: 1)
+	If this variable is true,
+	Align all <Plug>(caw:i:comment) comments' cols.
+
+	TODO: example
 
 g:caw_sp_a_left							*g:caw_sp_a_left*
 									(Default: "    ")
+	Inserted string before comment with <Plug>(caw:a:comment).
 
 g:caw_sp_a_right						*g:caw_sp_a_right*
 									(Default: " ")
+	Inserted string after comment with <Plug>(caw:a:comment).
 
 g:caw_a_startinsert						*g:caw_a_startinsert*
 									(Default: 1)
+	If this variable is true,
+	enter |Insert-mode| after <Plug>(caw:a:comment).
 
 g:caw_sp_wrap_left						*g:caw_sp_wrap_left*
 									(Default: " ")
+	Inserted string before comment with <Plug>(caw:wrap:comment).
 
 g:caw_sp_wrap_right						*g:caw_sp_wrap_right*
 									(Default: " ")
+	Inserted string after comment with <Plug>(caw:wrap:comment).
 
 g:caw_sp_jump							*g:caw_sp_jump*
 									(Default: " ")
+	Inserted string after comment with <Plug>(caw:jump:comment-next)
+	and <Plug>(caw:jump:comment-prev).
 
 g:caw_default_oneline_comment			*g:caw_default_oneline_comment*
 									(Default: "#")
+	Comment string which is used when caw failed to detect
+	current buffer's comment string.
+
+	TODO: Keymappings which may use this comment string.
 
 g:caw_default_wrap_oneline_comment			*g:caw_default_wrap_oneline_comment*
 									(Default: [])
+	Comment string which is used when caw failed to detect
+	current buffer's comment string.
+
+	TODO: Keymappings which may use this comment string.
 
 g:caw_default_wrap_multiline_comment			*g:caw_default_wrap_multiline_comment*
 									(Default: {})
+	Comment string which is used when caw failed to detect
+	current buffer's comment string.
+
+	TODO: Keymappings which may use this comment string.
 
 }}}
 }}}
