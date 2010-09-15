@@ -51,6 +51,12 @@ endif
 if !exists('g:caw_default_oneline_comment')
     let g:caw_default_oneline_comment = '#'
 endif
+if !exists('g:caw_default_wrap_oneline_comment')
+    let g:caw_default_wrap_oneline_comment = []
+endif
+if !exists('g:caw_default_wrap_multiline_comment')
+    let g:caw_default_wrap_multiline_comment = {}
+endif
 
 
 

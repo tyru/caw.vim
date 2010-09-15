@@ -205,10 +205,9 @@ endfunction "}}}
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
 
-function! s:create_get_comment(fn_list) "{{{
-    let o = {'__get_comment_fn_list': a:fn_list}
-    function! o.get_comment()
-        " TODO Remove builtin
+function! s:create_get_comment(default_value, fn_list) "{{{
+    let o = {'__get_comment_default_value': a:default_value, '__get_comment_fn_list': a:fn_list}
+    function! o.get_comment(filetype)
         for method in self.__get_comment_fn_list
             let r = self[method](a:filetype)
             if !empty(r)
@@ -216,8 +215,7 @@ function! s:create_get_comment(fn_list) "{{{
             endif
             unlet r
         endfor
-
-        return g:caw_default_oneline_comment
+        return self.__get_comment_default_value
     endfunction
 
     return o
@@ -256,7 +254,7 @@ endfunction "}}}
 
 
 " oneline {{{
-call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.oneline, s:create_get_comment(g:caw_default_oneline_comment, ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
 call extend(s:comments.oneline, s:create_get_comment_detect(), 'error')
 
@@ -274,7 +272,7 @@ endfunction "}}}
 " }}}
 
 " wrap_oneline "{{{
-call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.wrap_oneline, s:create_get_comment(g:caw_default_wrap_oneline_comment, ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_detect(), 'error')
 
@@ -288,7 +286,7 @@ endfunction "}}}
 " }}}
 
 " wrap_multiline {{{
-call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.wrap_multiline, s:create_get_comment(g:caw_default_wrap_multiline_comment, ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
 call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'), 'error')
 call extend(s:comments.wrap_multiline, s:create_get_comment_detect(), 'error')
 
