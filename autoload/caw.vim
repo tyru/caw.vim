@@ -280,6 +280,8 @@ call extend(s:comments.wrap_oneline, s:create_get_comment_detect(), 'error')
 function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
     if a:filetype =~# '\<c\|cpp\>'
         return ['/*', '*/']
+    elseif a:filetype ==# 'vim'
+        return ['"""', '"""']
     endif
     return []
 endfunction "}}}
