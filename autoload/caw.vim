@@ -204,7 +204,25 @@ endfunction "}}}
 " TODO Multiline
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
+function! s:create_get_comment_vars(comment) "{{{
+    let o = {'__get_comment_vars_varname': a:comment}
+    function! o.get_comment_vars(filetype)
+        for ns in [b:, w:, t:, g:]
+            if has_key(ns, self.__get_comment_vars_varname)
+            \   && has_key(ns[self.__get_comment_vars_varname], a:filetype)
+                return ns[self.__get_comment_vars_varname][a:filetype]
+            endif
+        endfor
+        return ''
+    endfunction
+
+    return o
+endfunction "}}}
+
+
 " oneline {{{
+call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'))
+
 function! s:comments.oneline.get_comment(filetype) "{{{
     " TODO Remove builtin
     for method in [
@@ -220,17 +238,6 @@ function! s:comments.oneline.get_comment(filetype) "{{{
     endfor
 
     return g:caw_default_oneline_comment
-endfunction "}}}
-
-let s:comments.oneline.__get_comment_vars_varname = 'caw_oneline_comment'
-function! s:comments.oneline.get_comment_vars(filetype) "{{{
-    for ns in [b:, w:, t:, g:]
-        if has_key(ns, self.__get_comment_vars_varname)
-        \   && has_key(ns[self.__get_comment_vars_varname], a:filetype)
-            return ns[self.__get_comment_vars_varname][a:filetype]
-        endif
-    endfor
-    return ''
 endfunction "}}}
 
 function! s:comments.oneline.get_comment_detect(filetype) "{{{
@@ -258,11 +265,9 @@ endfunction "}}}
 " }}}
 
 " wrap_oneline "{{{
+call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'))
+
 let s:comments.wrap_oneline.get_comment = s:comments.oneline.get_comment
-
-let s:comments.wrap_oneline.__get_comment_vars_varname = 'caw_wrap_oneline_comment'
-let s:comments.wrap_oneline.get_comment_vars = s:comments.oneline.get_comment_vars
-
 let s:comments.wrap_oneline.get_comment_detect = s:comments.oneline.get_comment_detect
 
 " TODO Remove builtin
@@ -275,11 +280,9 @@ endfunction "}}}
 " }}}
 
 " wrap_multiline {{{
+call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'))
+
 let s:comments.wrap_multiline.get_comment = s:comments.oneline.get_comment
-
-let s:comments.wrap_multiline.__get_comment_vars_varname = 'caw_wrap_multiline_comment'
-let s:comments.wrap_multiline.get_comment_vars = s:comments.oneline.get_comment_vars
-
 let s:comments.wrap_multiline.get_comment_detect = s:comments.oneline.get_comment_detect
 
 " TODO Remove builtin
