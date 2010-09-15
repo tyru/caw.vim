@@ -204,6 +204,25 @@ endfunction "}}}
 " TODO Multiline
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
+
+function! s:create_get_comment(fn_list) "{{{
+    let o = {'__get_comment_fn_list': a:fn_list}
+    function! o.get_comment()
+        " TODO Remove builtin
+        for method in self.__get_comment_fn_list
+            let r = self[method](a:filetype)
+            if !empty(r)
+                return r
+            endif
+            unlet r
+        endfor
+
+        return g:caw_default_oneline_comment
+    endfunction
+
+    return o
+endfunction "}}}
+
 function! s:create_get_comment_vars(comment) "{{{
     let o = {'__get_comment_vars_varname': a:comment}
     function! o.get_comment_vars(filetype)
@@ -237,25 +256,9 @@ endfunction "}}}
 
 
 " oneline {{{
+call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']))
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'))
 call extend(s:comments.oneline, s:create_get_comment_detect())
-
-function! s:comments.oneline.get_comment(filetype) "{{{
-    " TODO Remove builtin
-    for method in [
-    \   'get_comment_vars',
-    \   'get_comment_detect',
-    \   'get_comment_builtin',
-    \]
-        let r = self[method](a:filetype)
-        if !empty(r)
-            return r
-        endif
-        unlet r
-    endfor
-
-    return g:caw_default_oneline_comment
-endfunction "}}}
 
 " TODO Remove builtin
 function! s:comments.oneline.get_comment_builtin(filetype) "{{{
@@ -271,10 +274,9 @@ endfunction "}}}
 " }}}
 
 " wrap_oneline "{{{
+call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']))
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'))
 call extend(s:comments.wrap_oneline, s:create_get_comment_detect())
-
-let s:comments.wrap_oneline.get_comment = s:comments.oneline.get_comment
 
 " TODO Remove builtin
 function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
@@ -286,10 +288,9 @@ endfunction "}}}
 " }}}
 
 " wrap_multiline {{{
+call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']))
 call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'))
 call extend(s:comments.wrap_multiline, s:create_get_comment_detect())
-
-let s:comments.wrap_multiline.get_comment = s:comments.oneline.get_comment
 
 " TODO Remove builtin
 function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
