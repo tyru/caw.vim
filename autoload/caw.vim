@@ -266,7 +266,6 @@ call extend(s:comments.oneline, s:create_get_comment(g:caw_default_oneline_comme
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
 call extend(s:comments.oneline, s:create_get_comment_detect(), 'error')
 
-" TODO Remove builtin
 function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     " TODO: compound filetypes
     return get({
@@ -559,7 +558,6 @@ call extend(s:comments.wrap_oneline, s:create_get_comment(g:caw_default_wrap_one
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_detect(), 'error')
 
-" TODO Remove builtin
 function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
     " TODO: compound filetypes
     return get({
@@ -651,7 +649,6 @@ call extend(s:comments.wrap_multiline, s:create_get_comment(g:caw_default_wrap_m
 call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'), 'error')
 call extend(s:comments.wrap_multiline, s:create_get_comment_detect(), 'error')
 
-" TODO Remove builtin
 function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
     " TODO: compound filetypes
     return get({
