@@ -170,14 +170,14 @@ function! s:get_indent_num(lnum) "{{{
         return cindent(a:lnum)
     elseif has('lispindent') && &syntax =~# '\<lisp\|scheme\>'
         return lispindent(a:lnum)
-    elseif exists('*GetVimIndent') && &syntax ==# 'vim'
-        let v:lnum = a:lnum
-        return GetVimIndent()
-    elseif exists('*GetPythonIndent') && &syntax ==# 'python'
+    elseif &l:indentexpr != ''
         let save_view = winsaveview()
+        let save_lnum = v:lnum
+        let v:lnum = a:lnum
         try
-            return GetPythonIndent(a:lnum)
+            return eval(&l:indentexpr)
         finally
+            let v:lnum = save_lnum
             " NOTE: GetPythonIndent() may move cursor. wtf?
             call winrestview(save_view)
         endtry
