@@ -173,6 +173,14 @@ function! s:get_indent_num(lnum) "{{{
     elseif exists('*GetVimIndent') && &syntax ==# 'vim'
         let v:lnum = a:lnum
         return GetVimIndent()
+    elseif exists('*GetPythonIndent') && &syntax ==# 'python'
+        let save_view = winsaveview()
+        try
+            return GetPythonIndent(a:lnum)
+        finally
+            " NOTE: GetPythonIndent() may move cursor. wtf?
+            call winrestview(save_view)
+        endtry
     else
         return indent(a:lnum)
     endif
