@@ -653,14 +653,13 @@ call extend(s:comments.wrap_multiline, s:create_get_comment_detect(), 'error')
 
 " TODO Remove builtin
 function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
-    if a:filetype =~# '\<c\|cpp\>'
-        " TODO
-        " return {'top': '#if 0', 'bottom': '#endif'}
-        return {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'}
-    elseif a:filetype =~# '\<perl\>'
-        return {'top': '=pod', 'bottom': '=cut'}
-    endif
-    return {}
+    " TODO: compound filetypes
+    return get({
+    \   'perl': {'top': '=pod', 'bottom': '=cut'},
+    \   'ruby': {'top': '=pod', 'bottom': '=cut'},
+    \   'c': {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'},
+    \   'cpp': {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'},
+    \}, a:filetype, {})
 endfunction "}}}
 " }}}
 
