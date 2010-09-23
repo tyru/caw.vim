@@ -750,23 +750,22 @@ let s:caw.i = deepcopy(s:base)
 
 function! s:caw.i.comment_normal(lnum, ...) "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
-    let comment_col = get(a:000, 1, -1)
+    let min_indent_num = get(a:000, 1, -1)
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if !empty(cmt)
         let line = getline(a:lnum)
-        if line =~# '^\s*$'
+        if min_indent_num >= 0
+            call s:assert(min_indent_num < strlen(line), min_indent_num.' is accessible to '.string(line).'.')
+            let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
+            let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
+            call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
+        elseif line =~# '^\s*$'
             let indent = s:get_indent(a:lnum)
             call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i'))
             if startinsert
                 call feedkeys('A', 'n')
             endif
-        elseif comment_col > 0
-            let idx = comment_col - 1
-            call s:assert(idx < strlen(line), idx.' is accessible to '.string(line).'.')
-            let before = idx ==# 0 ? '' : line[: idx]
-            let after  = idx ==# 0 ? line : line[idx + 1 :]
-            call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
         else
             let indent = s:get_inserted_indent(a:lnum)
             let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
@@ -787,11 +786,7 @@ function! s:caw.i.comment_visual() "{{{
     endif
 
     for lnum in range(line("'<"), line("'>"))
-        call call(
-        \   self.comment_normal,
-        \   [lnum, 0] + (min_indent_num > 0 ? [min_indent_num] : []),
-        \   self
-        \)
+        call self.comment_normal(lnum, 0, min_indent_num)
     endfor
 endfunction "}}}
 
