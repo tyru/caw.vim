@@ -198,6 +198,10 @@ function! s:get_inserted_indent(lnum) "{{{
     return matchstr(getline(a:lnum), '^\s\+')
 endfunction "}}}
 
+function! s:get_inserted_indent_num(lnum) "{{{
+    return strlen(s:get_inserted_indent(a:lnum))
+endfunction "}}}
+
 
 function! s:trim_whitespaces(str) "{{{
     let str = a:str
@@ -775,7 +779,7 @@ function! s:caw.i.comment_visual() "{{{
     let min_indent_num = 1/0
     if g:caw_i_align
         for lnum in range(line("'<"), line("'>"))
-            let n = strlen(matchstr(getline(lnum), '^\s\+'))
+            let n = s:get_inserted_indent_num(lnum)
             if n < min_indent_num
                 let min_indent_num = n
             endif
