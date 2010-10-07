@@ -145,6 +145,24 @@ gcuv					<Plug>(caw:uncomment:input)
 ------------------------------------------------------------------------------
 VARIABLES					*caw-variables* {{{
 
+caw_oneline_comment					*caw_oneline_comment*
+	Used by oneline comment mappings.
+	- b:caw_oneline_comment
+	- w:caw_oneline_comment
+	- t:caw_oneline_comment
+	- g:caw_oneline_comment
+	If exists, the top variable is used.
+	Define this in .vim/ftplugin/*.vim or .vim/after/ftplugin/*.vim . >
+	let b:caw_oneline_comment = ';'
+
+caw_wrap_oneline_comment					*caw_wrap_oneline_comment*
+	Same as |caw_wrap_oneline_comment|.
+	Used by wrap oneline comment mappings.
+
+caw_wrap_multiline_comment					*caw_wrap_multiline_comment*
+	Same as |caw_wrap_oneline_comment|.
+	Used by wrap multiline comment mappings.
+
 g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
 									(Default: 0)
 	If this variable is true,
