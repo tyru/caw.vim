@@ -269,7 +269,7 @@ endfunction "}}}
 
 
 " oneline {{{
-call extend(s:comments.oneline, s:create_get_comment('caw_oneline_comment', ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.oneline, s:create_get_comment('caw_default_oneline_comment', ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
 call extend(s:comments.oneline, s:create_get_comment_detect(), 'error')
 
@@ -561,7 +561,7 @@ endfunction "}}}
 " }}}
 
 " wrap_oneline "{{{
-call extend(s:comments.wrap_oneline, s:create_get_comment('caw_wrap_oneline_comment', ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.wrap_oneline, s:create_get_comment('caw_default_wrap_oneline_comment', ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_detect(), 'error')
 
@@ -652,7 +652,7 @@ endfunction "}}}
 " }}}
 
 " wrap_multiline {{{
-call extend(s:comments.wrap_multiline, s:create_get_comment('caw_wrap_multiline_comment', ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
+call extend(s:comments.wrap_multiline, s:create_get_comment('caw_default_wrap_multiline_comment', ['get_comment_vars', 'get_comment_detect', 'get_comment_builtin']), 'error')
 call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'), 'error')
 call extend(s:comments.wrap_multiline, s:create_get_comment_detect(), 'error')
 

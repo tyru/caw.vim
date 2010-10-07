@@ -48,14 +48,14 @@ if !exists('g:caw_sp_jump')
     let g:caw_sp_jump = ' '
 endif
 
-if !exists('g:caw_oneline_comment')
-    let g:caw_oneline_comment = '#'
+if !exists('g:caw_default_oneline_comment')
+    let g:caw_default_oneline_comment = '#'
 endif
-if !exists('g:caw_wrap_oneline_comment')
-    let g:caw_wrap_oneline_comment = []
+if !exists('g:caw_default_wrap_oneline_comment')
+    let g:caw_default_wrap_oneline_comment = []
 endif
-if !exists('g:caw_wrap_multiline_comment')
-    let g:caw_wrap_multiline_comment = {}
+if !exists('g:caw_default_wrap_multiline_comment')
+    let g:caw_default_wrap_multiline_comment = {}
 endif
 
 

@@ -194,36 +194,24 @@ g:caw_sp_jump							*g:caw_sp_jump*
 	Inserted string after comment with <Plug>(caw:jump:comment-next)
 	and <Plug>(caw:jump:comment-prev).
 
-b:caw_oneline_comment and g:caw_oneline_comment
-*b:caw_oneline_comment*		*g:caw_oneline_comment*
+g:caw_default_oneline_comment			*g:caw_default_oneline_comment*
 									(Default: "#")
 	Comment string which is used when caw failed to detect
 	current buffer's comment string.
 
-	buffer variable is to set in ~/.vim/ftplugin/*.vim ,
-	and so on.
-
 	TODO: Keymappings which may use this comment string.
 
-b:caw_wrap_oneline_comment and g:caw_wrap_oneline_comment
-*b:caw_wrap_oneline_comment*		*g:caw_wrap_oneline_comment*
+g:caw_default_wrap_oneline_comment			*g:caw_default_wrap_oneline_comment*
 									(Default: [])
 	Comment string which is used when caw failed to detect
 	current buffer's comment string.
 
-	buffer variable is to set in ~/.vim/ftplugin/*.vim ,
-	and so on.
-
 	TODO: Keymappings which may use this comment string.
 
-b:caw_wrap_multiline_comment and g:caw_wrap_multiline_comment
-*b:caw_wrap_multiline_comment*		*g:caw_wrap_multiline_comment*
+g:caw_default_wrap_multiline_comment			*g:caw_default_wrap_multiline_comment*
 									(Default: {})
 	Comment string which is used when caw failed to detect
 	current buffer's comment string.
-
-	buffer variable is to set in ~/.vim/ftplugin/*.vim ,
-	and so on.
 
 	TODO: Keymappings which may use this comment string.
 
