@@ -112,14 +112,21 @@ function! s:set_and_save_comment_string(comment_string) "{{{
     let EXISTS = 2
 
     if !exists('b:caw_oneline_comment')
-        let stash.status = NONEXISTS
+        function stash.restore()
+            unlet b:caw_oneline_comment
+        endfunction
     elseif type(b:caw_oneline_comment) != type("")
-        let stash.status = INVALID
         let stash.org_value = copy(b:caw_oneline_comment)
+        function stash.restore()
+            unlet b:caw_oneline_comment
+            let b:caw_oneline_comment = self.org_value
+        endfunction
         unlet b:caw_oneline_comment    " to avoid error at :let below
     else
-        let stash.status = EXISTS
         let stash.org_value = copy(b:caw_oneline_comment)
+        function stash.restore()
+            let b:caw_oneline_comment = self.org_value
+        endfunction
     endif
 
     let b:caw_oneline_comment = a:comment_string
@@ -128,18 +135,7 @@ function! s:set_and_save_comment_string(comment_string) "{{{
 endfunction "}}}
 
 function! s:restore_comment_string(stash) "{{{
-    let NONEXISTS = 0
-    let INVALID = 1
-    let EXISTS = 2
-
-    if a:stash.status ==# NONEXISTS
-        unlet b:caw_oneline_comment
-    elseif a:stash.status ==# INVALID
-        unlet b:caw_oneline_comment    " to avoid error at :let below
-        let b:caw_oneline_comment = a:stash.org_value
-    elseif a:stash.status ==# EXISTS
-        let b:caw_oneline_comment = a:stash.org_value
-    endif
+    call stash.restore()
 endfunction "}}}
 
 
