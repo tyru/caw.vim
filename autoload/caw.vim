@@ -218,9 +218,6 @@ let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 function! s:create_get_comment(default_varname, fn_list) "{{{
     let o = {'__get_comment_default_value': a:default_varname, '__get_comment_fn_list': a:fn_list}
     function! o.get_comment(filetype)
-        if has_key(b:, self.__get_comment_default_value)
-            return b:[self.__get_comment_default_value]
-        endif
         for method in self.__get_comment_fn_list
             let r = self[method](a:filetype)
             if !empty(r)
