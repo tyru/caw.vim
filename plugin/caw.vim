@@ -73,17 +73,17 @@ endfunction "}}}
 
 
 " i/a
-nnoremap <Plug>(caw:i:comment)  :<C-u>call caw#do_i_comment('n')<CR>
-vnoremap <Plug>(caw:i:comment)  :<C-u>call caw#do_i_comment('v')<CR>
+nnoremap <silent> <Plug>(caw:i:comment)  :<C-u>call caw#do_i_comment('n')<CR>
+vnoremap <silent> <Plug>(caw:i:comment)  :<C-u>call caw#do_i_comment('v')<CR>
 
-nnoremap <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('n')<CR>
-vnoremap <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('v')<CR>
+nnoremap <silent> <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('n')<CR>
+vnoremap <silent> <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('v')<CR>
 
-nnoremap <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('n')<CR>
-vnoremap <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('v')<CR>
+nnoremap <silent> <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('n')<CR>
+vnoremap <silent> <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('v')<CR>
 
-nnoremap <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('n')<CR>
-vnoremap <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('v')<CR>
+nnoremap <silent> <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('n')<CR>
+vnoremap <silent> <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gci', '<Plug>(caw:i:comment)')
@@ -92,11 +92,11 @@ endif
 
 
 " wrap
-nnoremap <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('n')<CR>
-vnoremap <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('v')<CR>
+nnoremap <silent> <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('n')<CR>
+vnoremap <silent> <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('v')<CR>
 
-nnoremap <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('n')<CR>
-vnoremap <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('v')<CR>
+nnoremap <silent> <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('n')<CR>
+vnoremap <silent> <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gcw', '<Plug>(caw:wrap:comment)')
@@ -105,9 +105,9 @@ endif
 
 
 " jump
-nnoremap <Plug>(caw:jump:comment-next)  :<C-u>call caw#do_jump_comment_next()<CR>
+nnoremap <silent> <Plug>(caw:jump:comment-next)  :<C-u>call caw#do_jump_comment_next()<CR>
 
-nnoremap <Plug>(caw:jump:comment-prev)  :<C-u>call caw#do_jump_comment_prev()<CR>
+nnoremap <silent> <Plug>(caw:jump:comment-prev)  :<C-u>call caw#do_jump_comment_prev()<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gco', '<Plug>(caw:jump:comment-next)')
@@ -117,8 +117,8 @@ endif
 
 
 " input
-nnoremap <Plug>(caw:input:comment)  :<C-u>call caw#do_input_comment('n')<CR>
-vnoremap <Plug>(caw:input:comment)  :<C-u>call caw#do_input_comment('v')<CR>
+nnoremap <silent> <Plug>(caw:input:comment)  :<C-u>call caw#do_input_comment('n')<CR>
+vnoremap <silent> <Plug>(caw:input:comment)  :<C-u>call caw#do_input_comment('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gcv', '<Plug>(caw:input:comment)')
@@ -127,19 +127,19 @@ endif
 
 
 " uncomment
-nnoremap <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('n')<CR>
-vnoremap <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('n')<CR>
+nnoremap <silent> <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('n')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gcuu', '<Plug>(caw:uncomment)')
 endif
 
 " uncomment: i/a
-nnoremap <Plug>(caw:uncomment:i)    :<C-u>call caw#do_uncomment_i('n')<CR>
-vnoremap <Plug>(caw:uncomment:i)    :<C-u>call caw#do_uncomment_i('v')<CR>
+nnoremap <silent> <Plug>(caw:uncomment:i)    :<C-u>call caw#do_uncomment_i('n')<CR>
+vnoremap <silent> <Plug>(caw:uncomment:i)    :<C-u>call caw#do_uncomment_i('v')<CR>
 
-nnoremap <Plug>(caw:uncomment:a)    :<C-u>call caw#do_uncomment_a('n')<CR>
-vnoremap <Plug>(caw:uncomment:a)    :<C-u>call caw#do_uncomment_a('v')<CR>
+nnoremap <silent> <Plug>(caw:uncomment:a)    :<C-u>call caw#do_uncomment_a('n')<CR>
+vnoremap <silent> <Plug>(caw:uncomment:a)    :<C-u>call caw#do_uncomment_a('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gcui', '<Plug>(caw:uncomment:i)')
@@ -147,16 +147,16 @@ if !g:caw_no_default_keymappings
 endif
 
 " uncomment: wrap
-nnoremap <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('n')<CR>
-vnoremap <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('v')<CR>
+nnoremap <silent> <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('n')<CR>
+vnoremap <silent> <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gcuw', '<Plug>(caw:uncomment:wrap)')
 endif
 
 " uncomment: input
-nnoremap <Plug>(caw:uncomment:input)    :<C-u>call caw#do_uncomment_input('n')<CR>
-vnoremap <Plug>(caw:uncomment:input)    :<C-u>call caw#do_uncomment_input('v')<CR>
+nnoremap <silent> <Plug>(caw:uncomment:input)    :<C-u>call caw#do_uncomment_input('n')<CR>
+vnoremap <silent> <Plug>(caw:uncomment:input)    :<C-u>call caw#do_uncomment_input('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('gcuv', '<Plug>(caw:uncomment:input)')
