@@ -110,23 +110,21 @@ function! s:set_and_save_comment_string(filetype, comment_string) "{{{
     let NONEXISTS = 0
     let INVALID = 1
     let EXISTS = 2
-    let EMPTY = 0
 
     if !exists('b:caw_oneline_comment')
         let stash.status = NONEXISTS
-        let cmt = EMPTY
+        let stash.org_value = {}
     elseif type(b:caw_oneline_comment) != type({})
         let stash.status = INVALID
         let stash.org_value = copy(b:caw_oneline_comment)
-        let cmt = EMPTY
+        unlet b:caw_oneline_comment    " to avoid error at :let below
     else
         let stash.status = EXISTS
         let stash.org_value = copy(b:caw_oneline_comment)
-        let cmt = get(b:caw_oneline_comment, a:filetype, EMPTY)
     endif
 
     let b:caw_oneline_comment = extend(
-    \   (cmt is EMPTY ? {} : b:caw_oneline_comment),
+    \   copy(stash.org_value),
     \   {a:filetype : a:comment_string},
     \   'force'
     \)
