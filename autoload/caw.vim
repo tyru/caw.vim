@@ -104,7 +104,7 @@ endfunction "}}}
 
 " Implementation {{{
 
-function! s:set_and_save_comment_string(filetype, comment_string) "{{{
+function! s:set_and_save_comment_string(comment_string) "{{{
     let stash = {}
 
     let NONEXISTS = 0
@@ -113,8 +113,7 @@ function! s:set_and_save_comment_string(filetype, comment_string) "{{{
 
     if !exists('b:caw_oneline_comment')
         let stash.status = NONEXISTS
-        let stash.org_value = {}
-    elseif type(b:caw_oneline_comment) != type({})
+    elseif type(b:caw_oneline_comment) != type("")
         let stash.status = INVALID
         let stash.org_value = copy(b:caw_oneline_comment)
         unlet b:caw_oneline_comment    " to avoid error at :let below
@@ -123,11 +122,7 @@ function! s:set_and_save_comment_string(filetype, comment_string) "{{{
         let stash.org_value = copy(b:caw_oneline_comment)
     endif
 
-    let b:caw_oneline_comment = extend(
-    \   copy(stash.org_value),
-    \   {a:filetype : a:comment_string},
-    \   'force'
-    \)
+    let b:caw_oneline_comment = a:comment_string
 
     return stash
 endfunction "}}}
@@ -140,6 +135,7 @@ function! s:restore_comment_string(stash) "{{{
     if a:stash.status ==# NONEXISTS
         unlet b:caw_oneline_comment
     elseif a:stash.status ==# INVALID
+        unlet b:caw_oneline_comment    " to avoid error at :let below
         let b:caw_oneline_comment = a:stash.org_value
     elseif a:stash.status ==# EXISTS
         let b:caw_oneline_comment = a:stash.org_value
@@ -236,8 +232,7 @@ function! s:create_get_comment_vars(comment) "{{{
     function! o.get_comment_vars(filetype)
         for ns in [b:, w:, t:, g:]
             if has_key(ns, self.__get_comment_vars_varname)
-            \   && has_key(ns[self.__get_comment_vars_varname], a:filetype)
-                return ns[self.__get_comment_vars_varname][a:filetype]
+                return ns[self.__get_comment_vars_varname]
             endif
         endfor
         return ''
@@ -1028,7 +1023,7 @@ function! s:caw.input.comment(mode) "{{{
     let cmt = s:caw_input_get_comment_string(default_cmt)
 
     if !empty(default_cmt) && default_cmt !=# cmt
-        let org_status = s:set_and_save_comment_string(&filetype, cmt)
+        let org_status = s:set_and_save_comment_string(cmt)
     endif
     try
         if a:mode ==# 'n'
