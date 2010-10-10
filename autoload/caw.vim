@@ -745,7 +745,7 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
     if !empty(cmt)
         let line = getline(a:lnum)
         if min_indent_num >= 0
-            call s:assert(min_indent_num < strlen(line), min_indent_num.' is accessible to '.string(line).'.')
+            call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
             let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
             let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
             call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
