@@ -767,6 +767,9 @@ function! s:caw.i.comment_visual() "{{{
     let min_indent_num = 1/0
     if g:caw_i_align
         for lnum in range(line("'<"), line("'>"))
+            if getline(lnum) =~ '^\s*$'
+                continue    " Skip blank line.
+            endif
             let n = s:get_inserted_indent_num(lnum)
             if n < min_indent_num
                 let min_indent_num = n
