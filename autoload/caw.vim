@@ -778,6 +778,9 @@ function! s:caw.i.comment_visual() "{{{
     endif
 
     for lnum in range(line("'<"), line("'>"))
+        if getline(lnum) =~ '^\s*$'
+            continue    " Skip blank line.
+        endif
         call self.comment_normal(lnum, 0, min_indent_num)
     endfor
 endfunction "}}}
