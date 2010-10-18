@@ -593,7 +593,6 @@ function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
     \   'modula2': ['(*', '*)'],
     \   'modula3': ['(*', '*)'],
     \   'named': ['/*', '*/'],
-    \   'named': ['/*', '*/'],
     \   'objc': ['/*', '*/'],
     \   'objcpp': ['/*', '*/'],
     \   'objj': ['/*', '*/'],
