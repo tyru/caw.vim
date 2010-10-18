@@ -571,6 +571,7 @@ function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
     \   'groovy': ['/*', '*/'],
     \   'h': ['/*', '*/'],
     \   'hercules': ['/*', '*/'],
+    \   'html': ['<!--', '-->'],
     \   'htmldjango': ['<!--', '-->'],
     \   'idl': ['/*', '*/'],
     \   'ishd': ['/*', '*/'],
