@@ -652,6 +652,20 @@ endfunction "}}}
 " s:caw {{{
 let s:caw = {}
 
+
+function! s:create_call_another_action(comment_vs_action) "{{{
+    let o = {'__call_another_action_comment_vs_action': a:comment_vs_action}
+    function! o.call_another_action(method, args)
+        for [c, action] in items(self.__call_another_action_comment_vs_action)
+            if !empty(s:comments[c].get_comment(&filetype))
+                return call(s:caw[action][a:method], a:args, s:caw[action])
+            endif
+        endfor
+    endfunction
+    return o
+endfunction "}}}
+
+
 " s:base {{{
 let s:base = {}
 
@@ -730,30 +744,33 @@ endfunction "}}}
 
 " i {{{
 let s:caw.i = deepcopy(s:base)
+call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 
 function! s:caw.i.comment_normal(lnum, ...) "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
 
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if !empty(cmt)
-        let line = getline(a:lnum)
-        if min_indent_num >= 0
-            call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
-            let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
-            let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-            call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
-        elseif line =~# '^\s*$'
-            let indent = s:get_indent(a:lnum)
-            call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i'))
-            if startinsert
-                call feedkeys('A', 'n')
-            endif
-        else
-            let indent = s:get_inserted_indent(a:lnum)
-            let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
-            call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i') . line)
+    if empty(cmt)
+        return self.call_another_action('comment_normal', [a:lnum])
+    endif
+
+    let line = getline(a:lnum)
+    if min_indent_num >= 0
+        call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
+        let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
+        let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
+        call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
+    elseif line =~# '^\s*$'
+        let indent = s:get_indent(a:lnum)
+        call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i'))
+        if startinsert
+            call feedkeys('A', 'n')
         endif
+    else
+        let indent = s:get_inserted_indent(a:lnum)
+        let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
+        call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i') . line)
     endif
 endfunction "}}}
 
@@ -790,7 +807,11 @@ endfunction "}}}
 
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if !empty(cmt) && self.commented_normal(a:lnum)
+    if empty(cmt)
+        return self.call_another_action('uncomment_normal', [a:lnum])
+    endif
+
+    if self.commented_normal(a:lnum)
         let indent = s:get_inserted_indent(a:lnum)
         let line   = substitute(getline(a:lnum), '^[ \t]\+', '', '')
         if stridx(line, cmt) == 0
@@ -809,22 +830,25 @@ endfunction "}}}
 
 " a {{{
 let s:caw.a = deepcopy(s:base)
+call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 
 function! s:caw.a.comment_normal(lnum, ...) "{{{
     let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
 
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if !empty(cmt)
-        call setline(
-        \   a:lnum,
-        \   getline(a:lnum)
-        \       . s:get_var('caw_sp_a_left')
-        \       . cmt
-        \       . s:get_var('caw_sp_a_right')
-        \)
-        if startinsert
-            call feedkeys('A', 'n')
-        endif
+    if empty(cmt)
+        return self.call_another_action('comment_normal', [a:lnum])
+    endif
+
+    call setline(
+    \   a:lnum,
+    \   getline(a:lnum)
+    \       . s:get_var('caw_sp_a_left')
+    \       . cmt
+    \       . s:get_var('caw_sp_a_right')
+    \)
+    if startinsert
+        call feedkeys('A', 'n')
     endif
 endfunction "}}}
 
@@ -872,7 +896,11 @@ endfunction "}}}
 
 function! s:caw.a.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
-    if !empty(cmt) && self.commented_normal(a:lnum)
+    if empty(cmt)
+        return self.call_another_action('uncomment_normal', [a:lnum])
+    endif
+
+    if self.commented_normal(a:lnum)
         let col = s:caw_a_get_commented_col(a:lnum)
         if col <= 0
             return
@@ -895,22 +923,25 @@ endfunction "}}}
 
 " wrap {{{
 let s:caw.wrap = deepcopy(s:base)
+call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 
 function! s:caw.wrap.comment_normal(lnum) "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
-    if !empty(cmt)
-        let [left, right] = cmt
-        let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
-        call setline(
-        \   a:lnum,
-        \   s:get_inserted_indent(a:lnum)
-        \       . left
-        \       . s:get_var('caw_sp_wrap_left')
-        \       . line_without_indent
-        \       . s:get_var('caw_sp_wrap_right')
-        \       . right
-        \)
+    if empty(cmt)
+        return self.call_another_action('comment_normal', [a:lnum])
     endif
+
+    let [left, right] = cmt
+    let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
+    call setline(
+    \   a:lnum,
+    \   s:get_inserted_indent(a:lnum)
+    \       . left
+    \       . s:get_var('caw_sp_wrap_left')
+    \       . line_without_indent
+    \       . s:get_var('caw_sp_wrap_right')
+    \       . right
+    \)
 endfunction "}}}
 
 function! s:caw.wrap.comment_visual() "{{{
