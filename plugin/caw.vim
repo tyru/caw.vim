@@ -48,6 +48,10 @@ if !exists('g:caw_sp_jump')
     let g:caw_sp_jump = ' '
 endif
 
+if !exists('g:caw_find_another_action')
+    let g:caw_find_another_action = 1
+endif
+
 
 
 function! s:map(lhs, rhs) "{{{

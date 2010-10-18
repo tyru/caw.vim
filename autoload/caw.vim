@@ -752,7 +752,10 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        return self.call_another_action('comment_normal', [a:lnum])
+        if g:caw_find_another_action
+            call self.call_another_action('comment_normal', [a:lnum])
+        endif
+        return
     endif
 
     let line = getline(a:lnum)
@@ -808,7 +811,10 @@ endfunction "}}}
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        return self.call_another_action('uncomment_normal', [a:lnum])
+        if g:caw_find_another_action
+            call self.call_another_action('uncomment_normal', [a:lnum])
+        endif
+        return
     endif
 
     if self.commented_normal(a:lnum)
@@ -837,7 +843,10 @@ function! s:caw.a.comment_normal(lnum, ...) "{{{
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        return self.call_another_action('comment_normal', [a:lnum])
+        if g:caw_find_another_action
+            call self.call_another_action('comment_normal', [a:lnum])
+        endif
+        return
     endif
 
     call setline(
@@ -897,7 +906,10 @@ endfunction "}}}
 function! s:caw.a.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        return self.call_another_action('uncomment_normal', [a:lnum])
+        if g:caw_find_another_action
+            call self.call_another_action('uncomment_normal', [a:lnum])
+        endif
+        return
     endif
 
     if self.commented_normal(a:lnum)
@@ -928,7 +940,10 @@ call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 function! s:caw.wrap.comment_normal(lnum) "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
-        return self.call_another_action('comment_normal', [a:lnum])
+        if g:caw_find_another_action
+            call self.call_another_action('comment_normal', [a:lnum])
+        endif
+        return
     endif
 
     let [left, right] = cmt
