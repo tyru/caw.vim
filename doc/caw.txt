@@ -82,8 +82,8 @@ gcO
 ==============================================================================
 SUPPORTED FILETYPES				*caw-supported-filetypes* {{{
 
-Same as NERDTree.
-Because almost comment strings are from NERDTree's code.
+Same as NERD Commenter.
+Because almost comment strings are from NERD Commenter's code.
 (I think it would be nice to be able to separate
 comment strings into indivisual data.
 Other comment plugins also use it.)
