@@ -129,7 +129,7 @@ function! s:set_and_save_comment_string(comment_string) "{{{
 endfunction "}}}
 
 function! s:restore_comment_string(stash) "{{{
-    call stash.restore()
+    call a:stash.restore()
 endfunction "}}}
 
 
