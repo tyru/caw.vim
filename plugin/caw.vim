@@ -74,11 +74,17 @@ call s:map('gc', '<Plug>(caw:prefix)')
 nnoremap <silent> <Plug>(caw:i:comment)  :<C-u>call caw#do_i_comment('n')<CR>
 vnoremap <silent> <Plug>(caw:i:comment)  :<C-u>call caw#do_i_comment('v')<CR>
 
+nnoremap <silent> <Plug>(caw:I:comment)  :<C-u>call caw#do_I_comment('n')<CR>
+vnoremap <silent> <Plug>(caw:I:comment)  :<C-u>call caw#do_I_comment('v')<CR>
+
 nnoremap <silent> <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('n')<CR>
 vnoremap <silent> <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('v')<CR>
 
 nnoremap <silent> <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('n')<CR>
 vnoremap <silent> <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('v')<CR>
+
+nnoremap <silent> <Plug>(caw:I:toggle)   :<C-u>call caw#do_I_toggle('n')<CR>
+vnoremap <silent> <Plug>(caw:I:toggle)   :<C-u>call caw#do_I_toggle('v')<CR>
 
 nnoremap <silent> <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('n')<CR>
 vnoremap <silent> <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('v')<CR>
@@ -86,6 +92,7 @@ vnoremap <silent> <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('v')<CR>
 if !g:caw_no_default_keymappings
     call s:map('<Plug>(caw:prefix)c', '<Plug>(caw:i:toggle)')
     call s:map('<Plug>(caw:prefix)i', '<Plug>(caw:i:comment)')
+    call s:map('<Plug>(caw:prefix)I', '<Plug>(caw:I:comment)')
     call s:map('<Plug>(caw:prefix)a', '<Plug>(caw:a:comment)')
 endif
 

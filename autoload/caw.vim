@@ -26,12 +26,20 @@ function! caw#do_i_comment(mode) "{{{
     return s:sandbox_call(s:caw.i.comment, [a:mode], s:caw.i)
 endfunction "}}}
 
+function! caw#do_I_comment(mode) "{{{
+    return s:sandbox_call(s:caw.I.comment, [a:mode], s:caw.I)
+endfunction "}}}
+
 function! caw#do_a_comment(mode) "{{{
     return s:sandbox_call(s:caw.a.comment, [a:mode], s:caw.a)
 endfunction "}}}
 
 function! caw#do_i_toggle(mode) "{{{
     return s:sandbox_call(s:caw.i.toggle, [a:mode], s:caw.i)
+endfunction "}}}
+
+function! caw#do_I_toggle(mode) "{{{
+    return s:sandbox_call(s:caw.I.toggle, [a:mode], s:caw.I)
 endfunction "}}}
 
 function! caw#do_a_toggle(mode) "{{{
@@ -834,6 +842,42 @@ endfunction "}}}
 
 " }}}
 
+" I {{{
+let s:caw.I = deepcopy(s:base)
+let s:caw.I.comment_normal = s:caw.i.comment_normal
+let s:caw.I.comment_visual = s:caw.i.comment_visual
+let s:caw.I.commented_normal = s:caw.i.commented_normal
+let s:caw.I.uncomment_normal = s:caw.i.uncomment_normal
+
+function! s:caw.I.comment_normal(lnum, ...) "{{{
+    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
+    let min_indent_num = get(a:000, 1, -1)
+
+    let cmt = s:comments.oneline.get_comment(&filetype)
+    if empty(cmt)
+        if g:caw_find_another_action
+            call self.call_another_action('comment_normal', [a:lnum])
+        endif
+        return
+    endif
+
+    let line = getline(a:lnum)
+    if min_indent_num >= 0
+        call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
+        let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
+        let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
+        call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
+    elseif line =~# '^\s*$'
+        call setline(a:lnum, cmt . s:get_var('caw_sp_i'))
+        if startinsert
+            call feedkeys('A', 'n')
+        endif
+    else
+        call setline(a:lnum, cmt . s:get_var('caw_sp_i') . getline(a:lnum))
+    endif
+endfunction "}}}
+" }}}
+
 " a {{{
 let s:caw.a = deepcopy(s:base)
 call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
@@ -1095,6 +1139,7 @@ function! s:caw_input_get_pos() "{{{
 
     let pos = get({
     \   'i': 'i',
+    \   'I': 'I',
     \   'a': 'a',
     \   'j': 'jump',
     \   'w': 'wrap',
