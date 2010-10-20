@@ -82,7 +82,7 @@ gcO
 ==============================================================================
 SUPPORTED FILETYPES				*caw-supported-filetypes* {{{
 
-Same as NERD Commenter.
+Same as NERD Commenter (http://www.vim.org/scripts/script.php?script_id=1218).
 Because almost comment strings are from NERD Commenter's code.
 (I think it would be nice to be able to separate
 comment strings into indivisual data.
