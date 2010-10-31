@@ -134,7 +134,7 @@ endif
 
 " uncomment
 nnoremap <silent> <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('n')<CR>
-vnoremap <silent> <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('<Plug>(caw:prefix)uu', '<Plug>(caw:uncomment)')
