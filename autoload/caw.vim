@@ -774,7 +774,7 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        if g:caw_find_another_action
+        if s:get_var('caw_find_another_action')
             call self.call_another_action('comment_normal', [a:lnum])
         endif
         return
@@ -801,7 +801,7 @@ endfunction "}}}
 
 function! s:caw.i.comment_visual() "{{{
     let min_indent_num = 1/0
-    if g:caw_i_align
+    if s:get_var('caw_i_align')
         for lnum in range(line("'<"), line("'>"))
             if getline(lnum) =~ '^\s*$'
                 continue    " Skip blank line.
@@ -833,7 +833,7 @@ endfunction "}}}
 function! s:caw.i.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        if g:caw_find_another_action
+        if s:get_var('caw_find_another_action')
             call self.call_another_action('uncomment_normal', [a:lnum])
         endif
         return
@@ -868,7 +868,7 @@ function! s:caw.I.comment_normal(lnum, ...) "{{{
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        if g:caw_find_another_action
+        if s:get_var('caw_find_another_action')
             call self.call_another_action('comment_normal', [a:lnum])
         endif
         return
@@ -896,7 +896,7 @@ function! s:caw.a.comment_normal(lnum, ...) "{{{
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        if g:caw_find_another_action
+        if s:get_var('caw_find_another_action')
             call self.call_another_action('comment_normal', [a:lnum])
         endif
         return
@@ -959,7 +959,7 @@ endfunction "}}}
 function! s:caw.a.uncomment_normal(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
-        if g:caw_find_another_action
+        if s:get_var('caw_find_another_action')
             call self.call_another_action('uncomment_normal', [a:lnum])
         endif
         return
@@ -993,7 +993,7 @@ call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 function! s:caw.wrap.comment_normal(lnum) "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
-        if g:caw_find_another_action
+        if s:get_var('caw_find_another_action')
             call self.call_another_action('comment_normal', [a:lnum])
         endif
         return
@@ -1120,7 +1120,7 @@ function! s:caw.jump.comment(next) "{{{
         call append(lnum, '')
         let indent = s:get_indent(lnum + 1)
 
-        call setline(lnum + 1, indent . cmt . g:caw_sp_jump)
+        call setline(lnum + 1, indent . cmt . s:get_var('caw_sp_jump'))
         call cursor(lnum + 1, 1)
         startinsert!
     else
@@ -1129,7 +1129,7 @@ function! s:caw.jump.comment(next) "{{{
         " because new line was inserted just now.
         let indent = s:get_indent(lnum)
 
-        call setline(lnum, indent . cmt . g:caw_sp_jump)
+        call setline(lnum, indent . cmt . s:get_var('caw_sp_jump'))
         call cursor(lnum, 1)
         startinsert!
     endif
