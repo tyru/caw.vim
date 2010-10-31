@@ -696,7 +696,16 @@ function! s:base.comment(mode) "{{{
     if a:mode ==# 'n'
         call self.comment_normal(line('.'))
     else
-        call self.comment_visual()
+        let wiseness = get({
+        \   'v': 'characterwise',
+        \   'V': 'linewise',
+        \   "\<C-v>": 'blockwise',
+        \}, visualmode(), '')
+        if wiseness != '' && has_key(self, 'comment_visual_' . wiseness)
+            call self['comment_visual_' . wiseness]()
+        else
+            call self.comment_visual()
+        endif
     endif
 endfunction "}}}
 
