@@ -481,6 +481,7 @@ function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     \   'scilab': '//',
     \   'scsh': ';',
     \   'sed': '#',
+    \   'sh': '#',
     \   'sicad': '*',
     \   'simula': '%',
     \   'sinda': '$',
