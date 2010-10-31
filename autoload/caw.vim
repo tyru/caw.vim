@@ -1027,7 +1027,7 @@ function! s:comment_visual_characterwise_comment_out(text) "{{{
         \   . cmt[1]
     endif
 endfunction "}}}
-function! s:operate_on_word(funcname) "{{{
+function! s:caw.wrap.__operate_on_word(funcname) "{{{
     normal! gv
 
     let reg_z_save     = getreg('z', 1)
@@ -1046,8 +1046,9 @@ function! s:caw.wrap.comment_visual_characterwise() "{{{
     if empty(cmt)
         return
     endif
-    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
+    call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
+
 function! s:caw.wrap.comment_visual() "{{{
     " TODO:
     "
