@@ -147,24 +147,24 @@ Default mapping		rhs ~
 gcuu				<Plug>(caw:uncomment)
 
 
-(nv) <Plug>(caw:uncomment:i)		*<Plug>(caw:uncomment:i)*
-(nv) <Plug>(caw:uncomment:a)		*<Plug>(caw:uncomment:a)*
+(nv) <Plug>(caw:i:uncomment)		*<Plug>(caw:i:uncomment)*
+(nv) <Plug>(caw:a:uncomment)		*<Plug>(caw:a:uncomment)*
 
 Default mapping		rhs ~
-gcui				<Plug>(caw:uncomment:i)
-gcua				<Plug>(caw:uncomment:a)
+gcui				<Plug>(caw:i:uncomment)
+gcua				<Plug>(caw:a:uncomment)
 
 
-(nv) <Plug>(caw:uncomment:wrap)			*<Plug>(caw:uncomment:wrap)*
-
-Default mapping		rhs ~
-gcuw					<Plug>(caw:uncomment:wrap)
-
-
-(nv) <Plug>(caw:uncomment:input)		*<Plug>(caw:uncomment:input)*
+(nv) <Plug>(caw:wrap:uncomment)			*<Plug>(caw:wrap:uncomment)*
 
 Default mapping		rhs ~
-gcuv					<Plug>(caw:uncomment:input)
+gcuw					<Plug>(caw:wrap:uncomment)
+
+
+(nv) <Plug>(caw:input:uncomment)		*<Plug>(caw:input:uncomment)*
+
+Default mapping		rhs ~
+gcuv					<Plug>(caw:input:uncomment)
 
 
 }}}

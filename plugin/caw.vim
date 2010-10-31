@@ -141,11 +141,11 @@ if !g:caw_no_default_keymappings
 endif
 
 " uncomment: i/a
-nnoremap <silent> <Plug>(caw:uncomment:i)    :<C-u>call caw#do_uncomment_i('n')<CR>
-vnoremap <silent> <Plug>(caw:uncomment:i)    :<C-u>call caw#do_uncomment_i('v')<CR>
+nnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_uncomment_i('n')<CR>
+vnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_uncomment_i('v')<CR>
 
-nnoremap <silent> <Plug>(caw:uncomment:a)    :<C-u>call caw#do_uncomment_a('n')<CR>
-vnoremap <silent> <Plug>(caw:uncomment:a)    :<C-u>call caw#do_uncomment_a('v')<CR>
+nnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_uncomment_a('n')<CR>
+vnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_uncomment_a('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('<Plug>(caw:prefix)ui', '<Plug>(caw:uncomment:i)')
@@ -153,19 +153,19 @@ if !g:caw_no_default_keymappings
 endif
 
 " uncomment: wrap
-nnoremap <silent> <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('n')<CR>
-vnoremap <silent> <Plug>(caw:uncomment:wrap)         :<C-u>call caw#do_uncomment_wrap('v')<CR>
+nnoremap <silent> <Plug>(caw:wrap:uncomment)         :<C-u>call caw#do_uncomment_wrap('n')<CR>
+vnoremap <silent> <Plug>(caw:wrap:uncomment)         :<C-u>call caw#do_uncomment_wrap('v')<CR>
 
 if !g:caw_no_default_keymappings
-    call s:map('<Plug>(caw:prefix)uw', '<Plug>(caw:uncomment:wrap)')
+    call s:map('<Plug>(caw:prefix)uw', '<Plug>(caw:wrap:uncomment)')
 endif
 
 " uncomment: input
-nnoremap <silent> <Plug>(caw:uncomment:input)    :<C-u>call caw#do_uncomment_input('n')<CR>
-vnoremap <silent> <Plug>(caw:uncomment:input)    :<C-u>call caw#do_uncomment_input('v')<CR>
+nnoremap <silent> <Plug>(caw:input:uncomment)    :<C-u>call caw#do_uncomment_input('n')<CR>
+vnoremap <silent> <Plug>(caw:input:uncomment)    :<C-u>call caw#do_uncomment_input('v')<CR>
 
 if !g:caw_no_default_keymappings
-    call s:map('<Plug>(caw:prefix)uv', '<Plug>(caw:uncomment:input)')
+    call s:map('<Plug>(caw:prefix)uv', '<Plug>(caw:input:uncomment)')
 endif
 
 
