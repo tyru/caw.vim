@@ -862,7 +862,6 @@ let s:caw.I.uncomment_normal = s:caw.i.uncomment_normal
 
 function! s:caw.I.comment_normal(lnum, ...) "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
-    let min_indent_num = get(a:000, 1, -1)
 
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
@@ -873,20 +872,16 @@ function! s:caw.I.comment_normal(lnum, ...) "{{{
     endif
 
     let line = getline(a:lnum)
-    if min_indent_num >= 0
-        call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
-        let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
-        let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-        call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
-    elseif line =~# '^\s*$'
+    if line =~# '^\s*$'
         call setline(a:lnum, cmt . s:get_var('caw_sp_i'))
         if startinsert
             call feedkeys('A', 'n')
         endif
     else
-        call setline(a:lnum, cmt . s:get_var('caw_sp_i') . getline(a:lnum))
+        call setline(a:lnum, cmt . s:get_var('caw_sp_i') . line)
     endif
 endfunction "}}}
+
 " }}}
 
 " a {{{
