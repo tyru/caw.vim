@@ -916,7 +916,7 @@ endfunction "}}}
 
 function! s:caw.a.comment_visual() "{{{
     for lnum in range(line("'<"), line("'>"))
-        call self.comment_normal(lnum, 0)
+        call self.comment_normal(lnum)
     endfor
 endfunction "}}}
 
@@ -990,7 +990,7 @@ endfunction "}}}
 let s:caw.wrap = deepcopy(s:base)
 call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 
-function! s:caw.wrap.comment_normal(lnum) "{{{
+function! s:caw.wrap.comment_normal(lnum, ...) "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
         if s:get_var('caw_find_another_action')
