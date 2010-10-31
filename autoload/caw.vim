@@ -710,6 +710,7 @@ function! s:base.comment(mode) "{{{
 endfunction "}}}
 
 function! s:base.comment_visual() "{{{
+    " Behave like linewise.
     for lnum in range(line("'<"), line("'>"))
         call self.comment_normal(lnum)
     endfor
