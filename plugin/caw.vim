@@ -148,8 +148,8 @@ nnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_uncomment_a('n')<
 vnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_uncomment_a('v')<CR>
 
 if !g:caw_no_default_keymappings
-    call s:map('<Plug>(caw:prefix)ui', '<Plug>(caw:uncomment:i)')
-    call s:map('<Plug>(caw:prefix)ua', '<Plug>(caw:uncomment:a)')
+    call s:map('<Plug>(caw:prefix)ui', '<Plug>(caw:i:uncomment)')
+    call s:map('<Plug>(caw:prefix)ua', '<Plug>(caw:i:uncomment)')
 endif
 
 " uncomment: wrap
