@@ -1014,6 +1014,40 @@ function! s:caw.wrap.comment_normal(lnum) "{{{
     \)
 endfunction "}}}
 
+
+function! s:comment_visual_characterwise_comment_out(text) "{{{
+    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    if empty(cmt)
+        return a:text
+    else
+        return cmt[0]
+        \   . s:get_var('caw_sp_wrap_left')
+        \   . a:text
+        \   . s:get_var('caw_sp_wrap_right')
+        \   . cmt[1]
+    endif
+endfunction "}}}
+function! s:operate_on_word(funcname) "{{{
+    normal! gv
+
+    let reg_z_save     = getreg('z', 1)
+    let regtype_z_save = getregtype('z')
+
+    try
+        " Filter selected range with `{a:funcname}(selected_text)`.
+        let cut_with_reg_z = '"zc'
+        execute printf("normal! %s\<C-r>\<C-o>=%s(@z)\<CR>", cut_with_reg_z, a:funcname)
+    finally
+        call setreg('z', reg_z_save, regtype_z_save)
+    endtry
+endfunction "}}}
+function! s:caw.wrap.comment_visual_characterwise() "{{{
+    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    if empty(cmt)
+        return
+    endif
+    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
+endfunction "}}}
 function! s:caw.wrap.comment_visual() "{{{
     " TODO:
     "
