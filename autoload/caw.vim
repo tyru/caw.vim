@@ -79,7 +79,10 @@ endfunction "}}}
 
 " uncomment
 function! caw#do_uncomment(mode) "{{{
-    " TODO
+    let action = s:caw.detect_operated_action(a:mode)
+    if action != ''
+        call s:caw[action].uncomment(a:mode)
+    endif
 endfunction "}}}
 
 
@@ -1227,6 +1230,11 @@ function! s:input(...) "{{{
 endfunction "}}}
 
 " }}}
+
+
+function! s:caw.detect_operated_action(mode) "{{{
+    " TODO
+endfunction "}}}
 
 " }}}
 
