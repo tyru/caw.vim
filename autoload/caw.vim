@@ -19,84 +19,102 @@ function! s:sandbox_call(Fn, args, ...) "{{{
     endtry
 endfunction "}}}
 
+function! s:get_caw_object() "{{{
+    return exists('b:caw') ? b:caw : s:caw
+endfunction "}}}
 
 
 " i/a
 function! caw#do_i_comment(mode) "{{{
-    return s:sandbox_call(s:caw.i.comment, [a:mode], s:caw.i)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.i.comment, [a:mode], caw.i)
 endfunction "}}}
 
 function! caw#do_I_comment(mode) "{{{
-    return s:sandbox_call(s:caw.I.comment, [a:mode], s:caw.I)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.I.comment, [a:mode], caw.I)
 endfunction "}}}
 
 function! caw#do_a_comment(mode) "{{{
-    return s:sandbox_call(s:caw.a.comment, [a:mode], s:caw.a)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.a.comment, [a:mode], caw.a)
 endfunction "}}}
 
 function! caw#do_i_toggle(mode) "{{{
-    return s:sandbox_call(s:caw.i.toggle, [a:mode], s:caw.i)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.i.toggle, [a:mode], caw.i)
 endfunction "}}}
 
 function! caw#do_I_toggle(mode) "{{{
-    return s:sandbox_call(s:caw.I.toggle, [a:mode], s:caw.I)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.I.toggle, [a:mode], caw.I)
 endfunction "}}}
 
 function! caw#do_a_toggle(mode) "{{{
-    return s:sandbox_call(s:caw.a.toggle, [a:mode], s:caw.a)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.a.toggle, [a:mode], caw.a)
 endfunction "}}}
 
 
 
 " wrap
 function! caw#do_wrap_comment(mode) "{{{
-    return s:sandbox_call(s:caw.wrap.comment, [a:mode], s:caw.wrap)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.wrap.comment, [a:mode], caw.wrap)
 endfunction "}}}
 
 function! caw#do_wrap_toggle(mode) "{{{
-    return s:sandbox_call(s:caw.wrap.toggle, [a:mode], s:caw.wrap)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.wrap.toggle, [a:mode], caw.wrap)
 endfunction "}}}
 
 
 
 " jump
 function! caw#do_jump_comment_next() "{{{
-    return s:sandbox_call(s:caw.jump.comment, [1], s:caw.jump)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.jump.comment, [1], caw.jump)
 endfunction "}}}
 
 function! caw#do_jump_comment_prev() "{{{
-    return s:sandbox_call(s:caw.jump.comment, [0], s:caw.jump)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.jump.comment, [0], caw.jump)
 endfunction "}}}
 
 
 
 " input
 function! caw#do_input_comment(mode) "{{{
-    return s:sandbox_call(s:caw.input.comment, [a:mode], s:caw.input)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.input.comment, [a:mode], caw.input)
 endfunction "}}}
 
 
 
 " uncomment
 function! caw#do_uncomment(mode) "{{{
-    let action = s:caw.detect_operated_action(a:mode)
+    let caw = s:get_caw_object()
+    let action = caw.detect_operated_action(a:mode)
     if action != ''
-        call s:caw[action].uncomment(a:mode)
+        call caw[action].uncomment(a:mode)
     endif
 endfunction "}}}
 
 
 function! caw#do_uncomment_i(mode) "{{{
-    return s:sandbox_call(s:caw.i.uncomment, [a:mode], s:caw.i)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.i.uncomment, [a:mode], caw.i)
 endfunction "}}}
 
 function! caw#do_uncomment_a(mode) "{{{
-    return s:sandbox_call(s:caw.a.uncomment, [a:mode], s:caw.a)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.a.uncomment, [a:mode], caw.a)
 endfunction "}}}
 
 
 function! caw#do_uncomment_wrap(mode) "{{{
-    return s:sandbox_call(s:caw.wrap.uncomment, [a:mode], s:caw.wrap)
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.wrap.uncomment, [a:mode], caw.wrap)
 endfunction "}}}
 
 
