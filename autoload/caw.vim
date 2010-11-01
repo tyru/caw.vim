@@ -112,10 +112,6 @@ endfunction "}}}
 function! s:set_and_save_comment_string(comment_string) "{{{
     let stash = {}
 
-    let NONEXISTS = 0
-    let INVALID = 1
-    let EXISTS = 2
-
     if !exists('b:caw_oneline_comment')
         function stash.restore()
             unlet b:caw_oneline_comment
