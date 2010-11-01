@@ -858,6 +858,8 @@ endfunction "}}}
 
 " I {{{
 let s:caw.I = deepcopy(s:base)
+call extend(s:caw.I, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
+
 let s:caw.I.comment_normal = s:caw.i.comment_normal
 let s:caw.I.comment_visual = s:caw.i.comment_visual
 let s:caw.I.commented_normal = s:caw.i.commented_normal
