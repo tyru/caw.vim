@@ -126,7 +126,7 @@ function! s:set_and_save_comment_string(comment_string) "{{{
             unlet b:caw_oneline_comment
             let b:caw_oneline_comment = self.org_value
         endfunction
-        unlet b:caw_oneline_comment    " to avoid error at :let below
+        unlet b:caw_oneline_comment    " to avoid type error at :let below
     else
         let stash.org_value = copy(b:caw_oneline_comment)
         function stash.restore()
