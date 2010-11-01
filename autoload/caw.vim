@@ -182,10 +182,11 @@ function! s:get_indent_num(lnum) "{{{
 endfunction "}}}
 
 function! s:get_indent(lnum) "{{{
+    let n = s:get_indent_num(a:lnum)
     if &expandtab
-        return repeat(' ', s:get_indent_num(a:lnum))
+        return repeat(' ', n)
     else
-        return repeat("\t", s:get_indent_num(a:lnum) / &tabstop)
+        return repeat("\t", n / &tabstop) . repeat(' ', n % &tabstop)
     endif
 endfunction "}}}
 
