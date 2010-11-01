@@ -1044,6 +1044,13 @@ endfunction "}}}
 function! s:caw.wrap.comment_visual_characterwise() "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
+        if s:get_var('caw_find_another_action')
+            let [begin_lnum, end_lnum] = [getpos("'<")[1], getpos("'>")[1]]
+            call s:assert(begin_lnum <= end_lnum, "begin_lnum <= end_lnum")
+            for lnum in range(begin_lnum, end_lnum)
+                call self.call_another_action('comment_normal', [lnum])
+            endfor
+        endif
         return
     endif
     call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
