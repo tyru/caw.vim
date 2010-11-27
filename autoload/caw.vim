@@ -1259,6 +1259,7 @@ endfunction "}}}
 
 function! s:caw.detect_operated_action(mode) "{{{
     " TODO
+    return ''
 endfunction "}}}
 
 " }}}
