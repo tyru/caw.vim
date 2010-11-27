@@ -683,8 +683,9 @@ let s:caw = {}
 function! s:create_call_another_action(comment_vs_action) "{{{
     let o = {'__call_another_action_comment_vs_action': a:comment_vs_action}
     function! o.call_another_action(method, args)
-        for [c, action] in items(self.__call_another_action_comment_vs_action)
+        for c in sort(keys(self.__call_another_action_comment_vs_action))
             if !empty(s:comments[c].get_comment(&filetype))
+                let action = self.__call_another_action_comment_vs_action[c]
                 return call(s:caw[action][a:method], a:args, s:caw[action])
             endif
         endfor
