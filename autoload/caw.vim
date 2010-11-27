@@ -257,27 +257,21 @@ function! s:create_get_comment_vars(comment) "{{{
     return o
 endfunction "}}}
 
-function! s:create_get_comment_detect() "{{{
-    let o = {}
-    function! o.get_comment_detect(filetype)
-        let comments_default = "s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-"
-        if &comments ==# comments_default
-            return ''
-        endif
-
-        " TODO
-
-        return ''
-    endfunction
-
-    return o
-endfunction "}}}
-
 
 " oneline {{{
 call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin'], ''), 'error')
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
-call extend(s:comments.oneline, s:create_get_comment_detect(), 'error')
+
+function! s:comments.oneline.get_comment_detect(filetype) "{{{
+    let comments_default = "s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-"
+    if &l:comments ==# comments_default
+        return ''
+    endif
+
+    " TODO
+
+    return ''
+endfunction "}}}
 
 function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     " TODO: compound filetypes
@@ -570,7 +564,14 @@ endfunction "}}}
 " wrap_oneline "{{{
 call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin'], []), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
-call extend(s:comments.wrap_oneline, s:create_get_comment_detect(), 'error')
+
+function! s:comments.wrap_oneline.get_comment_detect(filetype) "{{{
+    let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
+    if empty(m)
+        return []
+    endif
+    return m[1:2]
+endfunction "}}}
 
 function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
     " TODO: compound filetypes
@@ -659,9 +660,8 @@ endfunction "}}}
 " }}}
 
 " wrap_multiline {{{
-call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin'], {}), 'error')
+call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars', 'get_comment_builtin'], {}), 'error')
 call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'), 'error')
-call extend(s:comments.wrap_multiline, s:create_get_comment_detect(), 'error')
 
 function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
     " TODO: compound filetypes
