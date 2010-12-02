@@ -490,6 +490,7 @@ function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     \   'sass': '//',
     \   'sather': '--',
     \   'scala': '//',
+    \   'scheme': ';',
     \   'scilab': '//',
     \   'scsh': ';',
     \   'sed': '#',
