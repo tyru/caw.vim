@@ -722,7 +722,7 @@ function! s:base.comment(mode) "{{{
         \   "\<C-v>": 'blockwise',
         \}, visualmode(), '')
         if wiseness != '' && has_key(self, 'comment_visual_' . wiseness)
-            call self['comment_visual_' . wiseness]()
+            call call(self['comment_visual_' . wiseness], [])
         else
             call self.comment_visual()
         endif
