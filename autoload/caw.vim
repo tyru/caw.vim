@@ -1117,8 +1117,6 @@ function! s:caw.wrap.uncomment_normal(lnum) "{{{
 
         let line = s:trim_whitespaces(getline(a:lnum))
 
-        let [left, right] = cmt
-
         let [l, r] = [line[: strlen(left) - 1], left]
         call s:assert(l ==# r, string(l).' ==# '.string(r))
         let [l, r] = [line[strlen(line) - strlen(right) :], right]
