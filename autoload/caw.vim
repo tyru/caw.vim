@@ -1105,8 +1105,8 @@ function! s:caw.wrap.commented_normal(lnum) "{{{
     " line begins with left, ends with right.
     let [left, right] = cmt
     return
-    \   line[: strlen(left) - 1] ==# left
-    \   && line[strlen(line) - strlen(right) :] ==# right
+    \   (left == '' || line[: strlen(left) - 1] ==# left)
+    \   && (right == '' || line[strlen(line) - strlen(right) :] ==# right)
 endfunction "}}}
 
 
