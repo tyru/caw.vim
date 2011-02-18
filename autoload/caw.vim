@@ -1376,12 +1376,12 @@ function! s:input(...) "{{{
     endtry
 endfunction "}}}
 
-let s:caw.input = deepcopy(s:base)
-call extend(s:caw.input, {
+
+let s:caw.input = {
 \   'comment': s:local_func('caw_input_comment'),
 \   'comment_normal': s:local_func('caw_input_comment_normal'),
 \   'comment_visual': s:local_func('caw_input_comment_visual'),
-\}, 'force')
+\}
 " }}}
 
 
