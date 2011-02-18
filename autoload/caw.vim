@@ -933,10 +933,8 @@ call extend(s:caw.I, s:caw.i, 'force')
 " }}}
 
 " a {{{
-let s:caw.a = deepcopy(s:base)
-call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 
-function! s:caw.a.comment_normal(lnum, ...) "{{{
+function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
 
     let cmt = s:comments.oneline.get_comment(&filetype)
@@ -959,7 +957,7 @@ function! s:caw.a.comment_normal(lnum, ...) "{{{
     endif
 endfunction "}}}
 
-function! s:caw.a.comment_visual() "{{{
+function! s:caw_a_comment_visual() dict "{{{
     for lnum in range(line("'<"), line("'>"))
         call self.comment_normal(lnum)
     endfor
@@ -996,12 +994,12 @@ function! s:caw_a_get_commented_col(lnum) "{{{
     return -1
 endfunction "}}}
 
-function! s:caw.a.commented_normal(lnum) "{{{
+function! s:caw_a_commented_normal(lnum) dict "{{{
     return s:caw_a_get_commented_col(a:lnum) > 0
 endfunction "}}}
 
 
-function! s:caw.a.uncomment_normal(lnum) "{{{
+function! s:caw_a_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
         if s:get_var('caw_find_another_action')
@@ -1029,6 +1027,14 @@ function! s:caw.a.uncomment_normal(lnum) "{{{
     endif
 endfunction "}}}
 
+let s:caw.a = deepcopy(s:base)
+call extend(s:caw.a, {
+\   'comment_normal': s:local_func('caw_a_comment_normal'),
+\   'comment_visual': s:local_func('caw_a_comment_visual'),
+\   'commented_normal': s:local_func('caw_a_commented_normal'),
+\   'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
+\}, 'force')
+call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 " }}}
 
 " wrap {{{
