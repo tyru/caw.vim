@@ -1225,14 +1225,29 @@ function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
     endif
 endfunction "}}}
 
-let s:caw.wrap = deepcopy(s:base)
+
+let s:caw.wrap = {}
+
+call extend(s:caw.wrap, s:Commentable, 'error')
 call extend(s:caw.wrap, {
 \   'comment_normal': s:local_func('caw_wrap_comment_normal'),
-\   'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
+\}, 'error')
+call extend(s:caw.wrap, {
 \   'comment_visual': s:local_func('caw_wrap_comment_visual'),
-\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\}, 'force')    " override
+
+call extend(s:caw.wrap, s:Uncommentable, 'error')
+call extend(s:caw.wrap, {
 \   'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
-\}, 'force')
+\}, 'error')
+
+call extend(s:caw.wrap, s:CommentDetectable, 'error')
+call extend(s:caw.wrap, {
+\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\}, 'error')
+
+call extend(s:caw.wrap, s:Togglable, 'error')
+
 call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 " }}}
 
