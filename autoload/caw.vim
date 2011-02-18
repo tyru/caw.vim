@@ -875,12 +875,7 @@ endfunction "}}}
 
 " I {{{
 let s:caw.I = deepcopy(s:base)
-call extend(s:caw.I, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
-
-let s:caw.I.comment_normal = s:caw.i.comment_normal
-let s:caw.I.comment_visual = s:caw.i.comment_visual
-let s:caw.I.commented_normal = s:caw.i.commented_normal
-let s:caw.I.uncomment_normal = s:caw.i.uncomment_normal
+call extend(s:caw.I, s:caw.i, 'force')
 
 function! s:caw.I.comment_normal(lnum, ...) "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
