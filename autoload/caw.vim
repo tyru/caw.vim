@@ -803,10 +803,8 @@ let s:base = {
 
 
 " i {{{
-let s:caw.i = deepcopy(s:base)
-call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 
-function! s:caw.i.comment_normal(lnum, ...) "{{{
+function! s:caw_i_comment_normal(lnum, ...) dict "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
 
@@ -837,7 +835,7 @@ function! s:caw.i.comment_normal(lnum, ...) "{{{
     endif
 endfunction "}}}
 
-function! s:caw.i.comment_visual() "{{{
+function! s:caw_i_comment_visual() dict "{{{
     let min_indent_num = 1/0
     if s:get_var('caw_i_align')
         for lnum in range(line("'<"), line("'>"))
@@ -860,7 +858,7 @@ function! s:caw.i.comment_visual() "{{{
 endfunction "}}}
 
 
-function! s:caw.i.commented_normal(lnum) "{{{
+function! s:caw_i_commented_normal(lnum) dict "{{{
     let line_without_indent = substitute(getline(a:lnum), '^[ \t]\+', '', '')
     let cmt = s:comments.oneline.get_comment(&filetype)
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
@@ -868,7 +866,7 @@ endfunction "}}}
 
 
 
-function! s:caw.i.uncomment_normal(lnum) "{{{
+function! s:caw_i_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
         if s:get_var('caw_find_another_action')
@@ -892,6 +890,15 @@ function! s:caw.i.uncomment_normal(lnum) "{{{
     endif
 endfunction "}}}
 
+
+let s:caw.i = deepcopy(s:base)
+call extend(s:caw.i, {
+\   'comment_normal': s:local_func('caw_i_comment_normal'),
+\   'comment_visual': s:local_func('caw_i_comment_visual'),
+\   'commented_normal': s:local_func('caw_i_commented_normal'),
+\   'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
+\}, 'force')
+call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 " }}}
 
 " I {{{
