@@ -257,18 +257,19 @@ function! s:create_get_comment(fn_list, empty_value) "{{{
     \}
 endfunction "}}}
 
+function! s:comments_get_comment_vars(filetype) dict "{{{
+    for ns in [b:, w:, t:, g:]
+        if has_key(ns, self.__get_comment_vars_varname)
+            return ns[self.__get_comment_vars_varname]
+        endif
+    endfor
+    return ''
+endfunction "}}}
 function! s:create_get_comment_vars(comment) "{{{
-    let o = {'__get_comment_vars_varname': a:comment}
-    function! o.get_comment_vars(filetype)
-        for ns in [b:, w:, t:, g:]
-            if has_key(ns, self.__get_comment_vars_varname)
-                return ns[self.__get_comment_vars_varname]
-            endif
-        endfor
-        return ''
-    endfunction
-
-    return o
+    return {
+    \   '__get_comment_vars_varname': a:comment,
+    \   'get_comment_vars': s:local_func('comments_get_comment_vars'),
+    \}
 endfunction "}}}
 
 
