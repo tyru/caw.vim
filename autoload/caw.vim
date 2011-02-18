@@ -716,8 +716,8 @@ endfunction "}}}
 " s:base.comment() requires:
 " - s:base.comment_normal()
 "
-" s:base.commented() and s:base.commented_visual() requires:
-" - s:base.commented_normal()
+" s:base.has_comment() and s:base.has_comment_visual() requires:
+" - s:base.has_comment_normal()
 "
 " s:base.uncomment() and s:base.uncomment_visual() requires:
 " - s:base.uncomment_normal()
@@ -749,7 +749,7 @@ endfunction "}}}
 
 
 function! s:base_toggle(mode) dict "{{{
-    if self.commented(a:mode)
+    if self.has_comment(a:mode)
         call self.uncomment(a:mode)
     else
         call self.comment(a:mode)
@@ -757,17 +757,17 @@ function! s:base_toggle(mode) dict "{{{
 endfunction "}}}
 
 
-function! s:base_commented(mode) dict "{{{
+function! s:base_has_comment(mode) dict "{{{
     if a:mode ==# 'n'
-        return self.commented_normal(line('.'))
+        return self.has_comment_normal(line('.'))
     else
-        return self.commented_visual()
+        return self.has_comment_visual()
     endif
 endfunction "}}}
 
-function! s:base_commented_visual() dict "{{{
+function! s:base_has_comment_visual() dict "{{{
     for lnum in range(line("'<"), line("'>"))
-        if self.commented_normal(lnum)
+        if self.has_comment_normal(lnum)
             return 1
         endif
     endfor
@@ -794,8 +794,8 @@ let s:base = {
 \   'comment': s:local_func('base_comment'),
 \   'comment_visual': s:local_func('base_comment_visual'),
 \   'toggle': s:local_func('base_toggle'),
-\   'commented': s:local_func('base_commented'),
-\   'commented_visual': s:local_func('base_commented_visual'),
+\   'has_comment': s:local_func('base_has_comment'),
+\   'has_comment_visual': s:local_func('base_has_comment_visual'),
 \   'uncomment': s:local_func('base_uncomment'),
 \   'uncomment_visual': s:local_func('base_uncomment_visual'),
 \}
@@ -858,7 +858,7 @@ function! s:caw_i_comment_visual() dict "{{{
 endfunction "}}}
 
 
-function! s:caw_i_commented_normal(lnum) dict "{{{
+function! s:caw_i_has_comment_normal(lnum) dict "{{{
     let line_without_indent = substitute(getline(a:lnum), '^[ \t]\+', '', '')
     let cmt = s:comments.oneline.get_comment(&filetype)
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
@@ -875,7 +875,7 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
         return
     endif
 
-    if self.commented_normal(a:lnum)
+    if self.has_comment_normal(a:lnum)
         let indent = s:get_inserted_indent(a:lnum)
         let line   = substitute(getline(a:lnum), '^[ \t]\+', '', '')
         if stridx(line, cmt) == 0
@@ -895,7 +895,7 @@ let s:caw.i = deepcopy(s:base)
 call extend(s:caw.i, {
 \   'comment_normal': s:local_func('caw_i_comment_normal'),
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
-\   'commented_normal': s:local_func('caw_i_commented_normal'),
+\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
 \   'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
 \}, 'force')
 call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
@@ -994,7 +994,7 @@ function! s:caw_a_get_comment_col(lnum) "{{{
     return -1
 endfunction "}}}
 
-function! s:caw_a_commented_normal(lnum) dict "{{{
+function! s:caw_a_has_comment_normal(lnum) dict "{{{
     return s:caw_a_get_comment_col(a:lnum) > 0
 endfunction "}}}
 
@@ -1008,7 +1008,7 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
         return
     endif
 
-    if self.commented_normal(a:lnum)
+    if self.has_comment_normal(a:lnum)
         let col = s:caw_a_get_comment_col(a:lnum)
         if col <= 0
             return
@@ -1031,7 +1031,7 @@ let s:caw.a = deepcopy(s:base)
 call extend(s:caw.a, {
 \   'comment_normal': s:local_func('caw_a_comment_normal'),
 \   'comment_visual': s:local_func('caw_a_comment_visual'),
-\   'commented_normal': s:local_func('caw_a_commented_normal'),
+\   'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
 \   'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
 \}, 'force')
 call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
@@ -1124,7 +1124,7 @@ function! s:caw_wrap_comment_visual() dict "{{{
 endfunction "}}}
 
 
-function! s:caw_wrap_commented_normal(lnum) dict "{{{
+function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
         return 0
@@ -1142,7 +1142,7 @@ endfunction "}}}
 
 function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
-    if !empty(cmt) && self.commented_normal(a:lnum)
+    if !empty(cmt) && self.has_comment_normal(a:lnum)
         let [left, right] = cmt
 
         let line = s:trim_whitespaces(getline(a:lnum))
@@ -1163,7 +1163,7 @@ call extend(s:caw.wrap, {
 \   'comment_normal': s:local_func('caw_wrap_comment_normal'),
 \   'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
 \   'comment_visual': s:local_func('caw_wrap_comment_visual'),
-\   'commented_normal': s:local_func('caw_wrap_commented_normal'),
+\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
 \   'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
 \}, 'force')
 call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
