@@ -1038,10 +1038,8 @@ call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'er
 " }}}
 
 " wrap {{{
-let s:caw.wrap = deepcopy(s:base)
-call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 
-function! s:caw.wrap.comment_normal(lnum, ...) "{{{
+function! s:caw_wrap_comment_normal(lnum, ...) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
         if s:get_var('caw_find_another_action')
@@ -1076,7 +1074,7 @@ function! s:comment_visual_characterwise_comment_out(text) "{{{
         \   . cmt[1]
     endif
 endfunction "}}}
-function! s:caw.wrap.__operate_on_word(funcname) "{{{
+function! s:caw_wrap___operate_on_word(funcname) "{{{
     normal! gv
 
     let reg_z_save     = getreg('z', 1)
@@ -1090,7 +1088,7 @@ function! s:caw.wrap.__operate_on_word(funcname) "{{{
         call setreg('z', reg_z_save, regtype_z_save)
     endtry
 endfunction "}}}
-function! s:caw.wrap.comment_visual_characterwise() "{{{
+function! s:caw_wrap_comment_visual_characterwise() dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
         if s:get_var('caw_find_another_action')
@@ -1105,7 +1103,7 @@ function! s:caw.wrap.comment_visual_characterwise() "{{{
     call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
 
-function! s:caw.wrap.comment_visual() "{{{
+function! s:caw_wrap_comment_visual() dict "{{{
     " TODO:
     "
     " Not:
@@ -1126,7 +1124,7 @@ function! s:caw.wrap.comment_visual() "{{{
 endfunction "}}}
 
 
-function! s:caw.wrap.commented_normal(lnum) "{{{
+function! s:caw_wrap_commented_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
         return 0
@@ -1142,7 +1140,7 @@ function! s:caw.wrap.commented_normal(lnum) "{{{
 endfunction "}}}
 
 
-function! s:caw.wrap.uncomment_normal(lnum) "{{{
+function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if !empty(cmt) && self.commented_normal(a:lnum)
         let [left, right] = cmt
@@ -1160,6 +1158,15 @@ function! s:caw.wrap.uncomment_normal(lnum) "{{{
     endif
 endfunction "}}}
 
+let s:caw.wrap = deepcopy(s:base)
+call extend(s:caw.wrap, {
+\   'comment_normal': s:local_func('caw_wrap_comment_normal'),
+\   'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
+\   'comment_visual': s:local_func('caw_wrap_comment_visual'),
+\   'commented_normal': s:local_func('caw_wrap_commented_normal'),
+\   'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
+\}, 'force')
+call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 " }}}
 
 " jump {{{
