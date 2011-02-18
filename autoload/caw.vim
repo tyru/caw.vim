@@ -707,23 +707,15 @@ function! s:create_call_another_action(comment_vs_action) "{{{
 endfunction "}}}
 
 
-" s:base {{{
-
-" NOTE:
-" These methods are missing in s:base.
+" s:Commentable {{{
+"
+" These methods are missing.
 " Derived object must implement those.
 "
-" s:base.comment() requires:
-" - s:base.comment_normal()
-"
-" s:base.has_comment() and s:base.has_comment_visual() requires:
-" - s:base.has_comment_normal()
-"
-" s:base.uncomment() and s:base.uncomment_visual() requires:
-" - s:base.uncomment_normal()
+" s:Commentable_comment() requires:
+" - Derived.comment_normal()
 
-
-function! s:base_comment(mode) dict "{{{
+function! s:Commentable_comment(mode) dict "{{{
     if a:mode ==# 'n'
         call self.comment_normal(line('.'))
     else
@@ -740,12 +732,29 @@ function! s:base_comment(mode) dict "{{{
     endif
 endfunction "}}}
 
-function! s:base_comment_visual() dict "{{{
+function! s:Commentable_comment_visual() dict "{{{
     " Behave like linewise.
     for lnum in range(line("'<"), line("'>"))
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
+
+let s:Commentable = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_visual': s:local_func('Commentable_comment_visual'),
+\}
+" }}}
+" s:base {{{
+
+" NOTE:
+" These methods are missing in s:base.
+" Derived object must implement those.
+"
+" s:base.commented() and s:base.commented_visual() requires:
+" - s:base.commented_normal()
+"
+" s:base.uncomment() and s:base.uncomment_visual() requires:
+" - s:base.uncomment_normal()
 
 
 function! s:base_toggle(mode) dict "{{{
@@ -791,14 +800,13 @@ endfunction "}}}
 
 
 let s:base = {
-\   'comment': s:local_func('base_comment'),
-\   'comment_visual': s:local_func('base_comment_visual'),
 \   'toggle': s:local_func('base_toggle'),
 \   'has_comment': s:local_func('base_has_comment'),
 \   'has_comment_visual': s:local_func('base_has_comment_visual'),
 \   'uncomment': s:local_func('base_uncomment'),
 \   'uncomment_visual': s:local_func('base_uncomment_visual'),
 \}
+call extend(s:base, s:Commentable, 'error')
 " }}}
 
 
