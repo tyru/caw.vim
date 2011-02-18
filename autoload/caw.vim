@@ -927,13 +927,28 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.i = deepcopy(s:base)
+let s:caw.i = {}
+
+call extend(s:caw.i, s:Commentable, 'error')
 call extend(s:caw.i, {
 \   'comment_normal': s:local_func('caw_i_comment_normal'),
+\}, 'error')
+call extend(s:caw.i, {
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
-\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\}, 'force')    " override
+
+call extend(s:caw.i, s:Uncommentable, 'error')
+call extend(s:caw.i, {
 \   'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
-\}, 'force')
+\}, 'error')
+
+call extend(s:caw.i, s:CommentDetectable, 'error')
+call extend(s:caw.i, {
+\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\}, 'error')
+
+call extend(s:caw.i, s:Togglable, 'error')
+
 call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 " }}}
 
