@@ -1098,7 +1098,7 @@ call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'er
 
 " wrap {{{
 
-function! s:caw_wrap_comment_normal(lnum, ...) dict "{{{
+function! s:caw_wrap_comment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
         if s:get_var('caw_find_another_action')
@@ -1162,26 +1162,6 @@ function! s:caw_wrap_comment_visual_characterwise() dict "{{{
     call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
 
-function! s:caw_wrap_comment_visual() dict "{{{
-    " TODO:
-    "
-    " Not:
-    " /* line1 */
-    " /* line2 */
-    " /* line3 */
-    "
-    " Doit:
-    " /*********
-    "  * line1 *
-    "  * line2 *
-    "  * line3 *
-    "  *********/
-
-    for lnum in range(line("'<"), line("'>"))
-        call self.comment_normal(lnum, 0)
-    endfor
-endfunction "}}}
-
 
 function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
@@ -1224,9 +1204,6 @@ call extend(s:caw.wrap, s:Commentable, 'error')
 call extend(s:caw.wrap, {
 \   'comment_normal': s:local_func('caw_wrap_comment_normal'),
 \}, 'error')
-call extend(s:caw.wrap, {
-\   'comment_visual': s:local_func('caw_wrap_comment_visual'),
-\}, 'force')    " override
 
 call extend(s:caw.wrap, s:Uncommentable, 'error')
 call extend(s:caw.wrap, {
