@@ -902,10 +902,8 @@ call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'er
 " }}}
 
 " I {{{
-let s:caw.I = deepcopy(s:base)
-call extend(s:caw.I, s:caw.i, 'force')
 
-function! s:caw.I.comment_normal(lnum, ...) "{{{
+function! s:caw_I_comment_normal(lnum, ...) dict "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
 
     let cmt = s:comments.oneline.get_comment(&filetype)
@@ -927,6 +925,11 @@ function! s:caw.I.comment_normal(lnum, ...) "{{{
     endif
 endfunction "}}}
 
+let s:caw.I = {}
+call extend(s:caw.I, {
+\   'comment_normal': s:local_func('caw_I_comment_normal'),
+\}, 'force')
+call extend(s:caw.I, s:caw.i, 'force')
 " }}}
 
 " a {{{
