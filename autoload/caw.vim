@@ -805,14 +805,17 @@ let s:CommentDetectable = {
 \   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
 \}
 " }}}
-" s:base {{{
-
-" NOTE:
-" These methods are missing in s:base.
+" s:Togglable {{{
+"
+" These methods are missing.
 " Derived object must implement those.
+"
+" s:Togglable_toggle requires:
+" - Derived.uncomment()
+" - Derived.comment()
 
 
-function! s:base_toggle(mode) dict "{{{
+function! s:Togglable_toggle(mode) dict "{{{
     if self.has_comment(a:mode)
         call self.uncomment(a:mode)
     else
@@ -821,12 +824,17 @@ function! s:base_toggle(mode) dict "{{{
 endfunction "}}}
 
 
-let s:base = {
-\   'toggle': s:local_func('base_toggle'),
+let s:Togglable = {
+\   'toggle': s:local_func('Togglable_toggle'),
 \}
+" }}}
+" s:base {{{
+
+let s:base = {}
 call extend(s:base, s:Commentable, 'error')
 call extend(s:base, s:Uncommentable, 'error')
 call extend(s:base, s:CommentDetectable, 'error')
+call extend(s:base, s:Togglable, 'error')
 " }}}
 
 
