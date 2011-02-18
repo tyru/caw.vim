@@ -744,6 +744,35 @@ let s:Commentable = {
 \   'comment_visual': s:local_func('Commentable_comment_visual'),
 \}
 " }}}
+" s:Uncommentable {{{
+"
+" These methods are missing.
+" Derived object must implement those.
+"
+" s:Uncommentable_uncomment() and s:Uncommentable_uncomment_visual() require:
+" - Derived.uncomment_normal()
+
+
+function! s:Uncommentable_uncomment(mode) dict "{{{
+    if a:mode ==# 'n'
+        call self.uncomment_normal(line('.'))
+    else
+        call self.uncomment_visual()
+    endif
+endfunction "}}}
+
+function! s:Uncommentable_uncomment_visual() dict "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.uncomment_normal(lnum)
+    endfor
+endfunction "}}}
+
+
+let s:Uncommentable = {
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\}
+" }}}
 " s:base {{{
 
 " NOTE:
@@ -752,9 +781,6 @@ let s:Commentable = {
 "
 " s:base.commented() and s:base.commented_visual() requires:
 " - s:base.commented_normal()
-"
-" s:base.uncomment() and s:base.uncomment_visual() requires:
-" - s:base.uncomment_normal()
 
 
 function! s:base_toggle(mode) dict "{{{
@@ -784,29 +810,13 @@ function! s:base_has_comment_visual() dict "{{{
 endfunction "}}}
 
 
-function! s:base_uncomment(mode) dict "{{{
-    if a:mode ==# 'n'
-        call self.uncomment_normal(line('.'))
-    else
-        call self.uncomment_visual()
-    endif
-endfunction "}}}
-
-function! s:base_uncomment_visual() dict "{{{
-    for lnum in range(line("'<"), line("'>"))
-        call self.uncomment_normal(lnum)
-    endfor
-endfunction "}}}
-
-
 let s:base = {
 \   'toggle': s:local_func('base_toggle'),
 \   'has_comment': s:local_func('base_has_comment'),
 \   'has_comment_visual': s:local_func('base_has_comment_visual'),
-\   'uncomment': s:local_func('base_uncomment'),
-\   'uncomment_visual': s:local_func('base_uncomment_visual'),
 \}
 call extend(s:base, s:Commentable, 'error')
+call extend(s:base, s:Uncommentable, 'error')
 " }}}
 
 
