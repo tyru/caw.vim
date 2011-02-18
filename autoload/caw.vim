@@ -239,20 +239,22 @@ endfunction "}}}
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
 
+function! s:comments_get_comment(filetype) dict "{{{
+    for method in self.__get_comment_fn_list
+        let r = self[method](a:filetype)
+        if !empty(r)
+            return r
+        endif
+        unlet r
+    endfor
+    return self.__get_comment_empty_value
+endfunction "}}}
 function! s:create_get_comment(fn_list, empty_value) "{{{
-    let o = {'__get_comment_empty_value': a:empty_value, '__get_comment_fn_list': a:fn_list}
-    function! o.get_comment(filetype)
-        for method in self.__get_comment_fn_list
-            let r = self[method](a:filetype)
-            if !empty(r)
-                return r
-            endif
-            unlet r
-        endfor
-        return self.__get_comment_empty_value
-    endfunction
-
-    return o
+    return {
+    \   '__get_comment_empty_value': a:empty_value,
+    \   '__get_comment_fn_list': a:fn_list,
+    \   'get_comment': s:local_func('comments_get_comment'),
+    \}
 endfunction "}}}
 
 function! s:create_get_comment_vars(comment) "{{{
