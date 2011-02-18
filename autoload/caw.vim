@@ -176,13 +176,17 @@ function! s:assert(cond, msg) "{{{
     endif
 endfunction "}}}
 
-function! s:get_var(varname) "{{{
+function! s:get_var(varname, ...) "{{{
     for ns in [b:, w:, t:, g:]
         if has_key(ns, a:varname)
             return ns[a:varname]
         endif
     endfor
-    call s:assert(0, "s:get_var(): this must be reached")
+    if a:0
+        return a:1
+    else
+        call s:assert(0, "s:get_var(): this must be reached")
+    endif
 endfunction "}}}
 
 
@@ -258,12 +262,7 @@ function! s:create_get_comment(fn_list, empty_value) "{{{
 endfunction "}}}
 
 function! s:comments_get_comment_vars(filetype) dict "{{{
-    for ns in [b:, w:, t:, g:]
-        if has_key(ns, self.__get_comment_vars_varname)
-            return ns[self.__get_comment_vars_varname]
-        endif
-    endfor
-    return ''
+    return s:get_var(self.__get_comment_vars_varname, '')
 endfunction "}}}
 function! s:create_get_comment_vars(comment) "{{{
     return {
