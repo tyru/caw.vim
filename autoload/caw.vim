@@ -127,6 +127,18 @@ endfunction "}}}
 
 " Implementation {{{
 
+function s:SID() "{{{
+    return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
+endfunction "}}}
+let s:SID_PREFIX = s:SID()
+delfunc s:SID
+
+function! s:local_func(name) "{{{
+    return function(
+    \   '<SNR>' . s:SID_PREFIX . '_' . a:name
+    \)
+endfunction "}}}
+
 function! s:set_and_save_comment_string(comment_string) "{{{
     let stash = {}
 
@@ -696,7 +708,6 @@ endfunction "}}}
 
 
 " s:base {{{
-let s:base = {}
 
 " NOTE:
 " These methods are missing in s:base.
@@ -712,7 +723,7 @@ let s:base = {}
 " - s:base.uncomment_normal()
 
 
-function! s:base.comment(mode) "{{{
+function! s:base_comment(mode) dict "{{{
     if a:mode ==# 'n'
         call self.comment_normal(line('.'))
     else
@@ -729,7 +740,7 @@ function! s:base.comment(mode) "{{{
     endif
 endfunction "}}}
 
-function! s:base.comment_visual() "{{{
+function! s:base_comment_visual() dict "{{{
     " Behave like linewise.
     for lnum in range(line("'<"), line("'>"))
         call self.comment_normal(lnum)
@@ -737,7 +748,7 @@ function! s:base.comment_visual() "{{{
 endfunction "}}}
 
 
-function! s:base.toggle(mode) "{{{
+function! s:base_toggle(mode) dict "{{{
     if self.commented(a:mode)
         call self.uncomment(a:mode)
     else
@@ -746,7 +757,7 @@ function! s:base.toggle(mode) "{{{
 endfunction "}}}
 
 
-function! s:base.commented(mode) "{{{
+function! s:base_commented(mode) dict "{{{
     if a:mode ==# 'n'
         return self.commented_normal(line('.'))
     else
@@ -754,7 +765,7 @@ function! s:base.commented(mode) "{{{
     endif
 endfunction "}}}
 
-function! s:base.commented_visual() "{{{
+function! s:base_commented_visual() dict "{{{
     for lnum in range(line("'<"), line("'>"))
         if self.commented_normal(lnum)
             return 1
@@ -764,7 +775,7 @@ function! s:base.commented_visual() "{{{
 endfunction "}}}
 
 
-function! s:base.uncomment(mode) "{{{
+function! s:base_uncomment(mode) dict "{{{
     if a:mode ==# 'n'
         call self.uncomment_normal(line('.'))
     else
@@ -772,12 +783,22 @@ function! s:base.uncomment(mode) "{{{
     endif
 endfunction "}}}
 
-function! s:base.uncomment_visual() "{{{
+function! s:base_uncomment_visual() dict "{{{
     for lnum in range(line("'<"), line("'>"))
         call self.uncomment_normal(lnum)
     endfor
 endfunction "}}}
 
+
+let s:base = {
+\   'comment': s:local_func('base_comment'),
+\   'comment_visual': s:local_func('base_comment_visual'),
+\   'toggle': s:local_func('base_toggle'),
+\   'commented': s:local_func('base_commented'),
+\   'commented_visual': s:local_func('base_commented_visual'),
+\   'uncomment': s:local_func('base_uncomment'),
+\   'uncomment_visual': s:local_func('base_uncomment_visual'),
+\}
 " }}}
 
 
