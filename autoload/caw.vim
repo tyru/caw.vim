@@ -239,34 +239,37 @@ endfunction "}}}
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
 
+function! s:comments_get_comment(filetype) dict "{{{
+    for method in self.__get_comment_fn_list
+        let r = self[method](a:filetype)
+        if !empty(r)
+            return r
+        endif
+        unlet r
+    endfor
+    return self.__get_comment_empty_value
+endfunction "}}}
 function! s:create_get_comment(fn_list, empty_value) "{{{
-    let o = {'__get_comment_empty_value': a:empty_value, '__get_comment_fn_list': a:fn_list}
-    function! o.get_comment(filetype)
-        for method in self.__get_comment_fn_list
-            let r = self[method](a:filetype)
-            if !empty(r)
-                return r
-            endif
-            unlet r
-        endfor
-        return self.__get_comment_empty_value
-    endfunction
-
-    return o
+    return {
+    \   '__get_comment_empty_value': a:empty_value,
+    \   '__get_comment_fn_list': a:fn_list,
+    \   'get_comment': s:local_func('comments_get_comment'),
+    \}
 endfunction "}}}
 
+function! s:comments_get_comment_vars(filetype) dict "{{{
+    for ns in [b:, w:, t:, g:]
+        if has_key(ns, self.__get_comment_vars_varname)
+            return ns[self.__get_comment_vars_varname]
+        endif
+    endfor
+    return ''
+endfunction "}}}
 function! s:create_get_comment_vars(comment) "{{{
-    let o = {'__get_comment_vars_varname': a:comment}
-    function! o.get_comment_vars(filetype)
-        for ns in [b:, w:, t:, g:]
-            if has_key(ns, self.__get_comment_vars_varname)
-                return ns[self.__get_comment_vars_varname]
-            endif
-        endfor
-        return ''
-    endfunction
-
-    return o
+    return {
+    \   '__get_comment_vars_varname': a:comment,
+    \   'get_comment_vars': s:local_func('comments_get_comment_vars'),
+    \}
 endfunction "}}}
 
 
@@ -693,17 +696,19 @@ endfunction "}}}
 let s:caw = {}
 
 
+function! s:caw_call_another_action(method, args) dict "{{{
+    for c in sort(keys(self.__call_another_action_comment_vs_action))
+        if !empty(s:comments[c].get_comment(&filetype))
+            let action = self.__call_another_action_comment_vs_action[c]
+            return call(s:caw[action][a:method], a:args, s:caw[action])
+        endif
+    endfor
+endfunction "}}}
 function! s:create_call_another_action(comment_vs_action) "{{{
-    let o = {'__call_another_action_comment_vs_action': a:comment_vs_action}
-    function! o.call_another_action(method, args)
-        for c in sort(keys(self.__call_another_action_comment_vs_action))
-            if !empty(s:comments[c].get_comment(&filetype))
-                let action = self.__call_another_action_comment_vs_action[c]
-                return call(s:caw[action][a:method], a:args, s:caw[action])
-            endif
-        endfor
-    endfunction
-    return o
+    return {
+    \   '__call_another_action_comment_vs_action': a:comment_vs_action,
+    \   'call_another_action': s:local_func('caw_call_another_action'),
+    \}
 endfunction "}}}
 
 
