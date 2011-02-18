@@ -1382,6 +1382,13 @@ function! s:caw.detect_operated_action(mode) "{{{
     return ''
 endfunction "}}}
 
+" Remove unnecessary objects for memory... {{{
+" Those objects were used to build objects under s:caw.
+" now no need to hold the objects so remove them.
+
+unlet s:Commentable s:Uncommentable s:CommentDetectable s:Togglable
+" }}}
+
 " }}}
 
 " }}}
