@@ -139,6 +139,7 @@ function! s:local_func(name) "{{{
     \)
 endfunction "}}}
 
+
 function! s:set_and_save_comment_string(comment_string) "{{{
     let stash = {}
 
@@ -203,7 +204,7 @@ function! s:get_indent_num(lnum) "{{{
             return eval(&l:indentexpr)
         finally
             let v:lnum = save_lnum
-            " NOTE: GetPythonIndent() may move cursor. wtf?
+            " NOTE: GetPythonIndent() moves cursor. wtf?
             call winrestview(save_view)
         endtry
     else
