@@ -828,14 +828,6 @@ let s:Togglable = {
 \   'toggle': s:local_func('Togglable_toggle'),
 \}
 " }}}
-" s:base {{{
-
-let s:base = {}
-call extend(s:base, s:Commentable, 'error')
-call extend(s:base, s:Uncommentable, 'error')
-call extend(s:base, s:CommentDetectable, 'error')
-call extend(s:base, s:Togglable, 'error')
-" }}}
 
 
 " i {{{
