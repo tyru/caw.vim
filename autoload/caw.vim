@@ -964,7 +964,7 @@ function! s:caw_a_comment_visual() dict "{{{
 endfunction "}}}
 
 
-function! s:caw_a_get_commented_col(lnum) "{{{
+function! s:caw_a_get_comment_col(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
         return -1
@@ -995,7 +995,7 @@ function! s:caw_a_get_commented_col(lnum) "{{{
 endfunction "}}}
 
 function! s:caw_a_commented_normal(lnum) dict "{{{
-    return s:caw_a_get_commented_col(a:lnum) > 0
+    return s:caw_a_get_comment_col(a:lnum) > 0
 endfunction "}}}
 
 
@@ -1009,7 +1009,7 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
     endif
 
     if self.commented_normal(a:lnum)
-        let col = s:caw_a_get_commented_col(a:lnum)
+        let col = s:caw_a_get_comment_col(a:lnum)
         if col <= 0
             return
         endif
