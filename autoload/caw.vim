@@ -707,23 +707,15 @@ function! s:create_call_another_action(comment_vs_action) "{{{
 endfunction "}}}
 
 
-" s:base {{{
-
-" NOTE:
-" These methods are missing in s:base.
+" s:Commentable {{{
+"
+" These methods are missing.
 " Derived object must implement those.
 "
-" s:base.comment() requires:
-" - s:base.comment_normal()
-"
-" s:base.has_comment() and s:base.has_comment_visual() requires:
-" - s:base.has_comment_normal()
-"
-" s:base.uncomment() and s:base.uncomment_visual() requires:
-" - s:base.uncomment_normal()
+" s:Commentable_comment() requires:
+" - Derived.comment_normal()
 
-
-function! s:base_comment(mode) dict "{{{
+function! s:Commentable_comment(mode) dict "{{{
     if a:mode ==# 'n'
         call self.comment_normal(line('.'))
     else
@@ -740,24 +732,57 @@ function! s:base_comment(mode) dict "{{{
     endif
 endfunction "}}}
 
-function! s:base_comment_visual() dict "{{{
+function! s:Commentable_comment_visual() dict "{{{
     " Behave like linewise.
     for lnum in range(line("'<"), line("'>"))
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
 
+let s:Commentable = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_visual': s:local_func('Commentable_comment_visual'),
+\}
+" }}}
+" s:Uncommentable {{{
+"
+" These methods are missing.
+" Derived object must implement those.
+"
+" s:Uncommentable_uncomment() and s:Uncommentable_uncomment_visual() require:
+" - Derived.uncomment_normal()
 
-function! s:base_toggle(mode) dict "{{{
-    if self.has_comment(a:mode)
-        call self.uncomment(a:mode)
+
+function! s:Uncommentable_uncomment(mode) dict "{{{
+    if a:mode ==# 'n'
+        call self.uncomment_normal(line('.'))
     else
-        call self.comment(a:mode)
+        call self.uncomment_visual()
     endif
 endfunction "}}}
 
+function! s:Uncommentable_uncomment_visual() dict "{{{
+    for lnum in range(line("'<"), line("'>"))
+        call self.uncomment_normal(lnum)
+    endfor
+endfunction "}}}
 
-function! s:base_has_comment(mode) dict "{{{
+
+let s:Uncommentable = {
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\}
+" }}}
+" s:CommentDetectable {{{
+"
+" These methods are missing.
+" Derived object must implement those.
+"
+" s:CommentDetectable_has_comment() and s:CommentDetectable_has_comment_visual() require:
+" - Derived.has_comment_normal()
+
+
+function! s:CommentDetectable_has_comment(mode) dict "{{{
     if a:mode ==# 'n'
         return self.has_comment_normal(line('.'))
     else
@@ -765,7 +790,7 @@ function! s:base_has_comment(mode) dict "{{{
     endif
 endfunction "}}}
 
-function! s:base_has_comment_visual() dict "{{{
+function! s:CommentDetectable_has_comment_visual() dict "{{{
     for lnum in range(line("'<"), line("'>"))
         if self.has_comment_normal(lnum)
             return 1
@@ -775,29 +800,32 @@ function! s:base_has_comment_visual() dict "{{{
 endfunction "}}}
 
 
-function! s:base_uncomment(mode) dict "{{{
-    if a:mode ==# 'n'
-        call self.uncomment_normal(line('.'))
+let s:CommentDetectable = {
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\}
+" }}}
+" s:Togglable {{{
+"
+" These methods are missing.
+" Derived object must implement those.
+"
+" s:Togglable_toggle requires:
+" - Derived.uncomment()
+" - Derived.comment()
+
+
+function! s:Togglable_toggle(mode) dict "{{{
+    if self.has_comment(a:mode)
+        call self.uncomment(a:mode)
     else
-        call self.uncomment_visual()
+        call self.comment(a:mode)
     endif
 endfunction "}}}
 
-function! s:base_uncomment_visual() dict "{{{
-    for lnum in range(line("'<"), line("'>"))
-        call self.uncomment_normal(lnum)
-    endfor
-endfunction "}}}
 
-
-let s:base = {
-\   'comment': s:local_func('base_comment'),
-\   'comment_visual': s:local_func('base_comment_visual'),
-\   'toggle': s:local_func('base_toggle'),
-\   'has_comment': s:local_func('base_has_comment'),
-\   'has_comment_visual': s:local_func('base_has_comment_visual'),
-\   'uncomment': s:local_func('base_uncomment'),
-\   'uncomment_visual': s:local_func('base_uncomment_visual'),
+let s:Togglable = {
+\   'toggle': s:local_func('Togglable_toggle'),
 \}
 " }}}
 
@@ -891,13 +919,28 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.i = deepcopy(s:base)
+let s:caw.i = {}
+
+call extend(s:caw.i, s:Commentable, 'error')
 call extend(s:caw.i, {
 \   'comment_normal': s:local_func('caw_i_comment_normal'),
+\}, 'error')
+call extend(s:caw.i, {
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
-\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\}, 'force')    " override
+
+call extend(s:caw.i, s:Uncommentable, 'error')
+call extend(s:caw.i, {
 \   'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
-\}, 'force')
+\}, 'error')
+
+call extend(s:caw.i, s:CommentDetectable, 'error')
+call extend(s:caw.i, {
+\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\}, 'error')
+
+call extend(s:caw.i, s:Togglable, 'error')
+
 call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 " }}}
 
@@ -1027,13 +1070,29 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
     endif
 endfunction "}}}
 
-let s:caw.a = deepcopy(s:base)
+
+let s:caw.a = {}
+
+call extend(s:caw.a, s:Commentable, 'error')
 call extend(s:caw.a, {
 \   'comment_normal': s:local_func('caw_a_comment_normal'),
+\}, 'error')
+call extend(s:caw.a, {
 \   'comment_visual': s:local_func('caw_a_comment_visual'),
-\   'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
+\}, 'force')    " override
+
+call extend(s:caw.a, s:Uncommentable, 'error')
+call extend(s:caw.a, {
 \   'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
-\}, 'force')
+\}, 'error')
+
+call extend(s:caw.a, s:CommentDetectable, 'error')
+call extend(s:caw.a, {
+\   'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
+\}, 'error')
+
+call extend(s:caw.a, s:Togglable, 'error')
+
 call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
 " }}}
 
@@ -1158,14 +1217,29 @@ function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
     endif
 endfunction "}}}
 
-let s:caw.wrap = deepcopy(s:base)
+
+let s:caw.wrap = {}
+
+call extend(s:caw.wrap, s:Commentable, 'error')
 call extend(s:caw.wrap, {
 \   'comment_normal': s:local_func('caw_wrap_comment_normal'),
-\   'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
+\}, 'error')
+call extend(s:caw.wrap, {
 \   'comment_visual': s:local_func('caw_wrap_comment_visual'),
-\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\}, 'force')    " override
+
+call extend(s:caw.wrap, s:Uncommentable, 'error')
+call extend(s:caw.wrap, {
 \   'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
-\}, 'force')
+\}, 'error')
+
+call extend(s:caw.wrap, s:CommentDetectable, 'error')
+call extend(s:caw.wrap, {
+\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\}, 'error')
+
+call extend(s:caw.wrap, s:Togglable, 'error')
+
 call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
 " }}}
 
@@ -1197,10 +1271,10 @@ function! s:caw_jump_comment(next) dict "{{{
     endif
 endfunction "}}}
 
-let s:caw.jump = deepcopy(s:base)
-call extend(s:caw.jump, {
+
+let s:caw.jump = {
 \   'comment': s:local_func('caw_jump_comment')
-\}, 'force')
+\}
 " }}}
 
 " input {{{
@@ -1294,12 +1368,12 @@ function! s:input(...) "{{{
     endtry
 endfunction "}}}
 
-let s:caw.input = deepcopy(s:base)
-call extend(s:caw.input, {
+
+let s:caw.input = {
 \   'comment': s:local_func('caw_input_comment'),
 \   'comment_normal': s:local_func('caw_input_comment_normal'),
 \   'comment_visual': s:local_func('caw_input_comment_visual'),
-\}, 'force')
+\}
 " }}}
 
 
