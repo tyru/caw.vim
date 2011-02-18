@@ -773,14 +773,43 @@ let s:Uncommentable = {
 \   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
 \}
 " }}}
+" s:CommentDetectable {{{
+"
+" These methods are missing.
+" Derived object must implement those.
+"
+" s:CommentDetectable_has_comment() and s:CommentDetectable_has_comment_visual() require:
+" - Derived.has_comment_normal()
+
+
+function! s:CommentDetectable_has_comment(mode) dict "{{{
+    if a:mode ==# 'n'
+        return self.has_comment_normal(line('.'))
+    else
+        return self.has_comment_visual()
+    endif
+endfunction "}}}
+
+function! s:CommentDetectable_has_comment_visual() dict "{{{
+    for lnum in range(line("'<"), line("'>"))
+        if self.has_comment_normal(lnum)
+            return 1
+        endif
+    endfor
+    return 0
+endfunction "}}}
+
+
+let s:CommentDetectable = {
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\}
+" }}}
 " s:base {{{
 
 " NOTE:
 " These methods are missing in s:base.
 " Derived object must implement those.
-"
-" s:base.commented() and s:base.commented_visual() requires:
-" - s:base.commented_normal()
 
 
 function! s:base_toggle(mode) dict "{{{
@@ -792,31 +821,12 @@ function! s:base_toggle(mode) dict "{{{
 endfunction "}}}
 
 
-function! s:base_has_comment(mode) dict "{{{
-    if a:mode ==# 'n'
-        return self.has_comment_normal(line('.'))
-    else
-        return self.has_comment_visual()
-    endif
-endfunction "}}}
-
-function! s:base_has_comment_visual() dict "{{{
-    for lnum in range(line("'<"), line("'>"))
-        if self.has_comment_normal(lnum)
-            return 1
-        endif
-    endfor
-    return 0
-endfunction "}}}
-
-
 let s:base = {
 \   'toggle': s:local_func('base_toggle'),
-\   'has_comment': s:local_func('base_has_comment'),
-\   'has_comment_visual': s:local_func('base_has_comment_visual'),
 \}
 call extend(s:base, s:Commentable, 'error')
 call extend(s:base, s:Uncommentable, 'error')
+call extend(s:base, s:CommentDetectable, 'error')
 " }}}
 
 
