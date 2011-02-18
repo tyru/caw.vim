@@ -1279,10 +1279,10 @@ function! s:caw_jump_comment(next) dict "{{{
     endif
 endfunction "}}}
 
-let s:caw.jump = deepcopy(s:base)
-call extend(s:caw.jump, {
+
+let s:caw.jump = {
 \   'comment': s:local_func('caw_jump_comment')
-\}, 'force')
+\}
 " }}}
 
 " input {{{
