@@ -1204,9 +1204,8 @@ call extend(s:caw.jump, {
 " }}}
 
 " input {{{
-let s:caw.input = deepcopy(s:base)
 
-function! s:caw.input.comment(mode) "{{{
+function! s:caw_input_comment(mode) dict "{{{
     let [pos, pos_opt] = s:caw_input_get_pos()
     if !has_key(s:caw, pos) || !has_key(s:caw[pos], 'comment')
         echohl WarningMsg
@@ -1234,11 +1233,11 @@ function! s:caw.input.comment(mode) "{{{
     endtry
 endfunction "}}}
 
-function! s:caw.input.comment_normal(lnum, pos) "{{{
+function! s:caw_input_comment_normal(lnum, pos) dict "{{{
     call s:caw[a:pos].comment_normal(a:lnum)
 endfunction "}}}
 
-function! s:caw.input.comment_visual(pos) "{{{
+function! s:caw_input_comment_visual(pos) dict "{{{
     for lnum in range(line("'<"), line("'>"))
         call self.comment_normal(lnum, a:pos)
     endfor
@@ -1295,6 +1294,12 @@ function! s:input(...) "{{{
     endtry
 endfunction "}}}
 
+let s:caw.input = deepcopy(s:base)
+call extend(s:caw.input, {
+\   'comment': s:local_func('caw_input_comment'),
+\   'comment_normal': s:local_func('caw_input_comment_normal'),
+\   'comment_visual': s:local_func('caw_input_comment_visual'),
+\}, 'force')
 " }}}
 
 
