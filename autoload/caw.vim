@@ -1120,7 +1120,7 @@ call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'er
 
 function! s:caw_wrap_comment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
-    if empty(cmt)
+    if empty(cmt) || getline(a:lnum) =~# '^\s*$'
         if s:get_var('caw_find_another_action')
             call self.call_another_action('comment_normal', [a:lnum])
         endif
