@@ -821,6 +821,21 @@ let s:CommentDetectable = {
 
 
 function! s:Togglable_toggle(mode) dict "{{{
+    if a:mode ==# 'v'
+        let commented_all = 1
+        for lnum in range(line("'<"), line("'>"))
+            if !self.has_comment_normal(lnum)
+                let commented_all = 0
+                break
+            endif
+        endfor
+        if commented_all
+            return self.uncomment_visual()
+        else
+            return self.comment_visual()
+        endif
+    endif
+
     if self.has_comment(a:mode)
         call self.uncomment(a:mode)
     else
