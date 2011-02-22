@@ -20,6 +20,7 @@ function! s:sandbox_call(Fn, args, ...) "{{{
 endfunction "}}}
 
 function! s:get_caw_object() "{{{
+    " TODO: Support b:caw
     return exists('b:caw') ? b:caw : s:caw
 endfunction "}}}
 
