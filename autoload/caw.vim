@@ -1203,17 +1203,18 @@ function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if !empty(cmt) && self.has_comment_normal(a:lnum)
         let [left, right] = cmt
-
         let line = s:trim_whitespaces(getline(a:lnum))
 
-        let [l, r] = [line[: strlen(left) - 1], left]
-        call s:assert(l ==# r, string(l).' ==# '.string(r))
-        let [l, r] = [line[strlen(line) - strlen(right) :], right]
-        call s:assert(l ==# r, string(l).' ==# '.string(r))
+        if left != '' && line[: strlen(left) - 1] ==# left
+            let line = line[strlen(left) :]
+        endif
+        if right != '' && line[strlen(line) - strlen(right) :] ==# right
+            let line = line[: -strlen(right) - 1]
+        endif
 
-        let body = line[strlen(left) : -strlen(right) - 1]
-        let body = s:trim_whitespaces(body)
-        call setline(a:lnum, s:get_inserted_indent(a:lnum) . body)
+        let indent = s:get_inserted_indent(a:lnum)
+        let line = s:trim_whitespaces(line)
+        call setline(a:lnum, indent . line)
     endif
 endfunction "}}}
 
