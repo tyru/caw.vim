@@ -27,6 +27,10 @@ if !exists('g:caw_i_align')
     let g:caw_i_align = 1
 endif
 
+if !exists('g:caw_I_startinsert_at_blank_line')
+    let g:caw_I_startinsert_at_blank_line = 1
+endif
+
 if !exists('g:caw_sp_a_left')
     let g:caw_sp_a_left = repeat(' ', 4)
 endif

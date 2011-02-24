@@ -212,6 +212,12 @@ g:caw_i_align							*g:caw_i_align*
 
 	TODO: example
 
+g:caw_I_startinsert_at_blank_line		*g:caw_I_startinsert_at_blank_line*
+									(Default: 1)
+	If this variable is true,
+	if current line is blank line,
+	enter |Insert-mode| after <Plug>(caw:I:comment).
+
 g:caw_sp_a_left							*g:caw_sp_a_left*
 									(Default: "    ")
 	Inserted string before comment with <Plug>(caw:a:comment).

@@ -978,7 +978,7 @@ call s:override_methods(s:caw.i, {
 " I {{{
 
 function! s:caw_I_comment_normal(lnum, ...) dict "{{{
-    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
+    let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line'))
 
     let cmt = self.comment_database.get_comment(&filetype)
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
