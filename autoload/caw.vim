@@ -41,6 +41,16 @@ function! caw#do_a_comment(mode) "{{{
     return s:sandbox_call(caw.a.comment, [a:mode], caw.a)
 endfunction "}}}
 
+function! caw#do_i_uncomment(mode) "{{{
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.i.uncomment, [a:mode], caw.i)
+endfunction "}}}
+
+function! caw#do_a_uncomment(mode) "{{{
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.a.uncomment, [a:mode], caw.a)
+endfunction "}}}
+
 function! caw#do_i_toggle(mode) "{{{
     let caw = s:get_caw_object()
     return s:sandbox_call(caw.i.toggle, [a:mode], caw.i)
@@ -62,6 +72,11 @@ endfunction "}}}
 function! caw#do_wrap_comment(mode) "{{{
     let caw = s:get_caw_object()
     return s:sandbox_call(caw.wrap.comment, [a:mode], caw.wrap)
+endfunction "}}}
+
+function! caw#do_wrap_uncomment(mode) "{{{
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.wrap.uncomment, [a:mode], caw.wrap)
 endfunction "}}}
 
 function! caw#do_wrap_toggle(mode) "{{{
@@ -90,38 +105,11 @@ function! caw#do_input_comment(mode) "{{{
     return s:sandbox_call(caw.input.comment, [a:mode], caw.input)
 endfunction "}}}
 
-
-
-" uncomment
-function! caw#do_uncomment(mode) "{{{
-    let caw = s:get_caw_object()
-    let action = caw.detect_operated_action(a:mode)
-    if action != ''
-        call caw[action].uncomment(a:mode)
-    endif
-endfunction "}}}
-
-
-function! caw#do_uncomment_i(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.i.uncomment, [a:mode], caw.i)
-endfunction "}}}
-
-function! caw#do_uncomment_a(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.a.uncomment, [a:mode], caw.a)
-endfunction "}}}
-
-
-function! caw#do_uncomment_wrap(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.wrap.uncomment, [a:mode], caw.wrap)
-endfunction "}}}
-
-
-function! caw#do_uncomment_input(mode) "{{{
+function! caw#do_input_uncomment(mode) "{{{
     " TODO
 endfunction "}}}
+
+
 
 " }}}
 

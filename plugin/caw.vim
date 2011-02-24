@@ -80,6 +80,15 @@ vnoremap <silent> <Plug>(caw:I:comment)  :<C-u>call caw#do_I_comment('v')<CR>
 nnoremap <silent> <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('n')<CR>
 vnoremap <silent> <Plug>(caw:a:comment)  :<C-u>call caw#do_a_comment('v')<CR>
 
+nnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_i_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_i_uncomment('v')<CR>
+
+nnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_i_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_i_uncomment('v')<CR>
+
+nnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_a_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_a_uncomment('v')<CR>
+
 nnoremap <silent> <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('n')<CR>
 vnoremap <silent> <Plug>(caw:i:toggle)   :<C-u>call caw#do_i_toggle('v')<CR>
 
@@ -90,10 +99,12 @@ nnoremap <silent> <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('n')<CR>
 vnoremap <silent> <Plug>(caw:a:toggle)   :<C-u>call caw#do_a_toggle('v')<CR>
 
 if !g:caw_no_default_keymappings
-    call s:map('<Plug>(caw:prefix)c', '<Plug>(caw:i:toggle)')
     call s:map('<Plug>(caw:prefix)i', '<Plug>(caw:i:comment)')
     call s:map('<Plug>(caw:prefix)I', '<Plug>(caw:I:comment)')
     call s:map('<Plug>(caw:prefix)a', '<Plug>(caw:a:comment)')
+    call s:map('<Plug>(caw:prefix)ui', '<Plug>(caw:i:uncomment)')
+    call s:map('<Plug>(caw:prefix)ua', '<Plug>(caw:a:uncomment)')
+    call s:map('<Plug>(caw:prefix)c', '<Plug>(caw:i:toggle)')
 endif
 
 
@@ -101,11 +112,15 @@ endif
 nnoremap <silent> <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('n')<CR>
 vnoremap <silent> <Plug>(caw:wrap:comment)           :<C-u>call caw#do_wrap_comment('v')<CR>
 
+nnoremap <silent> <Plug>(caw:wrap:uncomment)         :<C-u>call caw#do_wrap_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:wrap:uncomment)         :<C-u>call caw#do_wrap_uncomment('v')<CR>
+
 nnoremap <silent> <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('n')<CR>
 vnoremap <silent> <Plug>(caw:wrap:toggle)            :<C-u>call caw#do_wrap_toggle('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('<Plug>(caw:prefix)w', '<Plug>(caw:wrap:comment)')
+    call s:map('<Plug>(caw:prefix)uw', '<Plug>(caw:wrap:uncomment)')
 endif
 
 
@@ -131,38 +146,9 @@ if !g:caw_no_default_keymappings
 endif
 
 
-
-" uncomment
-nnoremap <silent> <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('n')<CR>
-vnoremap <silent> <Plug>(caw:uncomment)  :<C-u>call caw#do_uncomment('v')<CR>
-
-if !g:caw_no_default_keymappings
-    call s:map('<Plug>(caw:prefix)uu', '<Plug>(caw:uncomment)')
-endif
-
-" uncomment: i/a
-nnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_uncomment_i('n')<CR>
-vnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_uncomment_i('v')<CR>
-
-nnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_uncomment_a('n')<CR>
-vnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_uncomment_a('v')<CR>
-
-if !g:caw_no_default_keymappings
-    call s:map('<Plug>(caw:prefix)ui', '<Plug>(caw:i:uncomment)')
-    call s:map('<Plug>(caw:prefix)ua', '<Plug>(caw:a:uncomment)')
-endif
-
-" uncomment: wrap
-nnoremap <silent> <Plug>(caw:wrap:uncomment)         :<C-u>call caw#do_uncomment_wrap('n')<CR>
-vnoremap <silent> <Plug>(caw:wrap:uncomment)         :<C-u>call caw#do_uncomment_wrap('v')<CR>
-
-if !g:caw_no_default_keymappings
-    call s:map('<Plug>(caw:prefix)uw', '<Plug>(caw:wrap:uncomment)')
-endif
-
 " uncomment: input
-nnoremap <silent> <Plug>(caw:input:uncomment)    :<C-u>call caw#do_uncomment_input('n')<CR>
-vnoremap <silent> <Plug>(caw:input:uncomment)    :<C-u>call caw#do_uncomment_input('v')<CR>
+nnoremap <silent> <Plug>(caw:input:uncomment)    :<C-u>call caw#do_input_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:input:uncomment)    :<C-u>call caw#do_input_uncomment('v')<CR>
 
 if !g:caw_no_default_keymappings
     call s:map('<Plug>(caw:prefix)uv', '<Plug>(caw:input:uncomment)')
