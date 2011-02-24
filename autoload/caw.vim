@@ -735,6 +735,14 @@ endfunction "}}}
 " - Derived.comment_normal()
 
 function! s:Commentable_comment(mode) dict "{{{
+    if !has_key(self, 'comment_database')
+    \   || empty(self.comment_database.get_comment(&filetype))
+        if s:get_var('caw_find_another_action', 0)
+            return self.call_another_action('comment', [a:mode])
+        endif
+        return
+    endif
+
     if a:mode ==# 'n'
         call self.comment_normal(line('.'))
     else
@@ -773,6 +781,14 @@ let s:Commentable = {
 
 
 function! s:Uncommentable_uncomment(mode) dict "{{{
+    if !has_key(self, 'comment_database')
+    \   || empty(self.comment_database.get_comment(&filetype))
+        if s:get_var('caw_find_another_action', 0)
+            return self.call_another_action('uncomment', [a:mode])
+        endif
+        return
+    endif
+
     if a:mode ==# 'n'
         call self.uncomment_normal(line('.'))
     else
@@ -835,6 +851,14 @@ let s:CommentDetectable = {
 
 
 function! s:Togglable_toggle(mode) dict "{{{
+    if !has_key(self, 'comment_database')
+    \   || empty(self.comment_database.get_comment(&filetype))
+        if s:get_var('caw_find_another_action', 0)
+            return self.call_another_action('toggle', [a:mode])
+        endif
+        return
+    endif
+
     if a:mode ==# 'v'
         let commented_all = 1
         for lnum in range(line("'<"), line("'>"))
@@ -870,13 +894,8 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
 
-    let cmt = s:comments.oneline.get_comment(&filetype)
-    if empty(cmt)
-        if s:get_var('caw_find_another_action')
-            call self.call_another_action('comment_normal', [a:lnum])
-        endif
-        return
-    endif
+    let cmt = self.comment_database.get_comment(&filetype)
+    call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     let line = getline(a:lnum)
     if min_indent_num >= 0
@@ -926,13 +945,8 @@ function! s:caw_i_has_comment_normal(lnum) dict "{{{
 endfunction "}}}
 
 function! s:caw_i_uncomment_normal(lnum) dict "{{{
-    let cmt = s:comments.oneline.get_comment(&filetype)
-    if empty(cmt)
-        if s:get_var('caw_find_another_action')
-            call self.call_another_action('uncomment_normal', [a:lnum])
-        endif
-        return
-    endif
+    let cmt = self.comment_database.get_comment(&filetype)
+    call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     if self.has_comment_normal(a:lnum)
         let indent = s:get_inserted_indent(a:lnum)
@@ -955,6 +969,7 @@ let s:caw.i = s:create_class_from(
 \       'comment_normal': s:local_func('caw_i_comment_normal'),
 \       'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
 \       'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\       'comment_database': s:comments.oneline,
 \   },
 \   s:create_call_another_action({'wrap_oneline': 'wrap'}),
 \   s:Commentable,
@@ -972,13 +987,8 @@ call s:override_methods(s:caw.i, {
 function! s:caw_I_comment_normal(lnum, ...) dict "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
 
-    let cmt = s:comments.oneline.get_comment(&filetype)
-    if empty(cmt)
-        if s:get_var('caw_find_another_action')
-            call self.call_another_action('comment_normal', [a:lnum])
-        endif
-        return
-    endif
+    let cmt = self.comment_database.get_comment(&filetype)
+    call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     let line = getline(a:lnum)
     if line =~# '^\s*$'
@@ -1003,13 +1013,8 @@ call s:override_methods(s:caw.I, {
 function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
 
-    let cmt = s:comments.oneline.get_comment(&filetype)
-    if empty(cmt)
-        if s:get_var('caw_find_another_action')
-            call self.call_another_action('comment_normal', [a:lnum])
-        endif
-        return
-    endif
+    let cmt = self.comment_database.get_comment(&filetype)
+    call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     call setline(
     \   a:lnum,
@@ -1064,13 +1069,8 @@ function! s:caw_a_has_comment_normal(lnum) dict "{{{
 endfunction "}}}
 
 function! s:caw_a_uncomment_normal(lnum) dict "{{{
-    let cmt = s:comments.oneline.get_comment(&filetype)
-    if empty(cmt)
-        if s:get_var('caw_find_another_action')
-            call self.call_another_action('uncomment_normal', [a:lnum])
-        endif
-        return
-    endif
+    let cmt = self.comment_database.get_comment(&filetype)
+    call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     if self.has_comment_normal(a:lnum)
         let col = s:caw_a_get_comment_col(a:lnum)
@@ -1097,6 +1097,7 @@ let s:caw.a = s:create_class_from(
 \       'comment_normal': s:local_func('caw_a_comment_normal'),
 \       'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
 \       'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
+\       'comment_database': s:comments.oneline,
 \   },
 \   s:create_call_another_action({'wrap_oneline': 'wrap'}),
 \   s:Commentable,
@@ -1112,11 +1113,9 @@ call s:override_methods(s:caw.I, {
 " wrap {{{
 
 function! s:caw_wrap_comment_normal(lnum) dict "{{{
-    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
-    if empty(cmt) || getline(a:lnum) =~# '^\s*$'
-        if s:get_var('caw_find_another_action')
-            call self.call_another_action('comment_normal', [a:lnum])
-        endif
+    let cmt = self.comment_database.get_comment(&filetype)
+    call s:assert(!empty(cmt), "`cmt` must not be empty.")
+    if getline(a:lnum) =~# '^\s*$'
         return
     endif
 
@@ -1214,6 +1213,7 @@ let s:caw.wrap = s:create_class_from(
 \       'comment_normal': s:local_func('caw_wrap_comment_normal'),
 \       'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
 \       'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\       'comment_database': s:comments.wrap_oneline,
 \   },
 \   s:create_call_another_action({'oneline': 'i'}),
 \   s:Commentable,
