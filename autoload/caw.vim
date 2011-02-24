@@ -1159,17 +1159,8 @@ function! s:caw_wrap___operate_on_word(funcname) "{{{
     endtry
 endfunction "}}}
 function! s:caw_wrap_comment_visual_characterwise() dict "{{{
-    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
-    if empty(cmt)
-        if s:get_var('caw_find_another_action')
-            let [begin_lnum, end_lnum] = [getpos("'<")[1], getpos("'>")[1]]
-            call s:assert(begin_lnum <= end_lnum, "begin_lnum <= end_lnum")
-            for lnum in range(begin_lnum, end_lnum)
-                call self.call_another_action('comment_normal', [lnum])
-            endfor
-        endif
-        return
-    endif
+    let cmt = self.comment_database.get_comment(&filetype)
+    call s:assert(!empty(cmt), "`cmt` must not be empty.")
     call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
 
