@@ -54,6 +54,17 @@ endif
 
 
 
+function! s:map_prefix(lhs) "{{{
+    if a:lhs == ''
+        echoerr 'internal error'
+        return
+    endif
+    let rhs = '<Plug>(caw:prefix)'
+    if !hasmapto(rhs)
+        execute 'silent! nmap <unique>' a:lhs rhs
+        execute 'silent! vmap <unique>' a:lhs rhs
+    endif
+endfunction "}}}
 function! s:map_user(lhs, rhs) "{{{
     if a:lhs == '' || a:rhs == ''
         echoerr 'internal error'
@@ -86,7 +97,7 @@ endfunction "}}}
 
 
 " prefix
-call s:map_user('gc', 'prefix')
+call s:map_prefix('gc')
 
 
 " i/a
@@ -152,6 +163,7 @@ endif
 
 
 
+delfunc s:map_prefix
 delfunc s:map_user
 delfunc s:map_plug
 
