@@ -86,6 +86,9 @@ vnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_i_uncomment('v')<
 nnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_i_uncomment('n')<CR>
 vnoremap <silent> <Plug>(caw:i:uncomment)    :<C-u>call caw#do_i_uncomment('v')<CR>
 
+nnoremap <silent> <Plug>(caw:I:uncomment)    :<C-u>call caw#do_I_uncomment('n')<CR>
+vnoremap <silent> <Plug>(caw:I:uncomment)    :<C-u>call caw#do_I_uncomment('v')<CR>
+
 nnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_a_uncomment('n')<CR>
 vnoremap <silent> <Plug>(caw:a:uncomment)    :<C-u>call caw#do_a_uncomment('v')<CR>
 

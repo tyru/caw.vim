@@ -46,6 +46,11 @@ function! caw#do_i_uncomment(mode) "{{{
     return s:sandbox_call(caw.i.uncomment, [a:mode], caw.i)
 endfunction "}}}
 
+function! caw#do_I_uncomment(mode) "{{{
+    let caw = s:get_caw_object()
+    return s:sandbox_call(caw.I.uncomment, [a:mode], caw.I)
+endfunction "}}}
+
 function! caw#do_a_uncomment(mode) "{{{
     let caw = s:get_caw_object()
     return s:sandbox_call(caw.a.uncomment, [a:mode], caw.a)
