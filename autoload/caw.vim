@@ -985,12 +985,12 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
 
     let line = getline(a:lnum)
     if line =~# '^\s*$'
-        call setline(a:lnum, cmt . s:get_var('caw_sp_i'))
+        call setline(a:lnum, cmt . s:get_var('caw_sp_I'))
         if startinsert
             call feedkeys('A', 'n')
         endif
     else
-        call setline(a:lnum, cmt . s:get_var('caw_sp_i') . line)
+        call setline(a:lnum, cmt . s:get_var('caw_sp_I') . line)
     endif
 endfunction "}}}
 
