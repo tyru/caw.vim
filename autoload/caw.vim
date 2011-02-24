@@ -900,7 +900,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         let indent = s:get_indent(a:lnum)
         call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i'))
         if startinsert
-            call feedkeys('A', 'n')
+            startinsert!
         endif
     else
         let indent = s:get_inserted_indent(a:lnum)
@@ -987,7 +987,7 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
     if line =~# '^\s*$'
         call setline(a:lnum, cmt . s:get_var('caw_sp_I'))
         if startinsert
-            call feedkeys('A', 'n')
+            startinsert!
         endif
     else
         call setline(a:lnum, cmt . s:get_var('caw_sp_I') . line)
@@ -1017,7 +1017,7 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     \       . s:get_var('caw_sp_a_right')
     \)
     if startinsert
-        call feedkeys('A', 'n')
+        startinsert!
     endif
 endfunction "}}}
 
