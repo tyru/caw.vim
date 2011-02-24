@@ -60,10 +60,12 @@ function! s:map_user(lhs, rhs) "{{{
         return
     endif
     let rhs = printf('<Plug>(caw:%s)', a:rhs)
-    if !hasmapto(rhs)
-        execute 'silent! nmap <unique>' a:lhs rhs
-        execute 'silent! vmap <unique>' a:lhs rhs
-    endif
+    for mode in ['n', 'v']
+        if !hasmapto(rhs, mode)
+            silent! execute
+            \   mode.'map <unique>' a:lhs rhs
+        endif
+    endfor
 endfunction "}}}
 function! s:map_plug(lhs, fn, ...) "{{{
     if a:lhs == '' || a:fn == ''
