@@ -59,9 +59,10 @@ function! s:map_user(lhs, rhs) "{{{
         echoerr 'internal error'
         return
     endif
-    if !hasmapto(a:rhs)
-        execute 'silent! nmap <unique>' a:lhs a:rhs
-        execute 'silent! vmap <unique>' a:lhs a:rhs
+    let rhs = printf('<Plug>(caw:%s)', a:rhs)
+    if !hasmapto(rhs)
+        execute 'silent! nmap <unique>' a:lhs rhs
+        execute 'silent! vmap <unique>' a:lhs rhs
     endif
 endfunction "}}}
 function! s:map_plug(lhs, fn, ...) "{{{
@@ -83,7 +84,7 @@ endfunction "}}}
 
 
 " prefix
-call s:map_user('gc', '<Plug>(caw:prefix)')
+call s:map_user('gc', 'prefix')
 
 
 " i/a
@@ -100,12 +101,12 @@ call s:map_plug('I:toggle', 'caw#do_I_toggle(<mode>)')
 call s:map_plug('a:toggle', 'caw#do_a_toggle(<mode>)')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('<Plug>(caw:prefix)i', '<Plug>(caw:i:comment)')
-    call s:map_user('<Plug>(caw:prefix)I', '<Plug>(caw:I:comment)')
-    call s:map_user('<Plug>(caw:prefix)a', '<Plug>(caw:a:comment)')
-    call s:map_user('<Plug>(caw:prefix)ui', '<Plug>(caw:i:uncomment)')
-    call s:map_user('<Plug>(caw:prefix)ua', '<Plug>(caw:a:uncomment)')
-    call s:map_user('<Plug>(caw:prefix)c', '<Plug>(caw:i:toggle)')
+    call s:map_user('<Plug>(caw:prefix)i', 'i:comment')
+    call s:map_user('<Plug>(caw:prefix)I', 'I:comment')
+    call s:map_user('<Plug>(caw:prefix)a', 'a:comment')
+    call s:map_user('<Plug>(caw:prefix)ui', 'i:uncomment')
+    call s:map_user('<Plug>(caw:prefix)ua', 'a:uncomment')
+    call s:map_user('<Plug>(caw:prefix)c', 'i:toggle')
 endif
 
 
@@ -115,8 +116,8 @@ call s:map_plug('wrap:uncomment', 'caw#do_wrap_uncomment(<mode>)')
 call s:map_plug('wrap:toggle', 'caw#do_wrap_toggle(<mode>)')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('<Plug>(caw:prefix)w', '<Plug>(caw:wrap:comment)')
-    call s:map_user('<Plug>(caw:prefix)uw', '<Plug>(caw:wrap:uncomment)')
+    call s:map_user('<Plug>(caw:prefix)w', 'wrap:comment')
+    call s:map_user('<Plug>(caw:prefix)uw', 'wrap:uncomment')
 endif
 
 
@@ -126,8 +127,8 @@ call s:map_plug('jump:comment-next', 'caw#do_jump_comment_next()', ['n'])
 call s:map_plug('jump:comment-prev', 'caw#do_jump_comment_prev()', ['n'])
 
 if !g:caw_no_default_keymappings
-    call s:map_user('<Plug>(caw:prefix)o', '<Plug>(caw:jump:comment-next)')
-    call s:map_user('<Plug>(caw:prefix)O', '<Plug>(caw:jump:comment-prev)')
+    call s:map_user('<Plug>(caw:prefix)o', 'jump:comment-next')
+    call s:map_user('<Plug>(caw:prefix)O', 'jump:comment-prev')
 endif
 
 
@@ -136,7 +137,7 @@ endif
 call s:map_plug('input:comment', 'caw#do_input_comment(<mode>)')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('<Plug>(caw:prefix)v', '<Plug>(caw:input:comment)')
+    call s:map_user('<Plug>(caw:prefix)v', 'input:comment')
 endif
 
 
@@ -144,7 +145,7 @@ endif
 call s:map_plug('input:uncomment', 'caw#do_input_uncomment(<mode>)')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('<Plug>(caw:prefix)uv', '<Plug>(caw:input:uncomment)')
+    call s:map_user('<Plug>(caw:prefix)uv', 'input:uncomment')
 endif
 
 
