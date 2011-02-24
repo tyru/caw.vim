@@ -713,6 +713,19 @@ function! s:create_call_another_action(comment_vs_action) "{{{
 endfunction "}}}
 
 
+" Readable inheritance wrapper functions for extend()
+function! s:create_class_from(...) "{{{
+    let class = {}
+    for base in a:000
+        call extend(class, base, 'error')
+    endfor
+    return class
+endfunction "}}}
+function! s:override_methods(class, methods) "{{{
+    call extend(a:class, a:methods, 'force')
+endfunction "}}}
+
+
 " s:Commentable {{{
 "
 " These methods are missing.
@@ -906,14 +919,11 @@ function! s:caw_i_comment_visual() dict "{{{
     endfor
 endfunction "}}}
 
-
 function! s:caw_i_has_comment_normal(lnum) dict "{{{
     let line_without_indent = substitute(getline(a:lnum), '^[ \t]\+', '', '')
     let cmt = s:comments.oneline.get_comment(&filetype)
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
 endfunction "}}}
-
-
 
 function! s:caw_i_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
@@ -940,29 +950,21 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.i = {}
-
-call extend(s:caw.i, s:Commentable, 'error')
-call extend(s:caw.i, {
-\   'comment_normal': s:local_func('caw_i_comment_normal'),
-\}, 'error')
-call extend(s:caw.i, {
+let s:caw.i = s:create_class_from(
+\   {
+\       'comment_normal': s:local_func('caw_i_comment_normal'),
+\       'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
+\       'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\   },
+\   s:create_call_another_action({'wrap_oneline': 'wrap'}),
+\   s:Commentable,
+\   s:Uncommentable,
+\   s:CommentDetectable,
+\   s:Togglable,
+\)
+call s:override_methods(s:caw.i, {
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
-\}, 'force')    " override
-
-call extend(s:caw.i, s:Uncommentable, 'error')
-call extend(s:caw.i, {
-\   'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
-\}, 'error')
-
-call extend(s:caw.i, s:CommentDetectable, 'error')
-call extend(s:caw.i, {
-\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
-\}, 'error')
-
-call extend(s:caw.i, s:Togglable, 'error')
-
-call extend(s:caw.i, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
+\})
 " }}}
 
 " I {{{
@@ -989,11 +991,11 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
     endif
 endfunction "}}}
 
-let s:caw.I = {}
-call extend(s:caw.I, {
+
+let s:caw.I = s:create_class_from(s:caw.i)
+call s:override_methods(s:caw.I, {
 \   'comment_normal': s:local_func('caw_I_comment_normal'),
-\}, 'force')
-call extend(s:caw.I, s:caw.i, 'force')
+\})
 " }}}
 
 " a {{{
@@ -1026,7 +1028,6 @@ function! s:caw_a_comment_visual() dict "{{{
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
-
 
 function! s:caw_a_get_comment_col(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
@@ -1062,7 +1063,6 @@ function! s:caw_a_has_comment_normal(lnum) dict "{{{
     return s:caw_a_get_comment_col(a:lnum) > 0
 endfunction "}}}
 
-
 function! s:caw_a_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
@@ -1092,29 +1092,21 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.a = {}
-
-call extend(s:caw.a, s:Commentable, 'error')
-call extend(s:caw.a, {
-\   'comment_normal': s:local_func('caw_a_comment_normal'),
-\}, 'error')
-call extend(s:caw.a, {
+let s:caw.a = s:create_class_from(
+\   {
+\       'comment_normal': s:local_func('caw_a_comment_normal'),
+\       'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
+\       'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
+\   },
+\   s:create_call_another_action({'wrap_oneline': 'wrap'}),
+\   s:Commentable,
+\   s:Uncommentable,
+\   s:CommentDetectable,
+\   s:Togglable,
+\)
+call s:override_methods(s:caw.I, {
 \   'comment_visual': s:local_func('caw_a_comment_visual'),
-\}, 'force')    " override
-
-call extend(s:caw.a, s:Uncommentable, 'error')
-call extend(s:caw.a, {
-\   'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
-\}, 'error')
-
-call extend(s:caw.a, s:CommentDetectable, 'error')
-call extend(s:caw.a, {
-\   'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
-\}, 'error')
-
-call extend(s:caw.a, s:Togglable, 'error')
-
-call extend(s:caw.a, s:create_call_another_action({'wrap_oneline': 'wrap'}), 'error')
+\})
 " }}}
 
 " wrap {{{
@@ -1140,7 +1132,6 @@ function! s:caw_wrap_comment_normal(lnum) dict "{{{
     \       . right
     \)
 endfunction "}}}
-
 
 function! s:comment_visual_characterwise_comment_out(text) "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
@@ -1183,7 +1174,6 @@ function! s:caw_wrap_comment_visual_characterwise() dict "{{{
     call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
 
-
 function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
     if empty(cmt)
@@ -1198,7 +1188,6 @@ function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
     \   (left == '' || line[: strlen(left) - 1] ==# left)
     \   && (right == '' || line[strlen(line) - strlen(right) :] ==# right)
 endfunction "}}}
-
 
 function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
     let cmt = s:comments.wrap_oneline.get_comment(&filetype)
@@ -1220,26 +1209,18 @@ function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.wrap = {}
-
-call extend(s:caw.wrap, s:Commentable, 'error')
-call extend(s:caw.wrap, {
-\   'comment_normal': s:local_func('caw_wrap_comment_normal'),
-\}, 'error')
-
-call extend(s:caw.wrap, s:Uncommentable, 'error')
-call extend(s:caw.wrap, {
-\   'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
-\}, 'error')
-
-call extend(s:caw.wrap, s:CommentDetectable, 'error')
-call extend(s:caw.wrap, {
-\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
-\}, 'error')
-
-call extend(s:caw.wrap, s:Togglable, 'error')
-
-call extend(s:caw.wrap, s:create_call_another_action({'oneline': 'i'}), 'error')
+let s:caw.wrap = s:create_class_from(
+\   {
+\       'comment_normal': s:local_func('caw_wrap_comment_normal'),
+\       'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
+\       'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\   },
+\   s:create_call_another_action({'oneline': 'i'}),
+\   s:Commentable,
+\   s:Uncommentable,
+\   s:CommentDetectable,
+\   s:Togglable,
+\)
 " }}}
 
 " jump {{{
