@@ -1113,15 +1113,16 @@ function! s:caw_wrap_comment_normal(lnum) dict "{{{
     endif
 
     let [left, right] = cmt
-    let line_without_indent = substitute(getline(a:lnum), '^\s\+', '', '')
+    let line = substitute(getline(a:lnum), '^\s\+', '', '')
+    if left != ''
+        let line = left . s:get_var('caw_sp_wrap_left') . line
+    endif
+    if right != ''
+        let line = line . s:get_var('caw_sp_wrap_right') . right
+    endif
     call setline(
     \   a:lnum,
-    \   s:get_inserted_indent(a:lnum)
-    \       . left
-    \       . s:get_var('caw_sp_wrap_left')
-    \       . line_without_indent
-    \       . s:get_var('caw_sp_wrap_right')
-    \       . right
+    \   s:get_inserted_indent(a:lnum) . line
     \)
 endfunction "}}}
 
