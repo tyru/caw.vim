@@ -105,17 +105,21 @@ call s:define_prefix('gc')
 
 
 " i/I/a
-call s:map_plug('i:comment', 'caw#do_i_comment(<mode>)')
-call s:map_plug('I:comment', 'caw#do_I_comment(<mode>)')
-call s:map_plug('a:comment', 'caw#do_a_comment(<mode>)')
+function! s:map_generic(type, action) "{{{
+    let lhs = printf('%s:%s', a:type, a:action)
+    let rhs = printf('caw#do_%s_%s(<mode>)', a:type, a:action)
+    call s:map_plug(lhs, rhs)
+endfunction "}}}
+function! s:define_generic() "{{{
+    for type in ['i', 'I', 'a', 'wrap']
+        for action in ['comment', 'uncomment', 'toggle']
+            call s:map_generic(type, action)
+        endfor
+    endfor
+endfunction "}}}
+call s:define_generic()
 
-call s:map_plug('i:uncomment', 'caw#do_i_uncomment(<mode>)')
-call s:map_plug('I:uncomment', 'caw#do_I_uncomment(<mode>)')
-call s:map_plug('a:uncomment', 'caw#do_a_uncomment(<mode>)')
 
-call s:map_plug('i:toggle', 'caw#do_i_toggle(<mode>)')
-call s:map_plug('I:toggle', 'caw#do_I_toggle(<mode>)')
-call s:map_plug('a:toggle', 'caw#do_a_toggle(<mode>)')
 
 if !g:caw_no_default_keymappings
     call s:map_user('i', 'i:comment')
@@ -128,10 +132,6 @@ endif
 
 
 " wrap
-call s:map_plug('wrap:comment', 'caw#do_wrap_comment(<mode>)')
-call s:map_plug('wrap:uncomment', 'caw#do_wrap_uncomment(<mode>)')
-call s:map_plug('wrap:toggle', 'caw#do_wrap_toggle(<mode>)')
-
 if !g:caw_no_default_keymappings
     call s:map_user('w', 'wrap:comment')
     call s:map_user('uw', 'wrap:uncomment')
