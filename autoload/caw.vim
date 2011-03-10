@@ -41,15 +41,6 @@ function! caw#do_jump_comment_prev() "{{{
     return s:sandbox_call(caw.jump.comment, [0], caw.jump)
 endfunction "}}}
 
-" input
-function! caw#do_input_comment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.input.comment, [a:mode], caw.input)
-endfunction "}}}
-function! caw#do_input_uncomment(mode) "{{{
-    " TODO
-endfunction "}}}
-
 " }}}
 
 

@@ -160,8 +160,8 @@ endif
 
 
 " input
-call s:map_plug('input:comment', 'caw#do_input_comment(<mode>)')
-call s:map_plug('input:uncomment', 'caw#do_input_uncomment(<mode>)')
+call s:map_generic('input', 'comment')
+call s:map_generic('input', 'uncomment')
 
 if !g:caw_no_default_keymappings
     call s:map_user('v', 'input:comment')
