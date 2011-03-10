@@ -106,9 +106,18 @@ call s:define_prefix('gc')
 
 " i/I/a
 function! s:map_generic(type, action) "{{{
-    let lhs = printf('%s:%s', a:type, a:action)
-    let rhs = printf('caw#do_%s_%s(<mode>)', a:type, a:action)
-    call s:map_plug(lhs, rhs)
+    let lhs = printf('<Plug>(caw:%s:%s)', a:type, a:action)
+    for mode in ['n', 'v']
+        execute
+        \   mode . 'noremap'
+        \   '<silent>'
+        \   lhs
+        \   printf(
+        \       ':<C-u>call caw#do_generic(%s, %s, %s)<CR>',
+        \       string(mode),
+        \       string(a:type),
+        \       string(a:action))
+    endfor
 endfunction "}}}
 function! s:define_generic() "{{{
     for type in ['i', 'I', 'a', 'wrap']

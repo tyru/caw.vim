@@ -25,68 +25,11 @@ function! s:get_caw_object() "{{{
 endfunction "}}}
 
 
-" i/I/a
-function! caw#do_i_comment(mode) "{{{
+" i/I/a/wrap
+function! caw#do_generic(mode, type, action) "{{{
     let caw = s:get_caw_object()
-    return s:sandbox_call(caw.i.comment, [a:mode], caw.i)
-endfunction "}}}
-
-function! caw#do_I_comment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.I.comment, [a:mode], caw.I)
-endfunction "}}}
-
-function! caw#do_a_comment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.a.comment, [a:mode], caw.a)
-endfunction "}}}
-
-function! caw#do_i_uncomment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.i.uncomment, [a:mode], caw.i)
-endfunction "}}}
-
-function! caw#do_I_uncomment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.I.uncomment, [a:mode], caw.I)
-endfunction "}}}
-
-function! caw#do_a_uncomment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.a.uncomment, [a:mode], caw.a)
-endfunction "}}}
-
-function! caw#do_i_toggle(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.i.toggle, [a:mode], caw.i)
-endfunction "}}}
-
-function! caw#do_I_toggle(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.I.toggle, [a:mode], caw.I)
-endfunction "}}}
-
-function! caw#do_a_toggle(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.a.toggle, [a:mode], caw.a)
-endfunction "}}}
-
-
-
-" wrap
-function! caw#do_wrap_comment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.wrap.comment, [a:mode], caw.wrap)
-endfunction "}}}
-
-function! caw#do_wrap_uncomment(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.wrap.uncomment, [a:mode], caw.wrap)
-endfunction "}}}
-
-function! caw#do_wrap_toggle(mode) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.wrap.toggle, [a:mode], caw.wrap)
+    return s:sandbox_call(
+    \   caw[a:type][a:action], [a:mode], caw[a:type])
 endfunction "}}}
 
 
