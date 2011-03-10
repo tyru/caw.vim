@@ -24,7 +24,6 @@ function! s:get_caw_object() "{{{
     return exists('b:caw') ? b:caw : s:caw
 endfunction "}}}
 
-
 " i/I/a/wrap
 function! caw#do_generic(mode, type, action) "{{{
     let caw = s:get_caw_object()
@@ -32,32 +31,24 @@ function! caw#do_generic(mode, type, action) "{{{
     \   caw[a:type][a:action], [a:mode], caw[a:type])
 endfunction "}}}
 
-
-
 " jump
 function! caw#do_jump_comment_next() "{{{
     let caw = s:get_caw_object()
     return s:sandbox_call(caw.jump.comment, [1], caw.jump)
 endfunction "}}}
-
 function! caw#do_jump_comment_prev() "{{{
     let caw = s:get_caw_object()
     return s:sandbox_call(caw.jump.comment, [0], caw.jump)
 endfunction "}}}
-
-
 
 " input
 function! caw#do_input_comment(mode) "{{{
     let caw = s:get_caw_object()
     return s:sandbox_call(caw.input.comment, [a:mode], caw.input)
 endfunction "}}}
-
 function! caw#do_input_uncomment(mode) "{{{
     " TODO
 endfunction "}}}
-
-
 
 " }}}
 
