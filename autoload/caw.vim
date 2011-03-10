@@ -25,7 +25,7 @@ function! s:get_caw_object() "{{{
 endfunction "}}}
 
 
-" i/a
+" i/I/a
 function! caw#do_i_comment(mode) "{{{
     let caw = s:get_caw_object()
     return s:sandbox_call(caw.i.comment, [a:mode], caw.i)

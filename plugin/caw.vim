@@ -108,7 +108,7 @@ endfunction "}}}
 call s:map_prefix('gc')
 
 
-" i/a
+" i/I/a
 call s:map_plug('i:comment', 'caw#do_i_comment(<mode>)')
 call s:map_plug('I:comment', 'caw#do_I_comment(<mode>)')
 call s:map_plug('a:comment', 'caw#do_a_comment(<mode>)')
