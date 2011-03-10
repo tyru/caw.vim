@@ -152,16 +152,10 @@ endif
 
 " input
 call s:map_plug('input:comment', 'caw#do_input_comment(<mode>)')
-
-if !g:caw_no_default_keymappings
-    call s:map_user('v', 'input:comment')
-endif
-
-
-" uncomment: input
 call s:map_plug('input:uncomment', 'caw#do_input_uncomment(<mode>)')
 
 if !g:caw_no_default_keymappings
+    call s:map_user('v', 'input:comment')
     call s:map_user('uv', 'input:uncomment')
 endif
 
