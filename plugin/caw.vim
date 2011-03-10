@@ -62,10 +62,6 @@ endif
 
 
 function! s:map_user(lhs, rhs) "{{{
-    if a:lhs == '' || a:rhs == ''
-        echoerr 'internal error'
-        return
-    endif
     let lhs = '<Plug>(caw:prefix)' . a:lhs
     let rhs = printf('<Plug>(caw:%s)', a:rhs)
     for mode in ['n', 'v']
