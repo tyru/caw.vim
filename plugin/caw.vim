@@ -94,14 +94,14 @@ endfunction "}}}
 
 
 " prefix
-function! s:map_prefix(lhs) "{{{
+function! s:define_prefix(lhs) "{{{
     let rhs = '<Plug>(caw:prefix)'
     if !hasmapto(rhs)
         execute 'silent! nmap <unique>' a:lhs rhs
         execute 'silent! vmap <unique>' a:lhs rhs
     endif
 endfunction "}}}
-call s:map_prefix('gc')
+call s:define_prefix('gc')
 
 
 " i/I/a
