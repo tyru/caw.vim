@@ -7,9 +7,7 @@ set cpo&vim
 " }}}
 
 
-" Interface {{{
-
-" i/I/a/wrap
+" All keymappings are bound to this function.
 function! caw#do_generic(mode, type, action) "{{{
     try
         return call(
@@ -24,10 +22,8 @@ function! caw#do_generic(mode, type, action) "{{{
     endtry
 endfunction "}}}
 
-" }}}
-
-
-" Implementation {{{
+" Misc. functions.
+" Utilities {{{
 
 function s:SID() "{{{
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
@@ -139,8 +135,9 @@ function! s:trim_whitespaces(str) "{{{
     return str
 endfunction "}}}
 
+" }}}
 
-
+" Comment string database.
 " s:comments {{{
 " TODO Multiline
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
@@ -594,6 +591,7 @@ endfunction "}}}
 
 " }}}
 
+" Comment types (styles) and those actions.
 " s:caw {{{
 let s:caw = {}
 
@@ -1269,8 +1267,6 @@ endfunction "}}}
 " now no need to hold the objects so remove them.
 
 unlet s:Commentable s:Uncommentable s:CommentDetectable s:Togglable
-" }}}
-
 " }}}
 
 " }}}
