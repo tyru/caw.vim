@@ -161,11 +161,6 @@ endif
 
 
 
-delfunc s:map_prefix
-delfunc s:map_user
-delfunc s:map_plug
-
-
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 " }}}
