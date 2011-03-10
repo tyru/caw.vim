@@ -9,26 +9,19 @@ set cpo&vim
 
 " Interface {{{
 
-function! s:sandbox_call(Fn, args, ...) "{{{
+" i/I/a/wrap
+function! caw#do_generic(mode, type, action) "{{{
     try
-        return a:0 ? call(a:Fn, a:args, a:1) : call(a:Fn, a:args)
+        return call(
+        \   s:caw[a:type][a:action],
+        \   [a:mode],
+        \   s:caw[a:type]
+        \)
     catch
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
     endtry
-endfunction "}}}
-
-function! s:get_caw_object() "{{{
-    " TODO: Support b:caw
-    return exists('b:caw') ? b:caw : s:caw
-endfunction "}}}
-
-" i/I/a/wrap
-function! caw#do_generic(mode, type, action) "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(
-    \   caw[a:type][a:action], [a:mode], caw[a:type])
 endfunction "}}}
 
 " }}}
