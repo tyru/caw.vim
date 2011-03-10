@@ -75,22 +75,6 @@ function! s:map_user(lhs, rhs) "{{{
         endif
     endfor
 endfunction "}}}
-function! s:map_plug(lhs, fn, ...) "{{{
-    if a:lhs == '' || a:fn == ''
-        echoerr 'internal error'
-        return
-    endif
-    let lhs = printf('<Plug>(caw:%s)', a:lhs)
-    for mode in a:0 ? a:1 : ['n', 'v']
-        execute
-        \   mode . 'noremap'
-        \   '<silent>'
-        \   lhs
-        \   ':<C-u>call '
-        \   . substitute(a:fn, '<mode>', string(mode), 'g')
-        \   . '<CR>'
-    endfor
-endfunction "}}}
 
 
 " prefix
@@ -105,9 +89,10 @@ call s:define_prefix('gc')
 
 
 " i/I/a
-function! s:map_generic(type, action) "{{{
+function! s:map_generic(type, action, ...) "{{{
     let lhs = printf('<Plug>(caw:%s:%s)', a:type, a:action)
-    for mode in ['n', 'v']
+    let modes = a:0 ? split(a:1, '\zs') : ['n', 'v']
+    for mode in modes
         execute
         \   mode . 'noremap'
         \   '<silent>'
@@ -149,8 +134,8 @@ endif
 
 
 " jump
-call s:map_plug('jump:comment-next', 'caw#do_jump_comment_next()', ['n'])
-call s:map_plug('jump:comment-prev', 'caw#do_jump_comment_prev()', ['n'])
+call s:map_generic('jump', 'comment-next', 'n')
+call s:map_generic('jump', 'comment-prev', 'n')
 
 if !g:caw_no_default_keymappings
     call s:map_user('o', 'jump:comment-next')

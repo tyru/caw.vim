@@ -31,16 +31,6 @@ function! caw#do_generic(mode, type, action) "{{{
     \   caw[a:type][a:action], [a:mode], caw[a:type])
 endfunction "}}}
 
-" jump
-function! caw#do_jump_comment_next() "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.jump.comment, [1], caw.jump)
-endfunction "}}}
-function! caw#do_jump_comment_prev() "{{{
-    let caw = s:get_caw_object()
-    return s:sandbox_call(caw.jump.comment, [0], caw.jump)
-endfunction "}}}
-
 " }}}
 
 
@@ -1135,6 +1125,14 @@ let s:caw.wrap = s:create_class_from(
 
 " jump {{{
 
+function! s:caw_jump_comment_next(mode) dict "{{{
+    return call('s:caw_jump_comment', [1], self)
+endfunction "}}}
+
+function! s:caw_jump_comment_prev(mode) dict "{{{
+    return call('s:caw_jump_comment', [0], self)
+endfunction "}}}
+
 function! s:caw_jump_comment(next) dict "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
@@ -1163,7 +1161,8 @@ endfunction "}}}
 
 
 let s:caw.jump = {
-\   'comment': s:local_func('caw_jump_comment')
+\   'comment-next': s:local_func('caw_jump_comment_next'),
+\   'comment-prev': s:local_func('caw_jump_comment_prev'),
 \}
 " }}}
 
