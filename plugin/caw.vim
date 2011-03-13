@@ -84,7 +84,6 @@ endfunction "}}}
 call s:define_prefix('gc')
 
 
-" i/I/a
 function! s:map_generic(type, action, ...) "{{{
     let lhs = printf('<Plug>(caw:%s:%s)', a:type, a:action)
     let modes = a:0 ? split(a:1, '\zs') : ['n', 'v']
@@ -111,6 +110,7 @@ call s:define_generic()
 
 
 
+" i/I/a
 if !g:caw_no_default_keymappings
     call s:map_user('i', 'i:comment')
     call s:map_user('I', 'I:comment')
