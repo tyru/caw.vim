@@ -1169,7 +1169,7 @@ function! s:caw_input_comment(mode) dict "{{{
     endif
 
     let default_cmt = s:comments.oneline.get_comment(&filetype)
-    let cmt = s:caw_input_get_comment_string(default_cmt)
+    let cmt = s:input('any comment?:', default_cmt)
 
     if !empty(default_cmt) && default_cmt !=# cmt
         let org_status = s:set_and_save_comment_string(cmt)
@@ -1233,10 +1233,6 @@ function! s:getchar(...) "{{{
     finally
         call inputrestore()
     endtry
-endfunction "}}}
-
-function! s:caw_input_get_comment_string(default_cmt) "{{{
-    return s:input('any comment?:', a:default_cmt)
 endfunction "}}}
 
 function! s:input(...) "{{{
