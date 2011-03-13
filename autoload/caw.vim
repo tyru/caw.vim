@@ -64,10 +64,6 @@ function! s:set_and_save_comment_string(comment_string) "{{{
     return stash
 endfunction "}}}
 
-function! s:restore_comment_string(stash) "{{{
-    call a:stash.restore()
-endfunction "}}}
-
 
 function! s:assert(cond, msg) "{{{
     if !a:cond
@@ -1182,7 +1178,7 @@ function! s:caw_input_comment(mode) dict "{{{
         endif
     finally
         if !empty(default_cmt) && default_cmt !=# cmt
-            call s:restore_comment_string(org_status)
+            call org_status.restore()
         endif
     endtry
 endfunction "}}}
