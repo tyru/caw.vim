@@ -647,7 +647,7 @@ function! s:Commentable_comment(mode) dict "{{{
         \   "\<C-v>": 'blockwise',
         \}, visualmode(), '')
         if wiseness != '' && has_key(self, 'comment_visual_' . wiseness)
-            call call(self['comment_visual_' . wiseness], [])
+            call call(self['comment_visual_' . wiseness], [], self)
         else
             call self.comment_visual()
         endif
