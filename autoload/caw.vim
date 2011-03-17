@@ -363,7 +363,7 @@ function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     \   'pccts': '//',
     \   'pdf': '%',
     \   'perl': '#',
-    \   'pfmain': '//',
+    \   'pfmain': '#',
     \   'php': '//',
     \   'pic': ';',
     \   'pike': '//',
