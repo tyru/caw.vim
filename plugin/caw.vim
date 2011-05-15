@@ -93,7 +93,7 @@ function! s:map_generic(type, action, ...) "{{{
         \   '<silent>'
         \   lhs
         \   printf(
-        \       ':<C-u>call caw#do_generic(%s, %s, %s)<CR>',
+        \       ':<C-u>call caw#keymapping_stub(%s, %s, %s)<CR>',
         \       string(mode),
         \       string(a:type),
         \       string(a:action))

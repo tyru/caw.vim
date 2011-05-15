@@ -8,7 +8,7 @@ set cpo&vim
 
 
 " All keymappings are bound to this function.
-function! caw#do_generic(mode, type, action) "{{{
+function! caw#keymapping_stub(mode, type, action) "{{{
     try
         return call(
         \   s:caw[a:type][a:action],
