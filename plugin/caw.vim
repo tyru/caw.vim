@@ -2,10 +2,10 @@
 scriptencoding utf-8
 
 " Load Once {{{
-if exists('g:loaded_CommentAnyWay') && g:loaded_CommentAnyWay
+if exists('g:loaded_caw') && g:loaded_caw
     finish
 endif
-let g:loaded_CommentAnyWay = 1
+let g:loaded_caw = 1
 " }}}
 " Saving 'cpoptions' {{{
 let s:save_cpo = &cpo
