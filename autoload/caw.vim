@@ -1128,25 +1128,8 @@ function! s:caw_jump_comment(next) dict "{{{
     if empty(cmt)
         return
     endif
-
-    let lnum = line('.')
-    if a:next
-        call append(lnum, '')
-        let indent = s:get_indent(lnum + 1)
-
-        call setline(lnum + 1, indent . cmt . s:get_var('caw_sp_jump'))
-        call cursor(lnum + 1, 1)
-        startinsert!
-    else
-        call append(lnum - 1, '')
-        " NOTE: `lnum` is target lnum.
-        " because new line was inserted just now.
-        let indent = s:get_indent(lnum)
-
-        call setline(lnum, indent . cmt . s:get_var('caw_sp_jump'))
-        call cursor(lnum, 1)
-        startinsert!
-    endif
+    let open = (a:next ? 'o' : 'O')
+    call feedkeys(open . cmt . s:get_var('caw_sp_jump'), 'n')
 endfunction "}}}
 
 
