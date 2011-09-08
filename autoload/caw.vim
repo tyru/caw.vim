@@ -86,21 +86,24 @@ endfunction "}}}
 
 
 function! s:get_indent_num(lnum) "{{{
-    if has('cindent') && &syntax =~# '\<c\|cpp\>'
-        return cindent(a:lnum)
-    elseif has('lispindent') && &syntax =~# '\<lisp\|scheme\>'
-        return lispindent(a:lnum)
-    elseif &l:indentexpr != ''
+    if &l:indentexpr != ''
         let save_view = winsaveview()
         let save_lnum = v:lnum
         let v:lnum = a:lnum
         try
             return eval(&l:indentexpr)
+        catch
+            " fallback to other strategies...
         finally
             let v:lnum = save_lnum
             " NOTE: GetPythonIndent() moves cursor. wtf?
             call winrestview(save_view)
         endtry
+    endif
+    if has('cindent') && &syntax =~# '\<c\|cpp\>'
+        return cindent(a:lnum)
+    elseif has('lispindent') && &syntax =~# '\<lisp\|scheme\>'
+        return lispindent(a:lnum)
     else
         return indent(a:lnum)
     endif
