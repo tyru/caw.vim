@@ -802,11 +802,9 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
         call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
     elseif line =~# '^\s*$'
-        let indent = s:get_indent(a:lnum)
-        call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i'))
-        if startinsert
-            startinsert!
-        endif
+        " Delete the current line and then do "gcO".
+        silent delete _
+        call s:caw.jump['comment-prev']('n')
     else
         let indent = s:get_inserted_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
