@@ -85,39 +85,6 @@ function! s:get_var(varname, ...) "{{{
 endfunction "}}}
 
 
-function! s:get_indent_num(lnum) "{{{
-    if &l:indentexpr != ''
-        let save_view = winsaveview()
-        let save_lnum = v:lnum
-        let v:lnum = a:lnum
-        try
-            return eval(&l:indentexpr)
-        catch
-            " fallback to other strategies...
-        finally
-            let v:lnum = save_lnum
-            " NOTE: GetPythonIndent() moves cursor. wtf?
-            call winrestview(save_view)
-        endtry
-    endif
-    if has('cindent') && &syntax =~# '\<c\|cpp\>'
-        return cindent(a:lnum)
-    elseif has('lispindent') && &syntax =~# '\<lisp\|scheme\>'
-        return lispindent(a:lnum)
-    else
-        return indent(a:lnum)
-    endif
-endfunction "}}}
-
-function! s:get_indent(lnum) "{{{
-    let n = s:get_indent_num(a:lnum)
-    if &expandtab
-        return repeat(' ', n)
-    else
-        return repeat("\t", n / &tabstop) . repeat(' ', n % &tabstop)
-    endif
-endfunction "}}}
-
 function! s:get_inserted_indent(lnum) "{{{
     return matchstr(getline(a:lnum), '^\s\+')
 endfunction "}}}
@@ -802,11 +769,9 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
         call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
     elseif line =~# '^\s*$'
-        let indent = s:get_indent(a:lnum)
-        call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i'))
-        if startinsert
-            startinsert!
-        endif
+        " Delete the current line and then do "gcO".
+        silent delete _
+        call s:caw.jump.comment_prev('n')
     else
         let indent = s:get_inserted_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
@@ -1128,14 +1093,31 @@ function! s:caw_jump_comment(next) dict "{{{
     if empty(cmt)
         return
     endif
-    let open = (a:next ? 'o' : 'O')
-    call feedkeys(open . cmt . s:get_var('caw_sp_jump'), 'n')
+
+    let lnum = line('.')
+    if a:next
+        " Begin a new line and insert
+        " the online comment leader with whitespaces.
+        execute 'normal! o' . cmt .  s:get_var('caw_sp_jump')
+        " Start Insert mode at the end of the inserted line.
+        call cursor(lnum + 1, 1)
+        startinsert!
+    else
+        " NOTE: `lnum` is target lnum.
+        " because new line was inserted just now.
+        execute 'normal! O' . cmt . s:get_var('caw_sp_jump')
+        " Start Insert mode at the end of the inserted line.
+        call cursor(lnum, 1)
+        startinsert!
+    endif
 endfunction "}}}
 
 
 let s:caw.jump = {
 \   'comment-next': s:local_func('caw_jump_comment_next'),
+\   'comment_next': s:local_func('caw_jump_comment_next'),
 \   'comment-prev': s:local_func('caw_jump_comment_prev'),
+\   'comment_prev': s:local_func('caw_jump_comment_prev'),
 \}
 " }}}
 
