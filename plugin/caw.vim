@@ -99,14 +99,14 @@ function! s:map_generic(type, action, ...) "{{{
         \       string(a:action))
     endfor
 endfunction "}}}
-function! s:define_generic() "{{{
+function! s:define_generics() "{{{
     for type in ['i', 'I', 'a', 'wrap']
         for action in ['comment', 'uncomment', 'toggle']
             call s:map_generic(type, action)
         endfor
     endfor
 endfunction "}}}
-call s:define_generic()
+call s:define_generics()
 
 
 
