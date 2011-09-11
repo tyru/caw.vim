@@ -1096,18 +1096,17 @@ function! s:caw_jump_comment(next) dict "{{{
 
     let lnum = line('.')
     if a:next
-        " Begin a new line and insert the online comment leader.
-        execute 'normal! o' . cmt . "\<Esc>"
-        " Append spaces to the new line.
-        call setline(lnum + 1, getline(lnum + 1) . s:get_var('caw_sp_jump'))
-        " Start Insert mode at the end of the new line.
+        " Begin a new line and insert
+        " the online comment leader with whitespaces.
+        execute 'normal! o' . cmt .  s:get_var('caw_sp_jump')
+        " Start Insert mode at the end of the inserted line.
         call cursor(lnum + 1, 1)
         startinsert!
     else
-        execute 'normal! O' . cmt . "\<Esc>"
         " NOTE: `lnum` is target lnum.
         " because new line was inserted just now.
-        call setline(lnum, getline(lnum) . s:get_var('caw_sp_jump'))
+        execute 'normal! O' . cmt . s:get_var('caw_sp_jump')
+        " Start Insert mode at the end of the inserted line.
         call cursor(lnum, 1)
         startinsert!
     endif
