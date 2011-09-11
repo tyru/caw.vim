@@ -85,39 +85,6 @@ function! s:get_var(varname, ...) "{{{
 endfunction "}}}
 
 
-function! s:get_indent_num(lnum) "{{{
-    if &l:indentexpr != ''
-        let save_view = winsaveview()
-        let save_lnum = v:lnum
-        let v:lnum = a:lnum
-        try
-            return eval(&l:indentexpr)
-        catch
-            " fallback to other strategies...
-        finally
-            let v:lnum = save_lnum
-            " NOTE: GetPythonIndent() moves cursor. wtf?
-            call winrestview(save_view)
-        endtry
-    endif
-    if has('cindent') && &syntax =~# '\<c\|cpp\>'
-        return cindent(a:lnum)
-    elseif has('lispindent') && &syntax =~# '\<lisp\|scheme\>'
-        return lispindent(a:lnum)
-    else
-        return indent(a:lnum)
-    endif
-endfunction "}}}
-
-function! s:get_indent(lnum) "{{{
-    let n = s:get_indent_num(a:lnum)
-    if &expandtab
-        return repeat(' ', n)
-    else
-        return repeat("\t", n / &tabstop) . repeat(' ', n % &tabstop)
-    endif
-endfunction "}}}
-
 function! s:get_inserted_indent(lnum) "{{{
     return matchstr(getline(a:lnum), '^\s\+')
 endfunction "}}}
