@@ -771,8 +771,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
     elseif line =~# '^\s*$'
         " Delete the current line and then do "gcO".
         silent delete _
-        " Avoid expression error (E15) due to Vim's :call bug
-        let _ = s:caw.jump['comment-prev']('n')
+        call s:caw.jump.comment_prev('n')
     else
         let indent = s:get_inserted_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
@@ -1116,7 +1115,9 @@ endfunction "}}}
 
 let s:caw.jump = {
 \   'comment-next': s:local_func('caw_jump_comment_next'),
+\   'comment_next': s:local_func('caw_jump_comment_next'),
 \   'comment-prev': s:local_func('caw_jump_comment_prev'),
+\   'comment_prev': s:local_func('caw_jump_comment_prev'),
 \}
 " }}}
 
