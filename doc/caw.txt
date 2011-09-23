@@ -6,7 +6,7 @@ Version: 1.x.x
 License: Under the same license as Vim itself (see :help license)
 
 ==============================================================================
-CONTENTS						*caw-contents*
+CONTENTS								*caw-contents*
 
 Introduction			|caw-introduction|
 Supported filetypes		|caw-supported-filetypes|
@@ -17,7 +17,7 @@ Changelog				|caw-changelog|
 
 
 ==============================================================================
-INTRODUCTION						*caw-introduction* {{{
+INTRODUCTION							*caw-introduction* {{{
 
 gcI
   before:
@@ -68,7 +68,7 @@ gcO
 
 }}}
 ==============================================================================
-SUPPORTED FILETYPES				*caw-supported-filetypes* {{{
+SUPPORTED FILETYPES						*caw-supported-filetypes* {{{
 
 Same as NERD Commenter (http://www.vim.org/scripts/script.php?script_id=1218).
 Because almost comment strings are from NERD Commenter's code.
@@ -105,23 +105,23 @@ xmodmap xpm2 xpm xslt yacc yaml z8a
 
 }}}
 ==============================================================================
-INTERFACE				*caw-interface* {{{
+INTERFACE								*caw-interface* {{{
 ------------------------------------------------------------------------------
-KEYMAPPINGS					*caw-keymappings* {{{
+KEYMAPPINGS								*caw-keymappings* {{{
 
 
-(nv) <Plug>(caw:i:comment)			*<Plug>(caw:i:comment)*
-(nv) <Plug>(caw:a:comment)			*<Plug>(caw:a:comment)*
-(nv) <Plug>(caw:i:toggle)			*<Plug>(caw:i:toggle)*
-(nv) <Plug>(caw:a:toggle)			*<Plug>(caw:a:toggle)*
+(nv) <Plug>(caw:i:comment)				*<Plug>(caw:i:comment)*
+(nv) <Plug>(caw:a:comment)				*<Plug>(caw:a:comment)*
+(nv) <Plug>(caw:i:toggle)				*<Plug>(caw:i:toggle)*
+(nv) <Plug>(caw:a:toggle)				*<Plug>(caw:a:toggle)*
 
 Default mapping		rhs ~
 gci					<Plug>(caw:i:comment)
 gca					<Plug>(caw:a:comment)
 
 
-(nv) <Plug>(caw:wrap:comment)		*<Plug>(caw:wrap:comment)*
-(nv) <Plug>(caw:wrap:toggle)		*<Plug>(caw:wrap:toggle)*
+(nv) <Plug>(caw:wrap:comment)			*<Plug>(caw:wrap:comment)*
+(nv) <Plug>(caw:wrap:toggle)			*<Plug>(caw:wrap:toggle)*
 
 Default mapping		rhs ~
 gcw					<Plug>(caw:wrap:comment)
@@ -135,20 +135,20 @@ gco					<Plug>(caw:jump:comment-next)
 gcO					<Plug>(caw:jump:comment-prev)
 
 
-(nv) <Plug>(caw:input:comment)		*<Plug>(caw:input:comment)*
+(nv) <Plug>(caw:input:comment)			*<Plug>(caw:input:comment)*
 
 Default mapping		rhs ~
 gcv					<Plug>(caw:input:comment)
 
 
-(nv) <Plug>(caw:uncomment)			*<Plug>(caw:uncomment)*
+(nv) <Plug>(caw:uncomment)				*<Plug>(caw:uncomment)*
 
 Default mapping		rhs ~
 gcuu				<Plug>(caw:uncomment)
 
 
-(nv) <Plug>(caw:i:uncomment)		*<Plug>(caw:i:uncomment)*
-(nv) <Plug>(caw:a:uncomment)		*<Plug>(caw:a:uncomment)*
+(nv) <Plug>(caw:i:uncomment)			*<Plug>(caw:i:uncomment)*
+(nv) <Plug>(caw:a:uncomment)			*<Plug>(caw:a:uncomment)*
 
 Default mapping		rhs ~
 gcui				<Plug>(caw:i:uncomment)
@@ -158,20 +158,20 @@ gcua				<Plug>(caw:a:uncomment)
 (nv) <Plug>(caw:wrap:uncomment)			*<Plug>(caw:wrap:uncomment)*
 
 Default mapping		rhs ~
-gcuw					<Plug>(caw:wrap:uncomment)
+gcuw				<Plug>(caw:wrap:uncomment)
 
 
 (nv) <Plug>(caw:input:uncomment)		*<Plug>(caw:input:uncomment)*
 
 Default mapping		rhs ~
-gcuv					<Plug>(caw:input:uncomment)
+gcuv				<Plug>(caw:input:uncomment)
 
 
 }}}
 ------------------------------------------------------------------------------
-VARIABLES					*caw-variables* {{{
+VARIABLES								*caw-variables* {{{
 
-caw_oneline_comment					*caw_oneline_comment*
+caw_oneline_comment						*caw_oneline_comment*
 	Used by oneline comment mappings.
 	- b:caw_oneline_comment
 	- w:caw_oneline_comment
@@ -181,11 +181,11 @@ caw_oneline_comment					*caw_oneline_comment*
 	Define this in .vim/ftplugin/*.vim or .vim/after/ftplugin/*.vim . >
 	let b:caw_oneline_comment = ';'
 
-caw_wrap_oneline_comment					*caw_wrap_oneline_comment*
+caw_wrap_oneline_comment				*caw_wrap_oneline_comment*
 	Same as |caw_wrap_oneline_comment|.
 	Used by wrap oneline comment mappings.
 
-caw_wrap_multiline_comment					*caw_wrap_multiline_comment*
+caw_wrap_multiline_comment				*caw_wrap_multiline_comment*
 	Same as |caw_wrap_oneline_comment|.
 	Used by wrap multiline comment mappings.
 
@@ -255,14 +255,14 @@ g:caw_default_oneline_comment			*g:caw_default_oneline_comment*
 
 	TODO: Keymappings which may use this comment string.
 
-g:caw_default_wrap_oneline_comment			*g:caw_default_wrap_oneline_comment*
+g:caw_default_wrap_oneline_comment		*g:caw_default_wrap_oneline_comment*
 									(Default: [])
 	Comment string which is used when caw failed to detect
 	current buffer's comment string.
 
 	TODO: Keymappings which may use this comment string.
 
-g:caw_default_wrap_multiline_comment			*g:caw_default_wrap_multiline_comment*
+g:caw_default_wrap_multiline_comment	*g:caw_default_wrap_multiline_comment*
 									(Default: {})
 	Comment string which is used when caw failed to detect
 	current buffer's comment string.
@@ -272,7 +272,7 @@ g:caw_default_wrap_multiline_comment			*g:caw_default_wrap_multiline_comment*
 }}}
 }}}
 ==============================================================================
-CHANGELOG						*caw-changelog* {{{
+CHANGELOG								*caw-changelog* {{{
 
 1.0.0:
 - Initial upload.
