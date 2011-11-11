@@ -699,10 +699,20 @@ function! s:CommentDetectable_has_comment_visual() dict "{{{
     return 0
 endfunction "}}}
 
+function! s:CommentDetectable_has_all_comment() dict "{{{
+    for lnum in range(line("'<"), line("'>"))
+        if !self.has_comment_normal(lnum)
+            return 0
+        endif
+    endfor
+    return 1
+endfunction "}}}
+
 
 let s:CommentDetectable = {
 \   'has_comment': s:local_func('CommentDetectable_has_comment'),
 \   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
 \}
 " }}}
 " s:Togglable {{{
@@ -724,9 +734,16 @@ function! s:Togglable_toggle(mode) dict "{{{
         return
     endif
 
-    if self.has_comment(a:mode)
+    let all_comment = self.has_all_comment()
+    let mixed = !all_comment && self.has_comment(a:mode)
+    if mixed
+        " Some lines are commented out.
+        call self.comment(a:mode)
+    elseif all_comment
+        " All lines are commented out.
         call self.uncomment(a:mode)
     else
+        " All lines are not commented out.
         call self.comment(a:mode)
     endif
 endfunction "}}}
