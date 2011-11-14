@@ -11,6 +11,7 @@ set cpo&vim
 function! caw#keymapping_stub(mode, type, action) "{{{
     let obj = deepcopy(s:caw[a:type])
     let obj.context = {}
+    let obj.context.mode = a:mode
     if a:mode ==# 'n'
         let obj.context.firstline = line('.')
         let obj.context.lastline  = line('.')
@@ -19,7 +20,7 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         let obj.context.lastline  = line("'>")
     endif
     try
-        return obj[a:action](a:mode)
+        return obj[a:action]()
     catch
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
@@ -604,16 +605,16 @@ endfunction "}}}
 " s:Commentable_comment() requires:
 " - Derived.comment_normal()
 
-function! s:Commentable_comment(mode) dict "{{{
+function! s:Commentable_comment() dict "{{{
     if !has_key(self, 'comment_database')
     \   || empty(self.comment_database.get_comment(&filetype))
         if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('comment', [a:mode])
+            return self.call_another_action('comment', [])
         endif
         return
     endif
 
-    if a:mode ==# 'n'
+    if self.context.mode ==# 'n'
         call self.comment_normal(line('.'))
     else
         let wiseness = get({
@@ -650,16 +651,16 @@ let s:Commentable = {
 " - Derived.uncomment_normal()
 
 
-function! s:Uncommentable_uncomment(mode) dict "{{{
+function! s:Uncommentable_uncomment() dict "{{{
     if !has_key(self, 'comment_database')
     \   || empty(self.comment_database.get_comment(&filetype))
         if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('uncomment', [a:mode])
+            return self.call_another_action('uncomment', [])
         endif
         return
     endif
 
-    if a:mode ==# 'n'
+    if self.context.mode ==# 'n'
         call self.uncomment_normal(line('.'))
     else
         call self.uncomment_visual()
@@ -687,8 +688,8 @@ let s:Uncommentable = {
 " - Derived.has_comment_normal()
 
 
-function! s:CommentDetectable_has_comment(mode) dict "{{{
-    if a:mode ==# 'n'
+function! s:CommentDetectable_has_comment() dict "{{{
+    if self.context.mode ==# 'n'
         return self.has_comment_normal(line('.'))
     else
         return self.has_comment_visual()
@@ -730,35 +731,35 @@ let s:CommentDetectable = {
 " - Derived.comment()
 
 
-function! s:Togglable_toggle(mode) dict "{{{
+function! s:Togglable_toggle() dict "{{{
     if !has_key(self, 'comment_database')
     \   || empty(self.comment_database.get_comment(&filetype))
         if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('toggle', [a:mode])
+            return self.call_another_action('toggle', [])
         endif
         return
     endif
 
     let all_comment = self.has_all_comment()
-    let mixed = !all_comment && self.has_comment(a:mode)
-    if a:mode ==# 'n'
+    let mixed = !all_comment && self.has_comment()
+    if self.context.mode ==# 'n'
         if all_comment
             " The line is commented out.
-            call self.uncomment(a:mode)
+            call self.uncomment()
         else
             " The line is not commented out.
-            call self.comment(a:mode)
+            call self.comment()
         endif
     else
         if mixed
             " Some lines are commented out.
-            call self.comment(a:mode)
+            call self.comment()
         elseif all_comment
             " All lines are commented out.
-            call self.uncomment(a:mode)
+            call self.uncomment()
         else
             " All lines are not commented out.
-            call self.comment(a:mode)
+            call self.comment()
         endif
     endif
 endfunction "}}}
@@ -1097,11 +1098,11 @@ let s:caw.wrap = s:create_class_from(
 
 " jump {{{
 
-function! s:caw_jump_comment_next(mode) dict "{{{
+function! s:caw_jump_comment_next() dict "{{{
     return call('s:caw_jump_comment', [1], self)
 endfunction "}}}
 
-function! s:caw_jump_comment_prev(mode) dict "{{{
+function! s:caw_jump_comment_prev() dict "{{{
     return call('s:caw_jump_comment', [0], self)
 endfunction "}}}
 
@@ -1140,7 +1141,7 @@ let s:caw.jump = {
 
 " input {{{
 
-function! s:caw_input_comment(mode) dict "{{{
+function! s:caw_input_comment() dict "{{{
     let [pos, pos_opt] = s:caw_input_get_pos()
     if !has_key(s:caw, pos) || !has_key(s:caw[pos], 'comment')
         echohl WarningMsg
@@ -1156,7 +1157,7 @@ function! s:caw_input_comment(mode) dict "{{{
         let org_status = s:set_and_save_comment_string(cmt)
     endif
     try
-        if a:mode ==# 'n'
+        if self.context.mode ==# 'n'
             call self.comment_normal(line('.'), pos)
         else
             call self.comment_visual(pos)
@@ -1234,7 +1235,7 @@ let s:caw.input = {
 " }}}
 
 
-function! s:caw.detect_operated_action(mode) "{{{
+function! s:caw.detect_operated_action() "{{{
     " TODO
     return ''
 endfunction "}}}
