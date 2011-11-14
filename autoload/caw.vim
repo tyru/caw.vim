@@ -741,15 +741,25 @@ function! s:Togglable_toggle(mode) dict "{{{
 
     let all_comment = self.has_all_comment()
     let mixed = !all_comment && self.has_comment(a:mode)
-    if mixed
-        " Some lines are commented out.
-        call self.comment(a:mode)
-    elseif all_comment
-        " All lines are commented out.
-        call self.uncomment(a:mode)
+    if a:mode ==# 'n'
+        if all_comment
+            " The line is commented out.
+            call self.uncomment(a:mode)
+        else
+            " The line is not commented out.
+            call self.comment(a:mode)
+        endif
     else
-        " All lines are not commented out.
-        call self.comment(a:mode)
+        if mixed
+            " Some lines are commented out.
+            call self.comment(a:mode)
+        elseif all_comment
+            " All lines are commented out.
+            call self.uncomment(a:mode)
+        else
+            " All lines are not commented out.
+            call self.comment(a:mode)
+        endif
     endif
 endfunction "}}}
 
