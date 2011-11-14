@@ -801,7 +801,7 @@ function! s:caw_i_comment_visual() dict "{{{
     let min_indent_num = 1/0
     if s:get_var('caw_i_align')
         for lnum in range(self.context.firstline, self.context.lastline)
-            if getline(lnum) =~ '^\s*$'
+            if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
                 continue    " Skip blank line.
             endif
             let n = s:get_inserted_indent_num(lnum)
@@ -812,7 +812,7 @@ function! s:caw_i_comment_visual() dict "{{{
     endif
 
     for lnum in range(self.context.firstline, self.context.lastline)
-        if getline(lnum) =~ '^\s*$'
+        if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
         call self.comment_normal(lnum, 0, min_indent_num)
