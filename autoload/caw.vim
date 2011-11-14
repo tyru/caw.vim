@@ -9,12 +9,17 @@ set cpo&vim
 
 " All keymappings are bound to this function.
 function! caw#keymapping_stub(mode, type, action) "{{{
+    let obj = deepcopy(s:caw[a:type])
+    let obj.context = {}
+    if a:mode ==# 'n'
+        let obj.context.firstline = line('.')
+        let obj.context.lastline  = line('.')
+    else
+        let obj.context.firstline = line("'<")
+        let obj.context.lastline  = line("'>")
+    endif
     try
-        return call(
-        \   s:caw[a:type][a:action],
-        \   [a:mode],
-        \   s:caw[a:type]
-        \)
+        return obj[a:action](a:mode)
     catch
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
@@ -626,7 +631,7 @@ endfunction "}}}
 
 function! s:Commentable_comment_visual() dict "{{{
     " Behave like linewise.
-    for lnum in range(line("'<"), line("'>"))
+    for lnum in range(self.context.firstline, self.context.lastline)
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
@@ -662,7 +667,7 @@ function! s:Uncommentable_uncomment(mode) dict "{{{
 endfunction "}}}
 
 function! s:Uncommentable_uncomment_visual() dict "{{{
-    for lnum in range(line("'<"), line("'>"))
+    for lnum in range(self.context.firstline, self.context.lastline)
         call self.uncomment_normal(lnum)
     endfor
 endfunction "}}}
@@ -691,7 +696,7 @@ function! s:CommentDetectable_has_comment(mode) dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_comment_visual() dict "{{{
-    for lnum in range(line("'<"), line("'>"))
+    for lnum in range(self.context.firstline, self.context.lastline)
         if self.has_comment_normal(lnum)
             return 1
         endif
@@ -700,7 +705,7 @@ function! s:CommentDetectable_has_comment_visual() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_all_comment() dict "{{{
-    for lnum in range(line("'<"), line("'>"))
+    for lnum in range(self.context.firstline, self.context.lastline)
         if !self.has_comment_normal(lnum)
             return 0
         endif
@@ -784,7 +789,7 @@ endfunction "}}}
 function! s:caw_i_comment_visual() dict "{{{
     let min_indent_num = 1/0
     if s:get_var('caw_i_align')
-        for lnum in range(line("'<"), line("'>"))
+        for lnum in range(self.context.firstline, self.context.lastline)
             if getline(lnum) =~ '^\s*$'
                 continue    " Skip blank line.
             endif
@@ -795,7 +800,7 @@ function! s:caw_i_comment_visual() dict "{{{
         endfor
     endif
 
-    for lnum in range(line("'<"), line("'>"))
+    for lnum in range(self.context.firstline, self.context.lastline)
         if getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
@@ -894,7 +899,7 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 function! s:caw_a_comment_visual() dict "{{{
-    for lnum in range(line("'<"), line("'>"))
+    for lnum in range(self.context.firstline, self.context.lastline)
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
@@ -1158,7 +1163,7 @@ function! s:caw_input_comment_normal(lnum, pos) dict "{{{
 endfunction "}}}
 
 function! s:caw_input_comment_visual(pos) dict "{{{
-    for lnum in range(line("'<"), line("'>"))
+    for lnum in range(self.context.firstline, self.context.lastline)
         call self.comment_normal(lnum, a:pos)
     endfor
 endfunction "}}}
