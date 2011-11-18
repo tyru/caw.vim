@@ -1138,6 +1138,12 @@ lockvar! s:caw.wrap
 
 " box {{{
 
+" TODO:
+" - s:caw_box_uncomment()
+" - after implemented s:caw_box_uncomment() and s:Togglable,
+"   let keymapping `gcc` call <Plug>(caw:box:toggle) if possible.
+
+
 function! s:caw_box_comment() dict "{{{
     " Get current filetype comments.
     " Use oneline comment for top/bottom comments.
