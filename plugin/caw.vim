@@ -30,6 +30,9 @@ if !exists('g:caw_i_align')
     let g:caw_i_align = 1
 endif
 
+if !exists('g:caw_I_skip_blank_line')
+    let g:caw_I_skip_blank_line = 0
+endif
 if !exists('g:caw_I_startinsert_at_blank_line')
     let g:caw_I_startinsert_at_blank_line = 1
 endif

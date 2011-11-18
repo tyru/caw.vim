@@ -911,6 +911,9 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
 
     let line = getline(a:lnum)
     if line =~# '^\s*$'
+        if s:get_var('caw_I_skip_blank_line')
+            return
+        endif
         call setline(a:lnum, cmt . s:get_var('caw_sp_I'))
         if startinsert
             startinsert!
