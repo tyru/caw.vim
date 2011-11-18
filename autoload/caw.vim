@@ -19,19 +19,25 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         let context.firstline = line("'<")
         let context.lastline  = line("'>")
     endif
-    return s:caw_invoke(a:type, a:action, [], context)
-endfunction "}}}
+    call s:set_context(context)
 
-function! s:caw_invoke(type, action, args, context) "{{{
-    let obj = deepcopy(s:caw[a:type])
-    let obj.context = a:context
     try
-        return call(obj[a:action], a:args, obj)
+        return s:caw[a:type][a:action]()
     catch
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
     endtry
+endfunction "}}}
+
+let s:context = {}
+function! s:set_context(context) "{{{
+    unlockvar! s:context
+    let s:context = a:context
+    lockvar! s:context
+endfunction "}}}
+function! s:get_context() "{{{
+    return s:context
 endfunction "}}}
 
 " Misc. functions.
@@ -578,7 +584,7 @@ function! s:caw_call_another_action(method, args) dict "{{{
     for c in sort(keys(self.__call_another_action_comment_vs_action))
         if !empty(s:comments[c].get_comment(&filetype))
             let action = self.__call_another_action_comment_vs_action[c]
-            return s:caw_invoke(action, a:method, a:args, self.context)
+            return call(s:caw[action][a:method], a:args, s:caw[action])
         endif
     endfor
 endfunction "}}}
@@ -634,7 +640,7 @@ function! s:Commentable_comment() dict "{{{
         return
     endif
 
-    if self.context.mode ==# 'n'
+    if s:get_context().mode ==# 'n'
         call self.comment_normal(line('.'))
     else
         let wiseness = get({
@@ -652,7 +658,7 @@ endfunction "}}}
 
 function! s:Commentable_comment_visual() dict "{{{
     " Behave like linewise.
-    for lnum in range(self.context.firstline, self.context.lastline)
+    for lnum in range(s:get_context().firstline, s:get_context().lastline)
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
@@ -682,7 +688,7 @@ function! s:Uncommentable_uncomment() dict "{{{
         return
     endif
 
-    if self.context.mode ==# 'n'
+    if s:get_context().mode ==# 'n'
         call self.uncomment_normal(line('.'))
     else
         call self.uncomment_visual()
@@ -690,7 +696,7 @@ function! s:Uncommentable_uncomment() dict "{{{
 endfunction "}}}
 
 function! s:Uncommentable_uncomment_visual() dict "{{{
-    for lnum in range(self.context.firstline, self.context.lastline)
+    for lnum in range(s:get_context().firstline, s:get_context().lastline)
         call self.uncomment_normal(lnum)
     endfor
 endfunction "}}}
@@ -713,7 +719,7 @@ let s:Uncommentable = {
 
 
 function! s:CommentDetectable_has_comment() dict "{{{
-    if self.context.mode ==# 'n'
+    if s:get_context().mode ==# 'n'
         return self.has_comment_normal(line('.'))
     else
         return self.has_comment_visual()
@@ -721,7 +727,7 @@ function! s:CommentDetectable_has_comment() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_comment_visual() dict "{{{
-    for lnum in range(self.context.firstline, self.context.lastline)
+    for lnum in range(s:get_context().firstline, s:get_context().lastline)
         if self.has_comment_normal(lnum)
             return 1
         endif
@@ -730,7 +736,7 @@ function! s:CommentDetectable_has_comment_visual() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_all_comment() dict "{{{
-    for lnum in range(self.context.firstline, self.context.lastline)
+    for lnum in range(s:get_context().firstline, s:get_context().lastline)
         if !self.has_comment_normal(lnum)
             return 0
         endif
@@ -768,7 +774,7 @@ function! s:Togglable_toggle() dict "{{{
 
     let all_comment = self.has_all_comment()
     let mixed = !all_comment && self.has_comment()
-    if self.context.mode ==# 'n'
+    if s:get_context().mode ==# 'n'
         if all_comment
             " The line is commented out.
             call self.uncomment()
@@ -828,7 +834,7 @@ endfunction "}}}
 function! s:caw_i_comment_visual() dict "{{{
     let min_indent_num = 1/0
     if s:get_var('caw_i_align')
-        for lnum in range(self.context.firstline, self.context.lastline)
+        for lnum in range(s:get_context().firstline, s:get_context().lastline)
             if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
                 continue    " Skip blank line.
             endif
@@ -839,7 +845,7 @@ function! s:caw_i_comment_visual() dict "{{{
         endfor
     endif
 
-    for lnum in range(self.context.firstline, self.context.lastline)
+    for lnum in range(s:get_context().firstline, s:get_context().lastline)
         if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
@@ -1184,7 +1190,7 @@ function! s:caw_input_comment() dict "{{{
         let org_status = s:set_and_save_comment_string(cmt)
     endif
     try
-        if self.context.mode ==# 'n'
+        if s:get_context().mode ==# 'n'
             call self.comment_normal(line('.'), pos)
         else
             call self.comment_visual(pos)
@@ -1201,7 +1207,7 @@ function! s:caw_input_comment_normal(lnum, pos) dict "{{{
 endfunction "}}}
 
 function! s:caw_input_comment_visual(pos) dict "{{{
-    for lnum in range(self.context.firstline, self.context.lastline)
+    for lnum in range(s:get_context().firstline, s:get_context().lastline)
         call self.comment_normal(lnum, a:pos)
     endfor
 endfunction "}}}
