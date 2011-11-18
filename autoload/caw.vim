@@ -938,12 +938,6 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     endif
 endfunction "}}}
 
-function! s:caw_a_comment_visual() dict "{{{
-    for lnum in range(self.context.firstline, self.context.lastline)
-        call self.comment_normal(lnum)
-    endfor
-endfunction "}}}
-
 function! s:caw_a_get_comment_col(lnum) "{{{
     let cmt = s:comments.oneline.get_comment(&filetype)
     if empty(cmt)
@@ -1016,9 +1010,6 @@ let s:caw.a = s:create_class_from(
 \   s:CommentDetectable,
 \   s:Togglable,
 \)
-call s:override_methods('s:caw.I', s:caw.I, {
-\   'comment_visual': s:local_func('caw_a_comment_visual'),
-\})
 " }}}
 
 " wrap {{{
