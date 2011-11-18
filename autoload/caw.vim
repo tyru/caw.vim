@@ -18,14 +18,14 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         let context.firstline = line("'<")
         let context.lastline  = line("'>")
     endif
-    return s:caw_invoke(a:type, a:action, context)
+    return s:caw_invoke(a:type, a:action, [], context)
 endfunction "}}}
 
-function! s:caw_invoke(type, action, context) "{{{
+function! s:caw_invoke(type, action, args, context) "{{{
     let obj = deepcopy(s:caw[a:type])
     let obj.context = a:context
     try
-        return obj[a:action]()
+        return call(obj[a:action], a:args, obj)
     catch
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
