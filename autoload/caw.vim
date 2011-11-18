@@ -574,6 +574,7 @@ function! s:comments.wrap_multiline.get_comment_builtin() "{{{
 endfunction "}}}
 " }}}
 
+lockvar! s:comments
 " }}}
 
 " Comment types (styles) and those actions.
