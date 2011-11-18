@@ -1196,7 +1196,8 @@ function! s:caw_box_comment() dict "{{{
 
         " Put modified lines.
         let @z = join(lines, "\n")
-        silent execute top_lnum.'put! z'
+        " If top_lnum == line('.'), `execute top_lnum.'put! z'` will cause an error.
+        silent execute (top_lnum - 1).'put z'
 
     finally
         call setreg('z', reg, regtype)
