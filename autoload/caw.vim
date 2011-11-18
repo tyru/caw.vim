@@ -7,7 +7,7 @@ set cpo&vim
 " }}}
 
 
-" All keymappings are bound to this function.
+"caw#keymapping_stub(): All keymappings are bound to this function. {{{
 function! caw#keymapping_stub(mode, type, action) "{{{
     let context = {}
     let context.mode = a:mode
@@ -30,7 +30,9 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         echohl None
     endtry
 endfunction "}}}
+" }}}
 
+" Context: context while invoking keymapping. {{{
 let s:context = {}
 function! s:set_context(context) "{{{
     unlockvar! s:context
@@ -40,9 +42,9 @@ endfunction "}}}
 function! s:get_context() "{{{
     return s:context
 endfunction "}}}
+" }}}
 
-" Misc. functions.
-" Utilities {{{
+" Utilities: Misc. functions. {{{
 
 function s:SID() "{{{
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
@@ -122,8 +124,7 @@ endfunction "}}}
 
 " }}}
 
-" Comment string database.
-" s:comments {{{
+" s:comments: Comment string database. {{{
 " TODO Multiline
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
@@ -577,8 +578,7 @@ endfunction "}}}
 lockvar! s:comments
 " }}}
 
-" Comment types (styles) and those actions.
-" s:caw {{{
+" s:caw: Comment types (styles) and those actions. {{{
 let s:caw = {}
 
 

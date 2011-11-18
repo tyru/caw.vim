@@ -13,6 +13,7 @@ set cpo&vim
 " }}}
 
 
+" Global variables {{{
 if !exists('g:caw_no_default_keymappings')
     let g:caw_no_default_keymappings = 0
 endif
@@ -67,7 +68,7 @@ endif
 if !exists('g:caw_find_another_action')
     let g:caw_find_another_action = 1
 endif
-
+" }}}
 
 
 function! s:map_user(lhs, rhs) "{{{
@@ -82,7 +83,9 @@ function! s:map_user(lhs, rhs) "{{{
 endfunction "}}}
 
 
-" prefix
+" Define default <Plug> keymapping. {{{
+
+" NOTE: You can change <Plug>(caw:prefix) to change prefix.
 function! s:define_prefix(lhs) "{{{
     let rhs = '<Plug>(caw:prefix)'
     if !hasmapto(rhs)
@@ -119,7 +122,7 @@ call s:define_generics()
 
 
 
-" i/I/a
+" i/I/a {{{
 if !g:caw_no_default_keymappings
     call s:map_user('i', 'i:comment')
     call s:map_user('I', 'I:comment')
@@ -128,26 +131,24 @@ if !g:caw_no_default_keymappings
     call s:map_user('ua', 'a:uncomment')
     call s:map_user('c', 'i:toggle')
 endif
+" }}}
 
-
-" wrap
+" wrap {{{
 if !g:caw_no_default_keymappings
     call s:map_user('w', 'wrap:comment')
     call s:map_user('uw', 'wrap:uncomment')
 endif
+" }}}
 
-
-
-" box
+" box {{{
 call s:map_generic('box', 'comment')
 
 if !g:caw_no_default_keymappings
     call s:map_user('b', 'box:comment')
 endif
+" }}}
 
-
-
-" jump
+" jump {{{
 call s:map_generic('jump', 'comment-next', 'n')
 call s:map_generic('jump', 'comment-prev', 'n')
 
@@ -155,10 +156,9 @@ if !g:caw_no_default_keymappings
     call s:map_user('o', 'jump:comment-next')
     call s:map_user('O', 'jump:comment-prev')
 endif
+" }}}
 
-
-
-" input
+" input {{{
 call s:map_generic('input', 'comment')
 call s:map_generic('input', 'uncomment')
 
@@ -166,7 +166,9 @@ if !g:caw_no_default_keymappings
     call s:map_user('v', 'input:comment')
     call s:map_user('uv', 'input:uncomment')
 endif
+" }}}
 
+" }}}
 
 
 " Restore 'cpoptions' {{{
