@@ -9,6 +9,7 @@ set cpo&vim
 
 " All keymappings are bound to this function.
 function! caw#keymapping_stub(mode, type, action) "{{{
+    " TODO: &filetype, v:count1
     let context = {}
     let context.mode = a:mode
     if a:mode ==# 'n'
