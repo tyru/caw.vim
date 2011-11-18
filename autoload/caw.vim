@@ -794,7 +794,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
     elseif line =~# '^\s*$'
         " Delete the current line and then do "gcO".
         silent delete _
-        call s:caw.jump.comment_prev('n')
+        call s:caw.jump.comment_prev()
     else
         let indent = s:get_inserted_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
