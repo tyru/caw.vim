@@ -47,6 +47,9 @@ if !exists('g:caw_a_startinsert')
     let g:caw_a_startinsert = 1
 endif
 
+if !exists('g:caw_wrap_skip_blank_line')
+    let g:caw_wrap_skip_blank_line = 1
+endif
 if !exists('g:caw_sp_wrap_left')
     let g:caw_sp_wrap_left = ' '
 endif

@@ -1028,7 +1028,7 @@ lockvar! s:caw.a
 function! s:caw_wrap_comment_normal(lnum) dict "{{{
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
-    if getline(a:lnum) =~# '^\s*$'
+    if s:get_var('caw_wrap_skip_blank_line') && getline(a:lnum) =~# '^\s*$'
         return
     endif
 
