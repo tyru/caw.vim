@@ -590,10 +590,19 @@ endfunction "}}}
 
 
 " Readable inheritance wrapper functions for extend()
-function! s:create_class_from(...) "{{{
+function! s:create_class_from(name, ...) "{{{
     let class = {}
     for base in a:000
+        if has_key(base, '__requires__')
+            for method in base.__requires__
+                if !has_key(class, method)
+                    throw a:name.' must have method "'.method.'"!'
+                endif
+            endfor
+        endif
         call extend(class, base, 'error')
+        " Remove special key.
+        silent! unlet class.__requires__
     endfor
     return class
 endfunction "}}}
@@ -645,6 +654,8 @@ endfunction "}}}
 let s:Commentable = {
 \   'comment': s:local_func('Commentable_comment'),
 \   'comment_visual': s:local_func('Commentable_comment_visual'),
+\
+\   '__requires__': ['comment_normal'],
 \}
 " }}}
 " s:Uncommentable {{{
@@ -682,6 +693,8 @@ endfunction "}}}
 let s:Uncommentable = {
 \   'uncomment': s:local_func('Uncommentable_uncomment'),
 \   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\
+\   '__requires__': ['uncomment_normal'],
 \}
 " }}}
 " s:CommentDetectable {{{
@@ -724,6 +737,8 @@ let s:CommentDetectable = {
 \   'has_comment': s:local_func('CommentDetectable_has_comment'),
 \   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
 \   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
+\
+\   '__requires__': ['has_comment_normal'],
 \}
 " }}}
 " s:Togglable {{{
@@ -772,6 +787,8 @@ endfunction "}}}
 
 let s:Togglable = {
 \   'toggle': s:local_func('Togglable_toggle'),
+\
+\   '__requires__': ['comment', 'uncomment'],
 \}
 " }}}
 
@@ -851,6 +868,7 @@ endfunction "}}}
 
 
 let s:caw.i = s:create_class_from(
+\   's:caw.i',
 \   {
 \       'comment_normal': s:local_func('caw_i_comment_normal'),
 \       'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
@@ -888,7 +906,7 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 
-let s:caw.I = s:create_class_from(s:caw.i)
+let s:caw.I = s:create_class_from('s:caw.I', s:caw.i)
 call s:override_methods(s:caw.I, {
 \   'comment_normal': s:local_func('caw_I_comment_normal'),
 \})
@@ -979,6 +997,7 @@ endfunction "}}}
 
 
 let s:caw.a = s:create_class_from(
+\   's:caw.a',
 \   {
 \       'comment_normal': s:local_func('caw_a_comment_normal'),
 \       'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
@@ -1087,6 +1106,7 @@ endfunction "}}}
 
 
 let s:caw.wrap = s:create_class_from(
+\   's:caw.wrap',
 \   {
 \       'comment_normal': s:local_func('caw_wrap_comment_normal'),
 \       'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
