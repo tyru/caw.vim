@@ -566,10 +566,10 @@ call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multi
 function! s:comments.wrap_multiline.get_comment_builtin() "{{{
     " TODO: compound filetypes
     return get({
-    \   'perl': {'top': '=pod', 'bottom': '=cut'},
-    \   'ruby': {'top': '=pod', 'bottom': '=cut'},
-    \   'c': {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'},
-    \   'cpp': {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'},
+    \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
+    \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
+    \   'c': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
+    \   'cpp': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
     \}, s:get_context().filetype, {})
 endfunction "}}}
 " }}}
