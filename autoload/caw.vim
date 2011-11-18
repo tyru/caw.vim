@@ -9,16 +9,21 @@ set cpo&vim
 
 " All keymappings are bound to this function.
 function! caw#keymapping_stub(mode, type, action) "{{{
-    let obj = deepcopy(s:caw[a:type])
-    let obj.context = {}
-    let obj.context.mode = a:mode
+    let context = {}
+    let context.mode = a:mode
     if a:mode ==# 'n'
-        let obj.context.firstline = line('.')
-        let obj.context.lastline  = line('.')
+        let context.firstline = line('.')
+        let context.lastline  = line('.')
     else
-        let obj.context.firstline = line("'<")
-        let obj.context.lastline  = line("'>")
+        let context.firstline = line("'<")
+        let context.lastline  = line("'>")
     endif
+    return s:caw_invoke(a:type, a:action, context)
+endfunction "}}}
+
+function! s:caw_invoke(type, action, context) "{{{
+    let obj = deepcopy(s:caw[a:type])
+    let obj.context = a:context
     try
         return obj[a:action]()
     catch
