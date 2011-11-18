@@ -19,6 +19,7 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         let context.firstline = line("'<")
         let context.lastline  = line("'>")
     endif
+    let context.filetype = &filetype
     call s:set_context(context)
 
     try
@@ -127,9 +128,9 @@ endfunction "}}}
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
 
-function! s:comments_get_comment(filetype) dict "{{{
+function! s:comments_get_comment() dict "{{{
     for method in self.__get_comment_fn_list
-        let r = self[method](a:filetype)
+        let r = self[method]()
         if !empty(r)
             return r
         endif
@@ -145,7 +146,7 @@ function! s:create_get_comment(fn_list, empty_value) "{{{
     \}
 endfunction "}}}
 
-function! s:comments_get_comment_vars(filetype) dict "{{{
+function! s:comments_get_comment_vars() dict "{{{
     return s:get_var(self.__get_comment_vars_varname, '')
 endfunction "}}}
 function! s:create_get_comment_vars(comment) "{{{
@@ -160,7 +161,7 @@ endfunction "}}}
 call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin'], ''), 'error')
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
 
-function! s:comments.oneline.get_comment_detect(filetype) "{{{
+function! s:comments.oneline.get_comment_detect() "{{{
     let comments_default = "s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-"
     if &l:comments ==# comments_default
         return ''
@@ -171,7 +172,7 @@ function! s:comments.oneline.get_comment_detect(filetype) "{{{
     return ''
 endfunction "}}}
 
-function! s:comments.oneline.get_comment_builtin(filetype) "{{{
+function! s:comments.oneline.get_comment_builtin() "{{{
     " TODO: compound filetypes
     return get({
     \   'aap': '#',
@@ -456,7 +457,7 @@ function! s:comments.oneline.get_comment_builtin(filetype) "{{{
     \   'xmath': '#',
     \   'xpm2': '!',
     \   'z8a': ';',
-    \}, a:filetype, '')
+    \}, s:get_context().filetype, '')
 endfunction "}}}
 " }}}
 
@@ -464,7 +465,7 @@ endfunction "}}}
 call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin'], []), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
 
-function! s:comments.wrap_oneline.get_comment_detect(filetype) "{{{
+function! s:comments.wrap_oneline.get_comment_detect() "{{{
     let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
     if empty(m)
         return []
@@ -472,7 +473,7 @@ function! s:comments.wrap_oneline.get_comment_detect(filetype) "{{{
     return m[1:2]
 endfunction "}}}
 
-function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
+function! s:comments.wrap_oneline.get_comment_builtin() "{{{
     " TODO: compound filetypes
     return get({
     \   'aap': ['/*', '*/'],
@@ -554,7 +555,7 @@ function! s:comments.wrap_oneline.get_comment_builtin(filetype) "{{{
     \   'verilog': ['/*', '*/'],
     \   'verilog_systemverilog': ['/*', '*/'],
     \   'xquery': ['(:', ':)'],
-    \}, a:filetype, [])
+    \}, s:get_context().filetype, [])
 endfunction "}}}
 " }}}
 
@@ -562,14 +563,14 @@ endfunction "}}}
 call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars', 'get_comment_builtin'], {}), 'error')
 call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'), 'error')
 
-function! s:comments.wrap_multiline.get_comment_builtin(filetype) "{{{
+function! s:comments.wrap_multiline.get_comment_builtin() "{{{
     " TODO: compound filetypes
     return get({
     \   'perl': {'top': '=pod', 'bottom': '=cut'},
     \   'ruby': {'top': '=pod', 'bottom': '=cut'},
     \   'c': {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'},
     \   'cpp': {'begin_left': '/*', 'middle_left': '*', 'end_left': '*/'},
-    \}, a:filetype, {})
+    \}, s:get_context().filetype, {})
 endfunction "}}}
 " }}}
 
@@ -582,7 +583,7 @@ let s:caw = {}
 
 function! s:caw_call_another_action(method, args) dict "{{{
     for c in sort(keys(self.__call_another_action_comment_vs_action))
-        if !empty(s:comments[c].get_comment(&filetype))
+        if !empty(s:comments[c].get_comment())
             let action = self.__call_another_action_comment_vs_action[c]
             return call(s:caw[action][a:method], a:args, s:caw[action])
         endif
@@ -633,7 +634,7 @@ endfunction "}}}
 
 function! s:Commentable_comment() dict "{{{
     if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment(&filetype))
+    \   || empty(self.comment_database.get_comment())
         if s:get_var('caw_find_another_action', 0)
             return self.call_another_action('comment', [])
         endif
@@ -681,7 +682,7 @@ let s:Commentable = {
 
 function! s:Uncommentable_uncomment() dict "{{{
     if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment(&filetype))
+    \   || empty(self.comment_database.get_comment())
         if s:get_var('caw_find_another_action', 0)
             return self.call_another_action('uncomment', [])
         endif
@@ -765,7 +766,7 @@ let s:CommentDetectable = {
 
 function! s:Togglable_toggle() dict "{{{
     if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment(&filetype))
+    \   || empty(self.comment_database.get_comment())
         if s:get_var('caw_find_another_action', 0)
             return self.call_another_action('toggle', [])
         endif
@@ -811,7 +812,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
 
-    let cmt = self.comment_database.get_comment(&filetype)
+    let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     let line = getline(a:lnum)
@@ -855,12 +856,12 @@ endfunction "}}}
 
 function! s:caw_i_has_comment_normal(lnum) dict "{{{
     let line_without_indent = substitute(getline(a:lnum), '^[ \t]\+', '', '')
-    let cmt = s:comments.oneline.get_comment(&filetype)
+    let cmt = s:comments.oneline.get_comment()
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
 endfunction "}}}
 
 function! s:caw_i_uncomment_normal(lnum) dict "{{{
-    let cmt = self.comment_database.get_comment(&filetype)
+    let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     if self.has_comment_normal(a:lnum)
@@ -904,7 +905,7 @@ lockvar! s:caw.i
 function! s:caw_I_comment_normal(lnum, ...) dict "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line'))
 
-    let cmt = self.comment_database.get_comment(&filetype)
+    let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     let line = getline(a:lnum)
@@ -931,7 +932,7 @@ lockvar! s:caw.I
 function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
 
-    let cmt = self.comment_database.get_comment(&filetype)
+    let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     call setline(
@@ -947,7 +948,7 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 function! s:caw_a_get_comment_col(lnum) "{{{
-    let cmt = s:comments.oneline.get_comment(&filetype)
+    let cmt = s:comments.oneline.get_comment()
     if empty(cmt)
         return -1
     endif
@@ -981,7 +982,7 @@ function! s:caw_a_has_comment_normal(lnum) dict "{{{
 endfunction "}}}
 
 function! s:caw_a_uncomment_normal(lnum) dict "{{{
-    let cmt = self.comment_database.get_comment(&filetype)
+    let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     if self.has_comment_normal(a:lnum)
@@ -1024,7 +1025,7 @@ lockvar! s:caw.a
 " wrap {{{
 
 function! s:caw_wrap_comment_normal(lnum) dict "{{{
-    let cmt = self.comment_database.get_comment(&filetype)
+    let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
     if getline(a:lnum) =~# '^\s*$'
         return
@@ -1045,7 +1046,7 @@ function! s:caw_wrap_comment_normal(lnum) dict "{{{
 endfunction "}}}
 
 function! s:comment_visual_characterwise_comment_out(text) "{{{
-    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    let cmt = s:comments.wrap_oneline.get_comment()
     if empty(cmt)
         return a:text
     else
@@ -1071,13 +1072,13 @@ function! s:caw_wrap___operate_on_word(funcname) "{{{
     endtry
 endfunction "}}}
 function! s:caw_wrap_comment_visual_characterwise() dict "{{{
-    let cmt = self.comment_database.get_comment(&filetype)
+    let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
     call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
 
 function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
-    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    let cmt = s:comments.wrap_oneline.get_comment()
     if empty(cmt)
         return 0
     endif
@@ -1092,7 +1093,7 @@ function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
 endfunction "}}}
 
 function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
-    let cmt = s:comments.wrap_oneline.get_comment(&filetype)
+    let cmt = s:comments.wrap_oneline.get_comment()
     if !empty(cmt) && self.has_comment_normal(a:lnum)
         let [left, right] = cmt
         let line = s:trim_whitespaces(getline(a:lnum))
@@ -1139,7 +1140,7 @@ function! s:caw_jump_comment_prev() dict "{{{
 endfunction "}}}
 
 function! s:caw_jump_comment(next) dict "{{{
-    let cmt = s:comments.oneline.get_comment(&filetype)
+    let cmt = s:comments.oneline.get_comment()
     if empty(cmt)
         return
     endif
@@ -1183,7 +1184,7 @@ function! s:caw_input_comment() dict "{{{
         return
     endif
 
-    let default_cmt = s:comments.oneline.get_comment(&filetype)
+    let default_cmt = s:comments.oneline.get_comment()
     let cmt = s:input('any comment?:', default_cmt)
 
     if !empty(default_cmt) && default_cmt !=# cmt
