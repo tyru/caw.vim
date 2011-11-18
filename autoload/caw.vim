@@ -28,6 +28,8 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
+    finally
+        call s:set_context({})    " free context.
     endtry
 endfunction "}}}
 " }}}
