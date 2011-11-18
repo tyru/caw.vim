@@ -9,7 +9,6 @@ set cpo&vim
 
 " All keymappings are bound to this function.
 function! caw#keymapping_stub(mode, type, action) "{{{
-    " TODO: &filetype, v:count1
     let context = {}
     let context.mode = a:mode
     if a:mode ==# 'n'
@@ -20,6 +19,7 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         let context.lastline  = line("'>")
     endif
     let context.filetype = &filetype
+    let context.count = v:count1
     call s:set_context(context)
 
     try
@@ -174,7 +174,7 @@ endfunction "}}}
 
 function! s:comments.oneline.get_comment_builtin() "{{{
     " TODO: compound filetypes
-    return get({
+    return repeat(get({
     \   'aap': '#',
     \   'abc': '%',
     \   'acedb': '//',
@@ -457,7 +457,7 @@ function! s:comments.oneline.get_comment_builtin() "{{{
     \   'xmath': '#',
     \   'xpm2': '!',
     \   'z8a': ';',
-    \}, s:get_context().filetype, '')
+    \}, s:get_context().filetype, ''), s:get_context().count)
 endfunction "}}}
 " }}}
 
