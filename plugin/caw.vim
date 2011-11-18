@@ -30,14 +30,14 @@ if !exists('g:caw_i_align')
     let g:caw_i_align = 1
 endif
 
-if !exists('g:caw_I_skip_blank_line')
-    let g:caw_I_skip_blank_line = 0
+if !exists('g:caw_sp_I')
+    let g:caw_sp_I = ' '
 endif
 if !exists('g:caw_I_startinsert_at_blank_line')
     let g:caw_I_startinsert_at_blank_line = 1
 endif
-if !exists('g:caw_sp_I')
-    let g:caw_sp_I = ' '
+if !exists('g:caw_I_skip_blank_line')
+    let g:caw_I_skip_blank_line = 0
 endif
 
 if !exists('g:caw_sp_a_left')
@@ -50,14 +50,14 @@ if !exists('g:caw_a_startinsert')
     let g:caw_a_startinsert = 1
 endif
 
-if !exists('g:caw_wrap_skip_blank_line')
-    let g:caw_wrap_skip_blank_line = 1
-endif
 if !exists('g:caw_sp_wrap_left')
     let g:caw_sp_wrap_left = ' '
 endif
 if !exists('g:caw_sp_wrap_right')
     let g:caw_sp_wrap_right = ' '
+endif
+if !exists('g:caw_wrap_skip_blank_line')
+    let g:caw_wrap_skip_blank_line = 1
 endif
 
 if !exists('g:caw_sp_jump')
