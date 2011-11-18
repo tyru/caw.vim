@@ -1134,6 +1134,76 @@ let s:caw.wrap = s:create_class_from(
 lockvar! s:caw.wrap
 " }}}
 
+" box {{{
+
+function! s:caw_box_comment() dict "{{{
+    " Get current filetype comments.
+    " Use oneline comment for top/bottom comments.
+    " Use wrap comment for left/right comments if possible.
+    let cmt = self.comment_database.get_comment()
+    if empty(cmt)
+    \  || empty(cmt.left)
+    \  || empty(cmt.right)
+    \  || empty(cmt.top)
+    \  || empty(cmt.bottom)
+        return
+    endif
+
+    " Determine left/right col to box string.
+    let top_lnum    = s:get_context().firstline
+    let bottom_lnum = s:get_context().lastline
+    let left_col  = 1/0
+    let right_col = 1
+    for line in getline(top_lnum, bottom_lnum)
+        let left  = strlen(matchstr(line, '^\s*')) + 1
+        let right = strlen(line) - strlen(matchstr(line, '\s*$')) + 1
+        if left < left_col
+            let left_col = left
+        endif
+        if right > right_col
+            let right_col = right
+        endif
+    endfor
+    call s:assert(left_col > 0, 'left_col > 0')
+    call s:assert(right_col > 0, 'right_col > 0')
+
+    " Box string!
+    let reg = getreg('z', 1)
+    let regtype = getregtype('z')
+    try
+        " Delete target lines.
+        execute top_lnum.','.bottom_lnum.'delete z'
+        let lines = split(@z, "\n")
+
+        let width = right_col - left_col
+        call s:assert(width > 0, 'width > 0')
+        let tops_and_bottoms = repeat(cmt.top, width + 2)
+        call map(lines, 's:trim_whitespaces(v:val)')
+        let lines =
+        \   [tops_and_bottoms]
+        \   + map(lines, '" " . v:val . repeat(" ", width - strlen(v:val)) . " "')
+        \   + [tops_and_bottoms]
+        let indent = repeat(" ", left_col - 1)
+        call map(lines, 'indent . cmt.left . v:val . cmt.right')
+
+        " Put modified lines.
+        let @z = join(lines, "\n")
+        execute top_lnum.'put! z'
+
+    finally
+        call setreg('z', reg, regtype)
+    endtry
+endfunction "}}}
+
+let s:caw.box = s:create_class_from(
+\   's:caw.box',
+\   {
+\       'comment': s:local_func('caw_box_comment'),
+\       'comment_database': s:comments.wrap_multiline,
+\   },
+\)
+" }}}
+
 " jump {{{
 
 function! s:caw_jump_comment_next() dict "{{{

@@ -138,6 +138,15 @@ endif
 
 
 
+" box
+call s:map_generic('box', 'comment')
+
+if !g:caw_no_default_keymappings
+    call s:map_user('b', 'box:comment')
+endif
+
+
+
 " jump
 call s:map_generic('jump', 'comment-next', 'n')
 call s:map_generic('jump', 'comment-prev', 'n')
