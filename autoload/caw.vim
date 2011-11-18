@@ -1169,12 +1169,12 @@ function! s:caw_jump_comment(next) dict "{{{
 endfunction "}}}
 
 
-let s:caw.jump = {
+let s:caw.jump = s:create_class_from('s:caw.jump', {
 \   'comment-next': s:local_func('caw_jump_comment_next'),
 \   'comment_next': s:local_func('caw_jump_comment_next'),
 \   'comment-prev': s:local_func('caw_jump_comment_prev'),
 \   'comment_prev': s:local_func('caw_jump_comment_prev'),
-\}
+\})
 lockvar! s:caw.jump
 " }}}
 
