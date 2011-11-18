@@ -1174,7 +1174,7 @@ function! s:caw_box_comment() dict "{{{
     let regtype = getregtype('z')
     try
         " Delete target lines.
-        execute top_lnum.','.bottom_lnum.'delete z'
+        silent execute top_lnum.','.bottom_lnum.'delete z'
         let lines = split(@z, "\n")
 
         let width = right_col - left_col
@@ -1190,7 +1190,7 @@ function! s:caw_box_comment() dict "{{{
 
         " Put modified lines.
         let @z = join(lines, "\n")
-        execute top_lnum.'put! z'
+        silent execute top_lnum.'put! z'
 
     finally
         call setreg('z', reg, regtype)
