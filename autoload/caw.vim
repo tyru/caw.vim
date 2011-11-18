@@ -596,7 +596,7 @@ function! s:create_class_from(name, ...) "{{{
         if has_key(base, '__requires__')
             for method in base.__requires__
                 if !has_key(class, method)
-                    throw a:name.' must have method "'.method.'"!'
+                    throw 'caw: '.a:name.' must have method "'.method.'"!'
                 endif
             endfor
         endif
@@ -606,8 +606,13 @@ function! s:create_class_from(name, ...) "{{{
     endfor
     return class
 endfunction "}}}
-function! s:override_methods(class, methods) "{{{
-    call extend(a:class, a:methods, 'force')
+function! s:override_methods(name, class, methods) "{{{
+    for method in sort(keys(a:methods))
+        if !has_key(a:class, method)
+            throw 'caw: '.a:name.' must have method "'.method.'"!'
+        endif
+        let a:class[method] = a:methods[method]
+    endfor
 endfunction "}}}
 
 
@@ -881,7 +886,7 @@ let s:caw.i = s:create_class_from(
 \   s:CommentDetectable,
 \   s:Togglable,
 \)
-call s:override_methods(s:caw.i, {
+call s:override_methods('s:caw.i', s:caw.i, {
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
 \})
 " }}}
@@ -907,7 +912,7 @@ endfunction "}}}
 
 
 let s:caw.I = s:create_class_from('s:caw.I', s:caw.i)
-call s:override_methods(s:caw.I, {
+call s:override_methods('s:caw.I', s:caw.I, {
 \   'comment_normal': s:local_func('caw_I_comment_normal'),
 \})
 " }}}
@@ -1010,7 +1015,7 @@ let s:caw.a = s:create_class_from(
 \   s:CommentDetectable,
 \   s:Togglable,
 \)
-call s:override_methods(s:caw.I, {
+call s:override_methods('s:caw.I', s:caw.I, {
 \   'comment_visual': s:local_func('caw_a_comment_visual'),
 \})
 " }}}
