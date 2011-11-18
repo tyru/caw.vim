@@ -577,7 +577,7 @@ function! s:caw_call_another_action(method, args) dict "{{{
     for c in sort(keys(self.__call_another_action_comment_vs_action))
         if !empty(s:comments[c].get_comment(&filetype))
             let action = self.__call_another_action_comment_vs_action[c]
-            return call(s:caw[action][a:method], a:args, s:caw[action])
+            return s:caw_invoke(action, a:method, a:args, self.context)
         endif
     endfor
 endfunction "}}}
