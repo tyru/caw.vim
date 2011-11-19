@@ -1196,7 +1196,7 @@ function! s:caw_box_comment() dict "{{{
 
         " Put modified lines.
         let @z = join(lines, "\n")
-        " If top_lnum == line('.'), `execute top_lnum.'put! z'` will cause an error.
+        " If top_lnum == line('.') + 1, `execute top_lnum.'put! z'` will cause an error.
         silent execute (top_lnum - 1).'put z'
 
     finally
