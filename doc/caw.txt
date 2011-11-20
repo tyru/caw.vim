@@ -110,6 +110,16 @@ INTERFACE								*caw-interface* {{{
 KEYMAPPINGS								*caw-keymappings* {{{
 
 
+(nv) <Plug>(caw:prefix)					*<Plug>(caw:prefix)*
+
+Default mapping		rhs ~
+gc					<Plug>(caw:prefix)
+
+NOTE: You can change keymapping prefix by
+writing the following settings in your .vimrc: >
+	nnoremap <Plug>(caw:prefix) <Leader>c
+
+
 (nv) <Plug>(caw:i:comment)				*<Plug>(caw:i:comment)*
 (nv) <Plug>(caw:a:comment)				*<Plug>(caw:a:comment)*
 (nv) <Plug>(caw:i:toggle)				*<Plug>(caw:i:toggle)*
