@@ -170,7 +170,12 @@ function! s:comments.oneline.get_comment_detect() "{{{
         return ''
     endif
 
-    " TODO
+    for c in split(&l:comments, ',')
+        let l = matchlist(c, '^b\=:\(.*\)$')
+        if !empty(l)
+            return l[1]
+        endif
+    endfor
 
     return ''
 endfunction "}}}
