@@ -161,7 +161,7 @@ endfunction "}}}
 
 
 " oneline {{{
-call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin'], ''), 'error')
+call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_builtin', 'get_comment_detect'], ''), 'error')
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
 
 function! s:comments.oneline.get_comment_detect() "{{{
@@ -470,7 +470,7 @@ endfunction "}}}
 " }}}
 
 " wrap_oneline "{{{
-call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect', 'get_comment_builtin'], []), 'error')
+call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_builtin', 'get_comment_detect'], []), 'error')
 call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
 
 function! s:comments.wrap_oneline.get_comment_detect() "{{{
