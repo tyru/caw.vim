@@ -24,7 +24,21 @@ function! caw#keymapping_stub(mode, type, action) "{{{
     call s:set_context(context)
 
     try
-        return s:caw[a:type][a:action]()
+        for type in [a:type] + s:caw[a:type].fallback_types
+            let old_changedtick = b:changedtick
+            if !has_key(s:caw[type], 'comment_database')
+            \   || empty(s:caw[type].comment_database.get_comment())
+                if s:get_var('caw_find_another_action')
+                    continue
+                else
+                    break
+                endif
+            endif
+            call s:caw[type][a:action]()
+            if b:changedtick !=# old_changedtick
+                break
+            endif
+        endfor
     catch
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
@@ -590,22 +604,6 @@ lockvar! s:comments
 let s:caw = {}
 
 
-function! s:caw_call_another_action(method, args) dict "{{{
-    for c in sort(keys(self.__call_another_action_comment_vs_action))
-        if !empty(s:comments[c].get_comment())
-            let action = self.__call_another_action_comment_vs_action[c]
-            return call(s:caw[action][a:method], a:args, s:caw[action])
-        endif
-    endfor
-endfunction "}}}
-function! s:create_call_another_action(comment_vs_action) "{{{
-    return {
-    \   '__call_another_action_comment_vs_action': a:comment_vs_action,
-    \   'call_another_action': s:local_func('caw_call_another_action'),
-    \}
-endfunction "}}}
-
-
 " Readable inheritance wrapper functions for extend()
 function! s:create_class_from(name, ...) "{{{
     let class = {}
@@ -642,14 +640,6 @@ endfunction "}}}
 " - Derived.comment_normal()
 
 function! s:Commentable_comment() dict "{{{
-    if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment())
-        if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('comment', [])
-        endif
-        return
-    endif
-
     if s:get_context().mode ==# 'n'
         call self.comment_normal(line('.'))
     else
@@ -684,14 +674,6 @@ let s:Commentable = {
 
 
 function! s:Uncommentable_uncomment() dict "{{{
-    if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment())
-        if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('uncomment', [])
-        endif
-        return
-    endif
-
     if s:get_context().mode ==# 'n'
         call self.uncomment_normal(line('.'))
     else
@@ -777,14 +759,6 @@ let s:CommentDetectable = {
 
 
 function! s:Togglable_toggle() dict "{{{
-    if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment())
-        if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('toggle', [])
-        endif
-        return
-    endif
-
     let all_comment = self.has_all_comment()
     let mixed = !all_comment && self.has_comment()
     if s:get_context().mode ==# 'n'
@@ -906,8 +880,8 @@ let s:caw.i = s:create_class_from(
 \       'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
 \       'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
 \       'comment_database': s:comments.oneline,
+\       'fallback_types': ['wrap'],
 \   },
-\   s:create_call_another_action({'wrap_oneline': 'wrap'}),
 \   s:Commentable,
 \   s:Uncommentable,
 \   s:CommentDetectable,
@@ -1032,8 +1006,8 @@ let s:caw.a = s:create_class_from(
 \       'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
 \       'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
 \       'comment_database': s:comments.oneline,
+\       'fallback_types': ['wrap'],
 \   },
-\   s:create_call_another_action({'wrap_oneline': 'wrap'}),
 \   s:Commentable,
 \   s:Uncommentable,
 \   s:CommentDetectable,
@@ -1160,8 +1134,8 @@ let s:caw.wrap = s:create_class_from(
 \       'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
 \       'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
 \       'comment_database': s:comments.wrap_oneline,
+\       'fallback_types': ['i'],
 \   },
-\   s:create_call_another_action({'oneline': 'i'}),
 \   s:Commentable,
 \   s:Uncommentable,
 \   s:CommentDetectable,
