@@ -666,7 +666,7 @@ function! s:Commentable_comment() dict "{{{
 endfunction "}}}
 
 function! s:Commentable_comment_visual() dict "{{{
-    " Behave like linewise.
+    " Behave linewisely.
     for lnum in range(s:get_context().firstline, s:get_context().lastline)
         call self.comment_normal(lnum)
     endfor
