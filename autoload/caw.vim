@@ -916,7 +916,6 @@ let s:caw.i = s:create_class_from(
 call s:override_methods('s:caw.i', s:caw.i, {
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
 \})
-lockvar! s:caw.i
 " }}}
 
 " I {{{
@@ -946,7 +945,6 @@ let s:caw.I = s:create_class_from('s:caw.I', s:caw.i)
 call s:override_methods('s:caw.I', s:caw.I, {
 \   'comment_normal': s:local_func('caw_I_comment_normal'),
 \})
-lockvar! s:caw.I
 " }}}
 
 " a {{{
@@ -1041,7 +1039,6 @@ let s:caw.a = s:create_class_from(
 \   s:CommentDetectable,
 \   s:Togglable,
 \)
-lockvar! s:caw.a
 " }}}
 
 " wrap {{{
@@ -1172,7 +1169,6 @@ let s:caw.wrap = s:create_class_from(
 call s:override_methods('s:caw.i', s:caw.i, {
 \   'comment_visual': s:local_func('caw_wrap_comment_visual'),
 \})
-lockvar! s:caw.wrap
 " }}}
 
 " box {{{
@@ -1291,7 +1287,6 @@ let s:caw.jump = s:create_class_from('s:caw.jump', {
 \   'comment-prev': s:local_func('caw_jump_comment_prev'),
 \   'comment_prev': s:local_func('caw_jump_comment_prev'),
 \})
-lockvar! s:caw.jump
 " }}}
 
 " input {{{
@@ -1390,9 +1385,11 @@ let s:caw.input = {
 \   'comment_normal': s:local_func('caw_input_comment_normal'),
 \   'comment_visual': s:local_func('caw_input_comment_visual'),
 \}
-lockvar! s:caw.input
 " }}}
 
+" s:caw is not changed.
+" no changing script-local variable but only buffer is changed.
+lockvar! s:caw
 
 " Remove unnecessary objects for memory... {{{
 " Those objects were used to build objects under s:caw.
