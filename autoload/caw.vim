@@ -659,7 +659,10 @@ endfunction "}}}
 
 function! s:Commentable_comment_visual() dict "{{{
     " Behave linewisely.
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
@@ -697,7 +700,10 @@ function! s:Uncommentable_uncomment() dict "{{{
 endfunction "}}}
 
 function! s:Uncommentable_uncomment_visual() dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         call self.uncomment_normal(lnum)
     endfor
 endfunction "}}}
@@ -728,7 +734,10 @@ function! s:CommentDetectable_has_comment() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_comment_visual() dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         if self.has_comment_normal(lnum)
             return 1
         endif
@@ -737,7 +746,10 @@ function! s:CommentDetectable_has_comment_visual() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_all_comment() dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         if !self.has_comment_normal(lnum)
             return 0
         endif
@@ -836,7 +848,10 @@ endfunction "}}}
 function! s:caw_i_comment_visual() dict "{{{
     let min_indent_num = 1/0
     if s:get_var('caw_i_align')
-        for lnum in range(s:get_context().firstline, s:get_context().lastline)
+        for lnum in range(
+        \   s:get_context().firstline,
+        \   s:get_context().lastline
+        \)
             if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
                 continue    " Skip blank line.
             endif
@@ -847,7 +862,10 @@ function! s:caw_i_comment_visual() dict "{{{
         endfor
     endif
 
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
@@ -1062,7 +1080,10 @@ function! s:caw_wrap_comment_visual() dict "{{{
     endif
 
     " Behave linewisely.
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
@@ -1308,7 +1329,10 @@ function! s:caw_input_comment_normal(lnum, pos) dict "{{{
 endfunction "}}}
 
 function! s:caw_input_comment_visual(pos) dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         call self.comment_normal(lnum, a:pos)
     endfor
 endfunction "}}}
