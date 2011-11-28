@@ -1137,14 +1137,34 @@ function! s:caw_box_comment() dict "{{{
 
         let width = right_col - left_col
         call s:assert(width > 0, 'width > 0')
-        let tops_and_bottoms = repeat(cmt.top, width + 2)
-        call map(lines, 's:trim_whitespaces(v:val)')
-        let lines =
-        \   [tops_and_bottoms]
-        \   + map(lines, '" " . v:val . repeat(" ", width - strlen(v:val)) . " "')
-        \   + [tops_and_bottoms]
-        let indent = repeat(" ", left_col - 1)
-        call map(lines, 'indent . cmt.left . v:val . cmt.right')
+        let tops_and_bottoms = cmt.left . repeat(cmt.top, width + 2) . cmt.right
+
+        for i in range(len(lines))
+            let l = lines[i]
+            " Remove indent.
+            let indent = l[: left_col-2]
+            " Trim left/right whitespaces.
+            if strlen(l) < right_col-1
+                let l .= repeat(' ', (right_col-1) - strlen(l))
+            endif
+            let l = l[left_col-1 : right_col-1]
+            " Add left/right comment and whitespaces.
+            let l =
+            \   cmt.left . s:get_var("caw_box_sp_left")
+            \   . l
+            \   . s:get_var("caw_box_sp_right") . cmt.right
+            " Restore indent.
+            let l = indent . l
+            " Set original line.
+            let lines[i] = l
+        endfor
+        " Padding/Remove left/right whitespaces.
+        call insert(lines,
+        \   repeat((&expandtab ? ' ' : "\t"), left_col-1)
+        \   . tops_and_bottoms)
+        call add(lines,
+        \   repeat((&expandtab ? ' ' : "\t"), left_col-1)
+        \   . tops_and_bottoms)
 
         " Put modified lines.
         let @z = join(lines, "\n")

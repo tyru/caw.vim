@@ -65,6 +65,13 @@ if !exists('g:caw_jump_sp')
     let g:caw_jump_sp = ' '
 endif
 
+if !exists('g:caw_box_sp_left')
+    let g:caw_box_sp_left = ' '
+endif
+if !exists('g:caw_box_sp_right')
+    let g:caw_box_sp_right = ' '
+endif
+
 if !exists('g:caw_find_another_action')
     let g:caw_find_another_action = 1
 endif
