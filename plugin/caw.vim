@@ -71,18 +71,6 @@ endif
 " }}}
 
 
-function! s:map_user(lhs, rhs) "{{{
-    let lhs = '<Plug>(caw:prefix)' . a:lhs
-    let rhs = printf('<Plug>(caw:%s)', a:rhs)
-    for mode in ['n', 'v']
-        if !hasmapto(rhs, mode)
-            silent! execute
-            \   mode.'map <unique>' lhs rhs
-        endif
-    endfor
-endfunction "}}}
-
-
 " Define default <Plug> keymapping. {{{
 
 " NOTE: You can change <Plug>(caw:prefix) to change prefix.
@@ -111,29 +99,58 @@ function! s:map_generic(type, action, ...) "{{{
         \       string(a:action))
     endfor
 endfunction "}}}
-function! s:define_generics() "{{{
-    for type in ['i', 'I', 'a', 'wrap']
-        for action in ['comment', 'uncomment', 'toggle']
-            call s:map_generic(type, action)
-        endfor
+function! s:map_user(lhs, rhs) "{{{
+    let lhs = '<Plug>(caw:prefix)' . a:lhs
+    let rhs = printf('<Plug>(caw:%s)', a:rhs)
+    for mode in ['n', 'v']
+        if !hasmapto(rhs, mode)
+            silent! execute
+            \   mode.'map <unique>' lhs rhs
+        endif
     endfor
 endfunction "}}}
-call s:define_generics()
 
 
 
-" i/I/a {{{
+" i {{{
+call s:map_generic('i', 'comment')
+call s:map_generic('i', 'uncomment')
+call s:map_generic('i', 'toggle')
+
 if !g:caw_no_default_keymappings
     call s:map_user('i', 'i:comment')
-    call s:map_user('I', 'I:comment')
-    call s:map_user('a', 'a:comment')
     call s:map_user('ui', 'i:uncomment')
-    call s:map_user('ua', 'a:uncomment')
     call s:map_user('c', 'i:toggle')
 endif
 " }}}
 
+" I {{{
+call s:map_generic('I', 'comment')
+call s:map_generic('I', 'uncomment')
+call s:map_generic('I', 'toggle')
+
+if !g:caw_no_default_keymappings
+    call s:map_user('I', 'I:comment')
+    call s:map_user('uI', 'I:uncomment')
+endif
+" }}}
+
+" a {{{
+call s:map_generic('a', 'comment')
+call s:map_generic('a', 'uncomment')
+call s:map_generic('a', 'toggle')
+
+if !g:caw_no_default_keymappings
+    call s:map_user('a', 'a:comment')
+    call s:map_user('ua', 'a:uncomment')
+endif
+" }}}
+
 " wrap {{{
+call s:map_generic('wrap', 'comment')
+call s:map_generic('wrap', 'uncomment')
+call s:map_generic('wrap', 'toggle')
+
 if !g:caw_no_default_keymappings
     call s:map_user('w', 'wrap:comment')
     call s:map_user('uw', 'wrap:uncomment')
