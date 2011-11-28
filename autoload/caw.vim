@@ -1156,6 +1156,7 @@ let s:caw.wrap = s:create_class_from(
 \   's:caw.wrap',
 \   {
 \       'comment_normal': s:local_func('caw_wrap_comment_normal'),
+\       'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
 \       'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
 \       'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
 \       'comment_database': s:comments.wrap_oneline,
