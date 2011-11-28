@@ -604,33 +604,6 @@ lockvar! s:comments
 let s:caw = {}
 
 
-" Readable inheritance wrapper functions for extend()
-function! s:create_class_from(name, ...) "{{{
-    let class = {}
-    for base in a:000
-        if has_key(base, '__requires__')
-            for method in base.__requires__
-                if !has_key(class, method)
-                    throw 'caw: '.a:name.' must have method "'.method.'"!'
-                endif
-            endfor
-        endif
-        call extend(class, base, 'error')
-        " Remove special key.
-        silent! unlet class.__requires__
-    endfor
-    return class
-endfunction "}}}
-function! s:override_methods(name, class, methods) "{{{
-    for method in sort(keys(a:methods))
-        if !has_key(a:class, method)
-            throw 'caw: '.a:name.' must have method "'.method.'"!'
-        endif
-        let a:class[method] = a:methods[method]
-    endfor
-endfunction "}}}
-
-
 " s:Commentable {{{
 "
 " These methods are missing.
@@ -657,12 +630,6 @@ function! s:Commentable_comment_visual() dict "{{{
     endfor
 endfunction "}}}
 
-let s:Commentable = {
-\   'comment': s:local_func('Commentable_comment'),
-\   'comment_visual': s:local_func('Commentable_comment_visual'),
-\
-\   '__requires__': ['comment_normal'],
-\}
 " }}}
 " s:Uncommentable {{{
 "
@@ -690,13 +657,6 @@ function! s:Uncommentable_uncomment_visual() dict "{{{
     endfor
 endfunction "}}}
 
-
-let s:Uncommentable = {
-\   'uncomment': s:local_func('Uncommentable_uncomment'),
-\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
-\
-\   '__requires__': ['uncomment_normal'],
-\}
 " }}}
 " s:CommentDetectable {{{
 "
@@ -739,14 +699,6 @@ function! s:CommentDetectable_has_all_comment() dict "{{{
     return 1
 endfunction "}}}
 
-
-let s:CommentDetectable = {
-\   'has_comment': s:local_func('CommentDetectable_has_comment'),
-\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
-\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
-\
-\   '__requires__': ['has_comment_normal'],
-\}
 " }}}
 " s:Togglable {{{
 "
@@ -783,12 +735,6 @@ function! s:Togglable_toggle() dict "{{{
     endif
 endfunction "}}}
 
-
-let s:Togglable = {
-\   'toggle': s:local_func('Togglable_toggle'),
-\
-\   '__requires__': ['comment', 'uncomment'],
-\}
 " }}}
 
 
@@ -873,23 +819,22 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.i = s:create_class_from(
-\   's:caw.i',
-\   {
-\       'comment_normal': s:local_func('caw_i_comment_normal'),
-\       'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
-\       'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
-\       'comment_database': s:comments.oneline,
-\       'fallback_types': ['wrap'],
-\   },
-\   s:Commentable,
-\   s:Uncommentable,
-\   s:CommentDetectable,
-\   s:Togglable,
-\)
-call s:override_methods('s:caw.i', s:caw.i, {
+let s:caw.i = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_normal': s:local_func('caw_i_comment_normal'),
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
-\})
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
+\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\   'toggle': s:local_func('Togglable_toggle'),
+\
+\   'comment_database': s:comments.oneline,
+\   'fallback_types': ['wrap'],
+\}
 " }}}
 
 " I {{{
@@ -915,10 +860,8 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 
-let s:caw.I = s:create_class_from('s:caw.I', s:caw.i)
-call s:override_methods('s:caw.I', s:caw.I, {
-\   'comment_normal': s:local_func('caw_I_comment_normal'),
-\})
+let s:caw.I = deepcopy(s:caw.i)
+let s:caw.I.comment_normal = s:local_func('caw_I_comment_normal')
 " }}}
 
 " a {{{
@@ -999,20 +942,22 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.a = s:create_class_from(
-\   's:caw.a',
-\   {
-\       'comment_normal': s:local_func('caw_a_comment_normal'),
-\       'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
-\       'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
-\       'comment_database': s:comments.oneline,
-\       'fallback_types': ['wrap'],
-\   },
-\   s:Commentable,
-\   s:Uncommentable,
-\   s:CommentDetectable,
-\   s:Togglable,
-\)
+let s:caw.a = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_normal': s:local_func('caw_a_comment_normal'),
+\   'comment_visual': s:local_func('Commentable_comment_visual'),
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
+\   'toggle': s:local_func('Togglable_toggle'),
+\
+\   'comment_database': s:comments.oneline,
+\   'fallback_types': ['wrap'],
+\}
 " }}}
 
 " wrap {{{
@@ -1126,24 +1071,23 @@ function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.wrap = s:create_class_from(
-\   's:caw.wrap',
-\   {
-\       'comment_normal': s:local_func('caw_wrap_comment_normal'),
-\       'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
-\       'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
-\       'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
-\       'comment_database': s:comments.wrap_oneline,
-\       'fallback_types': ['i'],
-\   },
-\   s:Commentable,
-\   s:Uncommentable,
-\   s:CommentDetectable,
-\   s:Togglable,
-\)
-call s:override_methods('s:caw.i', s:caw.i, {
+let s:caw.wrap = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_normal': s:local_func('caw_wrap_comment_normal'),
 \   'comment_visual': s:local_func('caw_wrap_comment_visual'),
-\})
+\   'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
+\   'toggle': s:local_func('Togglable_toggle'),
+\
+\   'comment_database': s:comments.wrap_oneline,
+\   'fallback_types': ['i'],
+\}
 " }}}
 
 " box {{{
@@ -1212,13 +1156,10 @@ function! s:caw_box_comment() dict "{{{
     endtry
 endfunction "}}}
 
-let s:caw.box = s:create_class_from(
-\   's:caw.box',
-\   {
-\       'comment': s:local_func('caw_box_comment'),
-\       'comment_database': s:comments.wrap_multiline,
-\   },
-\)
+let s:caw.box = {
+\   'comment': s:local_func('caw_box_comment'),
+\   'comment_database': s:comments.wrap_multiline,
+\}
 " }}}
 
 " jump {{{
@@ -1256,12 +1197,12 @@ function! s:caw_jump_comment(next) dict "{{{
 endfunction "}}}
 
 
-let s:caw.jump = s:create_class_from('s:caw.jump', {
+let s:caw.jump = {
 \   'comment-next': s:local_func('caw_jump_comment_next'),
 \   'comment_next': s:local_func('caw_jump_comment_next'),
 \   'comment-prev': s:local_func('caw_jump_comment_prev'),
 \   'comment_prev': s:local_func('caw_jump_comment_prev'),
-\})
+\}
 " }}}
 
 " input {{{
@@ -1365,11 +1306,6 @@ let s:caw.input = {
 " s:caw is not changed.
 " no changing script-local variable but only buffer is changed.
 lockvar! s:caw
-
-" Remove unnecessary objects for memory...
-" Those objects were used to build objects under s:caw.
-" now no need to hold the objects so remove them.
-unlet s:Commentable s:Uncommentable s:CommentDetectable s:Togglable
 
 " }}}
 
