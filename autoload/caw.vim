@@ -11,6 +11,7 @@ set cpo&vim
 function! caw#keymapping_stub(mode, type, action) "{{{
     let context = {}
     let context.mode = a:mode
+    let context.visualmode = visualmode()
     if a:mode ==# 'n'
         let context.firstline = line('.')
         let context.lastline  = line('.')
@@ -23,7 +24,21 @@ function! caw#keymapping_stub(mode, type, action) "{{{
     call s:set_context(context)
 
     try
-        return s:caw[a:type][a:action]()
+        for type in [a:type] + get(s:caw[a:type], 'fallback_types', [])
+            let old_changedtick = b:changedtick
+            if !has_key(s:caw[type], 'comment_database')
+            \   || empty(s:caw[type].comment_database.get_comment())
+                if s:get_var('caw_find_another_action')
+                    continue
+                else
+                    break
+                endif
+            endif
+            call s:caw[type][a:action]()
+            if b:changedtick !=# old_changedtick
+                break
+            endif
+        endfor
     catch
         echohl ErrorMsg
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
@@ -127,7 +142,6 @@ endfunction "}}}
 " }}}
 
 " s:comments: Comment string database. {{{
-" TODO Multiline
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
 
@@ -573,6 +587,7 @@ call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multi
 
 function! s:comments.wrap_multiline.get_comment_builtin() "{{{
     " TODO: compound filetypes
+    " TODO: More filetypes
     return get({
     \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
     \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
@@ -589,49 +604,6 @@ lockvar! s:comments
 let s:caw = {}
 
 
-function! s:caw_call_another_action(method, args) dict "{{{
-    for c in sort(keys(self.__call_another_action_comment_vs_action))
-        if !empty(s:comments[c].get_comment())
-            let action = self.__call_another_action_comment_vs_action[c]
-            return call(s:caw[action][a:method], a:args, s:caw[action])
-        endif
-    endfor
-endfunction "}}}
-function! s:create_call_another_action(comment_vs_action) "{{{
-    return {
-    \   '__call_another_action_comment_vs_action': a:comment_vs_action,
-    \   'call_another_action': s:local_func('caw_call_another_action'),
-    \}
-endfunction "}}}
-
-
-" Readable inheritance wrapper functions for extend()
-function! s:create_class_from(name, ...) "{{{
-    let class = {}
-    for base in a:000
-        if has_key(base, '__requires__')
-            for method in base.__requires__
-                if !has_key(class, method)
-                    throw 'caw: '.a:name.' must have method "'.method.'"!'
-                endif
-            endfor
-        endif
-        call extend(class, base, 'error')
-        " Remove special key.
-        silent! unlet class.__requires__
-    endfor
-    return class
-endfunction "}}}
-function! s:override_methods(name, class, methods) "{{{
-    for method in sort(keys(a:methods))
-        if !has_key(a:class, method)
-            throw 'caw: '.a:name.' must have method "'.method.'"!'
-        endif
-        let a:class[method] = a:methods[method]
-    endfor
-endfunction "}}}
-
-
 " s:Commentable {{{
 "
 " These methods are missing.
@@ -641,43 +613,23 @@ endfunction "}}}
 " - Derived.comment_normal()
 
 function! s:Commentable_comment() dict "{{{
-    if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment())
-        if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('comment', [])
-        endif
-        return
-    endif
-
     if s:get_context().mode ==# 'n'
         call self.comment_normal(line('.'))
     else
-        let wiseness = get({
-        \   'v': 'characterwise',
-        \   'V': 'linewise',
-        \   "\<C-v>": 'blockwise',
-        \}, visualmode(), '')
-        if wiseness != '' && has_key(self, 'comment_visual_' . wiseness)
-            call call(self['comment_visual_' . wiseness], [], self)
-        else
-            call self.comment_visual()
-        endif
+        call self.comment_visual()
     endif
 endfunction "}}}
 
 function! s:Commentable_comment_visual() dict "{{{
-    " Behave like linewise.
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    " Behave linewisely.
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         call self.comment_normal(lnum)
     endfor
 endfunction "}}}
 
-let s:Commentable = {
-\   'comment': s:local_func('Commentable_comment'),
-\   'comment_visual': s:local_func('Commentable_comment_visual'),
-\
-\   '__requires__': ['comment_normal'],
-\}
 " }}}
 " s:Uncommentable {{{
 "
@@ -689,14 +641,6 @@ let s:Commentable = {
 
 
 function! s:Uncommentable_uncomment() dict "{{{
-    if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment())
-        if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('uncomment', [])
-        endif
-        return
-    endif
-
     if s:get_context().mode ==# 'n'
         call self.uncomment_normal(line('.'))
     else
@@ -705,18 +649,14 @@ function! s:Uncommentable_uncomment() dict "{{{
 endfunction "}}}
 
 function! s:Uncommentable_uncomment_visual() dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         call self.uncomment_normal(lnum)
     endfor
 endfunction "}}}
 
-
-let s:Uncommentable = {
-\   'uncomment': s:local_func('Uncommentable_uncomment'),
-\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
-\
-\   '__requires__': ['uncomment_normal'],
-\}
 " }}}
 " s:CommentDetectable {{{
 "
@@ -736,7 +676,10 @@ function! s:CommentDetectable_has_comment() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_comment_visual() dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         if self.has_comment_normal(lnum)
             return 1
         endif
@@ -745,7 +688,10 @@ function! s:CommentDetectable_has_comment_visual() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_all_comment() dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         if !self.has_comment_normal(lnum)
             return 0
         endif
@@ -753,14 +699,6 @@ function! s:CommentDetectable_has_all_comment() dict "{{{
     return 1
 endfunction "}}}
 
-
-let s:CommentDetectable = {
-\   'has_comment': s:local_func('CommentDetectable_has_comment'),
-\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
-\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
-\
-\   '__requires__': ['has_comment_normal'],
-\}
 " }}}
 " s:Togglable {{{
 "
@@ -773,14 +711,6 @@ let s:CommentDetectable = {
 
 
 function! s:Togglable_toggle() dict "{{{
-    if !has_key(self, 'comment_database')
-    \   || empty(self.comment_database.get_comment())
-        if s:get_var('caw_find_another_action', 0)
-            return self.call_another_action('toggle', [])
-        endif
-        return
-    endif
-
     let all_comment = self.has_all_comment()
     let mixed = !all_comment && self.has_comment()
     if s:get_context().mode ==# 'n'
@@ -805,19 +735,13 @@ function! s:Togglable_toggle() dict "{{{
     endif
 endfunction "}}}
 
-
-let s:Togglable = {
-\   'toggle': s:local_func('Togglable_toggle'),
-\
-\   '__requires__': ['comment', 'uncomment'],
-\}
 " }}}
 
 
 " i {{{
 
 function! s:caw_i_comment_normal(lnum, ...) dict "{{{
-    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
+    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
     let min_indent_num = get(a:000, 1, -1)
 
     let cmt = self.comment_database.get_comment()
@@ -830,7 +754,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
         call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
     elseif line =~# '^\s*$'
-        execute 'normal! "_cc' . cmt . s:get_var('caw_sp_i')
+        execute 'normal! '.a:lnum.'G"_cc' . cmt . s:get_var('caw_sp_i')
         if startinsert
             startinsert!
         endif
@@ -844,7 +768,10 @@ endfunction "}}}
 function! s:caw_i_comment_visual() dict "{{{
     let min_indent_num = 1/0
     if s:get_var('caw_i_align')
-        for lnum in range(s:get_context().firstline, s:get_context().lastline)
+        for lnum in range(
+        \   s:get_context().firstline,
+        \   s:get_context().lastline
+        \)
             if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
                 continue    " Skip blank line.
             endif
@@ -855,7 +782,10 @@ function! s:caw_i_comment_visual() dict "{{{
         endfor
     endif
 
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
@@ -889,30 +819,28 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.i = s:create_class_from(
-\   's:caw.i',
-\   {
-\       'comment_normal': s:local_func('caw_i_comment_normal'),
-\       'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
-\       'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
-\       'comment_database': s:comments.oneline,
-\   },
-\   s:create_call_another_action({'wrap_oneline': 'wrap'}),
-\   s:Commentable,
-\   s:Uncommentable,
-\   s:CommentDetectable,
-\   s:Togglable,
-\)
-call s:override_methods('s:caw.i', s:caw.i, {
+let s:caw.i = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_normal': s:local_func('caw_i_comment_normal'),
 \   'comment_visual': s:local_func('caw_i_comment_visual'),
-\})
-lockvar! s:caw.i
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_normal': s:local_func('caw_i_uncomment_normal'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
+\   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
+\   'toggle': s:local_func('Togglable_toggle'),
+\
+\   'comment_database': s:comments.oneline,
+\   'fallback_types': ['wrap'],
+\}
 " }}}
 
 " I {{{
 
 function! s:caw_I_comment_normal(lnum, ...) dict "{{{
-    let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line'))
+    let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
@@ -932,17 +860,14 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 
-let s:caw.I = s:create_class_from('s:caw.I', s:caw.i)
-call s:override_methods('s:caw.I', s:caw.I, {
-\   'comment_normal': s:local_func('caw_I_comment_normal'),
-\})
-lockvar! s:caw.I
+let s:caw.I = deepcopy(s:caw.i)
+let s:caw.I.comment_normal = s:local_func('caw_I_comment_normal')
 " }}}
 
 " a {{{
 
 function! s:caw_a_comment_normal(lnum, ...) dict "{{{
-    let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
+    let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert') && s:get_context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
@@ -1017,21 +942,22 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.a = s:create_class_from(
-\   's:caw.a',
-\   {
-\       'comment_normal': s:local_func('caw_a_comment_normal'),
-\       'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
-\       'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
-\       'comment_database': s:comments.oneline,
-\   },
-\   s:create_call_another_action({'wrap_oneline': 'wrap'}),
-\   s:Commentable,
-\   s:Uncommentable,
-\   s:CommentDetectable,
-\   s:Togglable,
-\)
-lockvar! s:caw.a
+let s:caw.a = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_normal': s:local_func('caw_a_comment_normal'),
+\   'comment_visual': s:local_func('Commentable_comment_visual'),
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_normal': s:local_func('caw_a_uncomment_normal'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_normal': s:local_func('caw_a_has_comment_normal'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
+\   'toggle': s:local_func('Togglable_toggle'),
+\
+\   'comment_database': s:comments.oneline,
+\   'fallback_types': ['wrap'],
+\}
 " }}}
 
 " wrap {{{
@@ -1057,6 +983,27 @@ function! s:caw_wrap_comment_normal(lnum) dict "{{{
     \)
 endfunction "}}}
 
+function! s:caw_wrap_comment_visual() dict "{{{
+    let wiseness = get({
+    \   'v': 'characterwise',
+    \   'V': 'linewise',
+    \   "\<C-v>": 'blockwise',
+    \}, s:get_context().visualmode, '')
+    if wiseness != ''
+    \   && has_key(self, 'comment_visual_' . wiseness)
+        call call(self['comment_visual_' . wiseness], [], self)
+        return
+    endif
+
+    " Behave linewisely.
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
+        call self.comment_normal(lnum)
+    endfor
+endfunction "}}}
+
 function! s:comment_visual_characterwise_comment_out(text) "{{{
     let cmt = s:comments.wrap_oneline.get_comment()
     if empty(cmt)
@@ -1069,7 +1016,7 @@ function! s:comment_visual_characterwise_comment_out(text) "{{{
         \   . cmt[1]
     endif
 endfunction "}}}
-function! s:caw_wrap___operate_on_word(funcname) "{{{
+function! s:operate_on_word(funcname) "{{{
     normal! gv
 
     let reg_z_save     = getreg('z', 1)
@@ -1086,7 +1033,7 @@ endfunction "}}}
 function! s:caw_wrap_comment_visual_characterwise() dict "{{{
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
-    call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
+    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
 
 function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
@@ -1124,29 +1071,29 @@ function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
 endfunction "}}}
 
 
-let s:caw.wrap = s:create_class_from(
-\   's:caw.wrap',
-\   {
-\       'comment_normal': s:local_func('caw_wrap_comment_normal'),
-\       'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
-\       'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
-\       'comment_database': s:comments.wrap_oneline,
-\   },
-\   s:create_call_another_action({'oneline': 'i'}),
-\   s:Commentable,
-\   s:Uncommentable,
-\   s:CommentDetectable,
-\   s:Togglable,
-\)
-lockvar! s:caw.wrap
+let s:caw.wrap = {
+\   'comment': s:local_func('Commentable_comment'),
+\   'comment_normal': s:local_func('caw_wrap_comment_normal'),
+\   'comment_visual': s:local_func('caw_wrap_comment_visual'),
+\   'comment_visual_characterwise': s:local_func('caw_wrap_comment_visual_characterwise'),
+\   'uncomment': s:local_func('Uncommentable_uncomment'),
+\   'uncomment_normal': s:local_func('caw_wrap_uncomment_normal'),
+\   'uncomment_visual': s:local_func('Uncommentable_uncomment_visual'),
+\   'has_comment': s:local_func('CommentDetectable_has_comment'),
+\   'has_comment_normal': s:local_func('caw_wrap_has_comment_normal'),
+\   'has_comment_visual': s:local_func('CommentDetectable_has_comment_visual'),
+\   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
+\   'toggle': s:local_func('Togglable_toggle'),
+\
+\   'comment_database': s:comments.wrap_oneline,
+\   'fallback_types': ['i'],
+\}
 " }}}
 
 " box {{{
 
 " TODO:
 " - s:caw_box_uncomment()
-" - after implemented s:caw_box_uncomment() and s:Togglable,
-"   let keymapping `gcc` call <Plug>(caw:box:toggle) if possible.
 
 
 function! s:caw_box_comment() dict "{{{
@@ -1209,13 +1156,10 @@ function! s:caw_box_comment() dict "{{{
     endtry
 endfunction "}}}
 
-let s:caw.box = s:create_class_from(
-\   's:caw.box',
-\   {
-\       'comment': s:local_func('caw_box_comment'),
-\       'comment_database': s:comments.wrap_multiline,
-\   },
-\)
+let s:caw.box = {
+\   'comment': s:local_func('caw_box_comment'),
+\   'comment_database': s:comments.wrap_multiline,
+\}
 " }}}
 
 " jump {{{
@@ -1253,13 +1197,12 @@ function! s:caw_jump_comment(next) dict "{{{
 endfunction "}}}
 
 
-let s:caw.jump = s:create_class_from('s:caw.jump', {
+let s:caw.jump = {
 \   'comment-next': s:local_func('caw_jump_comment_next'),
 \   'comment_next': s:local_func('caw_jump_comment_next'),
 \   'comment-prev': s:local_func('caw_jump_comment_prev'),
 \   'comment_prev': s:local_func('caw_jump_comment_prev'),
-\})
-lockvar! s:caw.jump
+\}
 " }}}
 
 " input {{{
@@ -1297,7 +1240,10 @@ function! s:caw_input_comment_normal(lnum, pos) dict "{{{
 endfunction "}}}
 
 function! s:caw_input_comment_visual(pos) dict "{{{
-    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
         call self.comment_normal(lnum, a:pos)
     endfor
 endfunction "}}}
@@ -1355,21 +1301,11 @@ let s:caw.input = {
 \   'comment_normal': s:local_func('caw_input_comment_normal'),
 \   'comment_visual': s:local_func('caw_input_comment_visual'),
 \}
-lockvar! s:caw.input
 " }}}
 
-
-function! s:caw.detect_operated_action() "{{{
-    " TODO
-    return ''
-endfunction "}}}
-
-" Remove unnecessary objects for memory... {{{
-" Those objects were used to build objects under s:caw.
-" now no need to hold the objects so remove them.
-
-unlet s:Commentable s:Uncommentable s:CommentDetectable s:Togglable
-" }}}
+" s:caw is not changed.
+" no changing script-local variable but only buffer is changed.
+lockvar! s:caw
 
 " }}}
 
