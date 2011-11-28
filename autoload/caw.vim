@@ -139,6 +139,23 @@ function! s:trim_whitespaces(str) "{{{
     return str
 endfunction "}}}
 
+function! s:get_min_indent_num_in_range(skip_blank_line) "{{{
+    let min_indent_num = 1/0
+    for lnum in range(
+    \   s:get_context().firstline,
+    \   s:get_context().lastline
+    \)
+        if a:skip_blank_line && getline(lnum) =~ '^\s*$'
+            continue    " Skip blank line.
+        endif
+        let n = s:get_inserted_indent_num(lnum)
+        if n < min_indent_num
+            let min_indent_num = n
+        endif
+    endfor
+    return min_indent_num
+endfunction "}}}
+
 " }}}
 
 " s:comments: Comment string database. {{{
@@ -766,20 +783,10 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 function! s:caw_i_comment_visual() dict "{{{
-    let min_indent_num = 1/0
     if s:get_var('caw_i_align')
-        for lnum in range(
-        \   s:get_context().firstline,
-        \   s:get_context().lastline
-        \)
-            if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
-                continue    " Skip blank line.
-            endif
-            let n = s:get_inserted_indent_num(lnum)
-            if n < min_indent_num
-                let min_indent_num = n
-            endif
-        endfor
+        let min_indent_num =
+        \   s:get_min_indent_num_in_range(
+        \       s:get_var('caw_i_skip_blank_line'))
     endif
 
     for lnum in range(
@@ -789,7 +796,11 @@ function! s:caw_i_comment_visual() dict "{{{
         if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
-        call self.comment_normal(lnum, 0, min_indent_num)
+        if s:get_var('caw_i_align')
+            call self.comment_normal(lnum, 0, min_indent_num)
+        else
+            call self.comment_normal(lnum, 0)
+        endif
     endfor
 endfunction "}}}
 
