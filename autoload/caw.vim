@@ -752,16 +752,16 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
         let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-        call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
+        call setline(a:lnum, before . cmt . s:get_var('caw_i_sp') . after)
     elseif line =~# '^\s*$'
-        execute 'normal! '.a:lnum.'G"_cc' . cmt . s:get_var('caw_sp_i')
+        execute 'normal! '.a:lnum.'G"_cc' . cmt . s:get_var('caw_i_sp')
         if startinsert
             startinsert!
         endif
     else
         let indent = s:get_inserted_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
-        call setline(a:lnum, indent . cmt . s:get_var('caw_sp_i') . line)
+        call setline(a:lnum, indent . cmt . s:get_var('caw_i_sp') . line)
     endif
 endfunction "}}}
 
@@ -809,9 +809,9 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
         if stridx(line, cmt) == 0
             " Remove comment.
             let line = line[strlen(cmt) :]
-            " 'caw_sp_i'
-            if stridx(line, s:get_var('caw_sp_i')) ==# 0
-                let line = line[strlen(s:get_var('caw_sp_i')) :]
+            " 'caw_i_sp'
+            if stridx(line, s:get_var('caw_i_sp')) ==# 0
+                let line = line[strlen(s:get_var('caw_i_sp')) :]
             endif
             call setline(a:lnum, indent . line)
         endif
@@ -850,12 +850,12 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
         if s:get_var('caw_I_skip_blank_line')
             return
         endif
-        call setline(a:lnum, cmt . s:get_var('caw_sp_I'))
+        call setline(a:lnum, cmt . s:get_var('caw_I_sp'))
         if startinsert
             startinsert!
         endif
     else
-        call setline(a:lnum, cmt . s:get_var('caw_sp_I') . line)
+        call setline(a:lnum, cmt . s:get_var('caw_I_sp') . line)
     endif
 endfunction "}}}
 
@@ -875,9 +875,9 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     call setline(
     \   a:lnum,
     \   getline(a:lnum)
-    \       . s:get_var('caw_sp_a_left')
+    \       . s:get_var('caw_a_sp_left')
     \       . cmt
-    \       . s:get_var('caw_sp_a_right')
+    \       . s:get_var('caw_a_sp_right')
     \)
     if startinsert
         startinsert!
@@ -934,7 +934,7 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
         call s:assert(l ==# r, "s:caw.a.uncomment_normal(): ".string(l).' ==# '.string(r))
 
         let before = line[0 : idx - 1]
-        " 'caw_sp_a_left'
+        " 'caw_a_sp_left'
         let before = substitute(before, '\s\+$', '', '')
 
         call setline(a:lnum, before)
@@ -972,10 +972,10 @@ function! s:caw_wrap_comment_normal(lnum) dict "{{{
     let [left, right] = cmt
     let line = substitute(getline(a:lnum), '^\s\+', '', '')
     if left != ''
-        let line = left . s:get_var('caw_sp_wrap_left') . line
+        let line = left . s:get_var('caw_wrap_sp_left') . line
     endif
     if right != ''
-        let line = line . s:get_var('caw_sp_wrap_right') . right
+        let line = line . s:get_var('caw_wrap_sp_right') . right
     endif
     call setline(
     \   a:lnum,
@@ -1010,9 +1010,9 @@ function! s:comment_visual_characterwise_comment_out(text) "{{{
         return a:text
     else
         return cmt[0]
-        \   . s:get_var('caw_sp_wrap_left')
+        \   . s:get_var('caw_wrap_sp_left')
         \   . a:text
-        \   . s:get_var('caw_sp_wrap_right')
+        \   . s:get_var('caw_wrap_sp_right')
         \   . cmt[1]
     endif
 endfunction "}}}
@@ -1182,14 +1182,14 @@ function! s:caw_jump_comment(next) dict "{{{
     if a:next
         " Begin a new line and insert
         " the online comment leader with whitespaces.
-        execute 'normal! o' . cmt .  s:get_var('caw_sp_jump')
+        execute 'normal! o' . cmt .  s:get_var('caw_jump_sp')
         " Start Insert mode at the end of the inserted line.
         call cursor(lnum + 1, 1)
         startinsert!
     else
         " NOTE: `lnum` is target lnum.
         " because new line was inserted just now.
-        execute 'normal! O' . cmt . s:get_var('caw_sp_jump')
+        execute 'normal! O' . cmt . s:get_var('caw_jump_sp')
         " Start Insert mode at the end of the inserted line.
         call cursor(lnum, 1)
         startinsert!

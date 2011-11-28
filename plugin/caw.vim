@@ -18,8 +18,8 @@ if !exists('g:caw_no_default_keymappings')
     let g:caw_no_default_keymappings = 0
 endif
 
-if !exists('g:caw_sp_i')
-    let g:caw_sp_i = ' '
+if !exists('g:caw_i_sp')
+    let g:caw_i_sp = ' '
 endif
 if !exists('g:caw_i_startinsert_at_blank_line')
     let g:caw_i_startinsert_at_blank_line = 1
@@ -31,8 +31,8 @@ if !exists('g:caw_i_align')
     let g:caw_i_align = 1
 endif
 
-if !exists('g:caw_sp_I')
-    let g:caw_sp_I = ' '
+if !exists('g:caw_I_sp')
+    let g:caw_I_sp = ' '
 endif
 if !exists('g:caw_I_startinsert_at_blank_line')
     let g:caw_I_startinsert_at_blank_line = 1
@@ -41,28 +41,28 @@ if !exists('g:caw_I_skip_blank_line')
     let g:caw_I_skip_blank_line = 0
 endif
 
-if !exists('g:caw_sp_a_left')
-    let g:caw_sp_a_left = repeat(' ', 4)
+if !exists('g:caw_a_sp_left')
+    let g:caw_a_sp_left = repeat(' ', 4)
 endif
-if !exists('g:caw_sp_a_right')
-    let g:caw_sp_a_right = ' '
+if !exists('g:caw_a_sp_right')
+    let g:caw_a_sp_right = ' '
 endif
 if !exists('g:caw_a_startinsert')
     let g:caw_a_startinsert = 1
 endif
 
-if !exists('g:caw_sp_wrap_left')
-    let g:caw_sp_wrap_left = ' '
+if !exists('g:caw_wrap_sp_left')
+    let g:caw_wrap_sp_left = ' '
 endif
-if !exists('g:caw_sp_wrap_right')
-    let g:caw_sp_wrap_right = ' '
+if !exists('g:caw_wrap_sp_right')
+    let g:caw_wrap_sp_right = ' '
 endif
 if !exists('g:caw_wrap_skip_blank_line')
     let g:caw_wrap_skip_blank_line = 1
 endif
 
-if !exists('g:caw_sp_jump')
-    let g:caw_sp_jump = ' '
+if !exists('g:caw_jump_sp')
+    let g:caw_jump_sp = ' '
 endif
 
 if !exists('g:caw_find_another_action')
