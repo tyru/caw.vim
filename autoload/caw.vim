@@ -1391,12 +1391,10 @@ let s:caw.input = {
 " no changing script-local variable but only buffer is changed.
 lockvar! s:caw
 
-" Remove unnecessary objects for memory... {{{
+" Remove unnecessary objects for memory...
 " Those objects were used to build objects under s:caw.
 " now no need to hold the objects so remove them.
-
 unlet s:Commentable s:Uncommentable s:CommentDetectable s:Togglable
-" }}}
 
 " }}}
 
