@@ -217,9 +217,6 @@ g:caw_I_sp								*g:caw_I_sp*
 									(Default: " ")
 	Inserted string after comment with <Plug>(caw:I:comment).
 
-g:caw_I_startinsert_at_blank_line		*g:caw_I_startinsert_at_blank_line*
-									(Default: 0)
-
 g:caw_a_sp_left							*g:caw_a_sp_left*
 									(Default: "    ")
 	Inserted string before comment with <Plug>(caw:a:comment).
