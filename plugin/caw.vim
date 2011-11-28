@@ -60,6 +60,9 @@ endif
 if !exists('g:caw_wrap_skip_blank_line')
     let g:caw_wrap_skip_blank_line = 1
 endif
+if !exists('g:caw_wrap_align')
+    let g:caw_wrap_align = 1
+endif
 
 if !exists('g:caw_jump_sp')
     let g:caw_jump_sp = ' '

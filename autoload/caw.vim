@@ -1011,7 +1011,10 @@ let s:caw.a = {
 
 " wrap {{{
 
-function! s:caw_wrap_comment_normal(lnum) dict "{{{
+function! s:caw_wrap_comment_normal(lnum, ...) dict "{{{
+    let left_col = get(a:000, 0, -1)
+    let right_col = get(a:000, 1, -1)
+
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
     if s:get_context().mode ==# 'n'
@@ -1020,18 +1023,27 @@ function! s:caw_wrap_comment_normal(lnum) dict "{{{
         return
     endif
 
-    let [left, right] = cmt
-    let line = substitute(getline(a:lnum), '^\s\+', '', '')
-    if left != ''
-        let line = left . s:get_var('caw_wrap_sp_left') . line
+    let line = getline(a:lnum)
+    let [left_cmt, right_cmt] = cmt
+    if left_col > 0 && right_col > 0
+        let line = s:wrap_comment_align(
+        \   line,
+        \   left_cmt . s:get_var("caw_wrap_sp_left"),
+        \   s:get_var("caw_wrap_sp_right") . right_cmt,
+        \   left_col,
+        \   right_col)
+        call setline(a:lnum, line)
+    else
+        let line = substitute(line, '^\s\+', '', '')
+        if left_cmt != ''
+            let line = left_cmt . s:get_var('caw_wrap_sp_left') . line
+        endif
+        if right_cmt != ''
+            let line = line . s:get_var('caw_wrap_sp_right') . right_cmt
+        endif
+        let line = s:get_inserted_indent(a:lnum) . line
+        call setline(a:lnum, line)
     endif
-    if right != ''
-        let line = line . s:get_var('caw_wrap_sp_right') . right
-    endif
-    call setline(
-    \   a:lnum,
-    \   s:get_inserted_indent(a:lnum) . line
-    \)
 endfunction "}}}
 
 function! s:caw_wrap_comment_visual() dict "{{{
@@ -1046,12 +1058,26 @@ function! s:caw_wrap_comment_visual() dict "{{{
         return
     endif
 
-    " Behave linewisely.
+    if s:get_var('caw_wrap_align')
+        let [left_col, right_col] =
+        \   s:get_both_sides_space_cols(
+        \       s:get_var('caw_wrap_skip_blank_line'),
+        \       s:get_context().firstline,
+        \       s:get_context().lastline)
+    endif
+
     for lnum in range(
     \   s:get_context().firstline,
     \   s:get_context().lastline
     \)
-        call self.comment_normal(lnum)
+        if s:get_var('caw_wrap_skip_blank_line') && getline(lnum) =~ '^\s*$'
+            continue    " Skip blank line.
+        endif
+        if s:get_var('caw_wrap_align')
+            call self.comment_normal(lnum, left_col, right_col)
+        else
+            call self.comment_normal(lnum)
+        endif
     endfor
 endfunction "}}}
 
