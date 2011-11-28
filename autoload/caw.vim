@@ -1100,7 +1100,7 @@ function! s:comment_visual_characterwise_comment_out(text) "{{{
         \   . cmt[1]
     endif
 endfunction "}}}
-function! s:caw_wrap___operate_on_word(funcname) "{{{
+function! s:operate_on_word(funcname) "{{{
     normal! gv
 
     let reg_z_save     = getreg('z', 1)
@@ -1117,7 +1117,7 @@ endfunction "}}}
 function! s:caw_wrap_comment_visual_characterwise() dict "{{{
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
-    call self.__operate_on_word('<SID>comment_visual_characterwise_comment_out')
+    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction "}}}
 
 function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
