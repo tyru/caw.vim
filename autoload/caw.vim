@@ -834,7 +834,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
         call setline(a:lnum, before . cmt . s:get_var('caw_sp_i') . after)
     elseif line =~# '^\s*$'
-        execute 'normal! "_cc' . cmt . s:get_var('caw_sp_i')
+        execute 'normal! '.a:lnum.'G"_cc' . cmt . s:get_var('caw_sp_i')
         if startinsert
             startinsert!
         endif
