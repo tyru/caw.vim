@@ -652,16 +652,7 @@ function! s:Commentable_comment() dict "{{{
     if s:get_context().mode ==# 'n'
         call self.comment_normal(line('.'))
     else
-        let wiseness = get({
-        \   'v': 'characterwise',
-        \   'V': 'linewise',
-        \   "\<C-v>": 'blockwise',
-        \}, visualmode(), '')
-        if wiseness != '' && has_key(self, 'comment_visual_' . wiseness)
-            call call(self['comment_visual_' . wiseness], [], self)
-        else
-            call self.comment_visual()
-        endif
+        call self.comment_visual()
     endif
 endfunction "}}}
 
@@ -1057,6 +1048,24 @@ function! s:caw_wrap_comment_normal(lnum) dict "{{{
     \)
 endfunction "}}}
 
+function! s:caw_wrap_comment_visual() dict "{{{
+    let wiseness = get({
+    \   'v': 'characterwise',
+    \   'V': 'linewise',
+    \   "\<C-v>": 'blockwise',
+    \}, visualmode(), '')
+    if wiseness != ''
+    \   && has_key(self, 'comment_visual_' . wiseness)
+        call call(self['comment_visual_' . wiseness], [], self)
+        return
+    endif
+
+    " Behave linewisely.
+    for lnum in range(s:get_context().firstline, s:get_context().lastline)
+        call self.comment_normal(lnum)
+    endfor
+endfunction "}}}
+
 function! s:comment_visual_characterwise_comment_out(text) "{{{
     let cmt = s:comments.wrap_oneline.get_comment()
     if empty(cmt)
@@ -1138,6 +1147,9 @@ let s:caw.wrap = s:create_class_from(
 \   s:CommentDetectable,
 \   s:Togglable,
 \)
+call s:override_methods('s:caw.i', s:caw.i, {
+\   'comment_visual': s:local_func('caw_wrap_comment_visual'),
+\})
 lockvar! s:caw.wrap
 " }}}
 
