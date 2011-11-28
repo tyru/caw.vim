@@ -11,6 +11,7 @@ set cpo&vim
 function! caw#keymapping_stub(mode, type, action) "{{{
     let context = {}
     let context.mode = a:mode
+    let context.visualmode = visualmode()
     if a:mode ==# 'n'
         let context.firstline = line('.')
         let context.lastline  = line('.')
@@ -1053,7 +1054,7 @@ function! s:caw_wrap_comment_visual() dict "{{{
     \   'v': 'characterwise',
     \   'V': 'linewise',
     \   "\<C-v>": 'blockwise',
-    \}, visualmode(), '')
+    \}, s:get_context().visualmode, '')
     if wiseness != ''
     \   && has_key(self, 'comment_visual_' . wiseness)
         call call(self['comment_visual_' . wiseness], [], self)
