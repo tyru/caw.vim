@@ -139,12 +139,9 @@ function! s:trim_whitespaces(str) "{{{
     return str
 endfunction "}}}
 
-function! s:get_min_indent_num_in_range(skip_blank_line) "{{{
+function! s:get_min_indent_num(skip_blank_line, from_lnum, to_lnum) "{{{
     let min_indent_num = 1/0
-    for lnum in range(
-    \   s:get_context().firstline,
-    \   s:get_context().lastline
-    \)
+    for lnum in range(a:from_lnum, a:to_lnum)
         if a:skip_blank_line && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
@@ -785,8 +782,10 @@ endfunction "}}}
 function! s:caw_i_comment_visual() dict "{{{
     if s:get_var('caw_i_align')
         let min_indent_num =
-        \   s:get_min_indent_num_in_range(
-        \       s:get_var('caw_i_skip_blank_line'))
+        \   s:get_min_indent_num(
+        \       s:get_var('caw_i_skip_blank_line'),
+        \       s:get_context().firstline,
+        \       s:get_context().lastline)
     endif
 
     for lnum in range(
