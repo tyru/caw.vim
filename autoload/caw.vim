@@ -127,7 +127,6 @@ endfunction "}}}
 " }}}
 
 " s:comments: Comment string database. {{{
-" TODO Multiline
 let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
 
 
@@ -573,6 +572,7 @@ call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multi
 
 function! s:comments.wrap_multiline.get_comment_builtin() "{{{
     " TODO: compound filetypes
+    " TODO: More filetypes
     return get({
     \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
     \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
@@ -1145,8 +1145,6 @@ lockvar! s:caw.wrap
 
 " TODO:
 " - s:caw_box_uncomment()
-" - after implemented s:caw_box_uncomment() and s:Togglable,
-"   let keymapping `gcc` call <Plug>(caw:box:toggle) if possible.
 
 
 function! s:caw_box_comment() dict "{{{
@@ -1358,11 +1356,6 @@ let s:caw.input = {
 lockvar! s:caw.input
 " }}}
 
-
-function! s:caw.detect_operated_action() "{{{
-    " TODO
-    return ''
-endfunction "}}}
 
 " Remove unnecessary objects for memory... {{{
 " Those objects were used to build objects under s:caw.
