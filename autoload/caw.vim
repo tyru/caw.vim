@@ -153,6 +153,45 @@ function! s:get_min_indent_num(skip_blank_line, from_lnum, to_lnum) "{{{
     return min_indent_num
 endfunction "}}}
 
+function! s:get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum) "{{{
+    let left  = 1/0
+    let right = 1
+    for line in getline(a:from_lnum, a:to_lnum)
+        if a:skip_blank_line && line =~ '^\s*$'
+            continue    " Skip blank line.
+        endif
+        let l  = strlen(matchstr(line, '^\s*')) + 1
+        let r = strlen(line) - strlen(matchstr(line, '\s*$')) + 1
+        if l < left
+            let left = l
+        endif
+        if r > right
+            let right = r
+        endif
+    endfor
+    return [left, right]
+endfunction "}}}
+
+function! s:wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col) "{{{
+    let l = a:line
+    " Remove indent.
+    let indent = l[: a:left_col-2]
+    " Trim left/right whitespaces.
+    if strlen(l) < a:right_col-1
+        let l .= repeat(' ', (a:right_col-1) - strlen(l))
+    endif
+    let l = l[a:left_col-1 : a:right_col-1]
+    " Add left/right comment and whitespaces.
+    if a:left_cmt !=# ''
+        let l = a:left_cmt . l
+    endif
+    if a:right_cmt !=# ''
+        let l = l . a:right_cmt
+    endif
+    " Restore indent.
+    return indent . l
+endfunction "}}}
+
 " }}}
 
 " s:comments: Comment string database. {{{
@@ -1122,18 +1161,8 @@ function! s:caw_box_comment() dict "{{{
     " Determine left/right col to box string.
     let top_lnum    = s:get_context().firstline
     let bottom_lnum = s:get_context().lastline
-    let left_col  = 1/0
-    let right_col = 1
-    for line in getline(top_lnum, bottom_lnum)
-        let left  = strlen(matchstr(line, '^\s*')) + 1
-        let right = strlen(line) - strlen(matchstr(line, '\s*$')) + 1
-        if left < left_col
-            let left_col = left
-        endif
-        if right > right_col
-            let right_col = right
-        endif
-    endfor
+    let [left_col, right_col] =
+    \   s:get_both_sides_space_cols(1, top_lnum, bottom_lnum)
     call s:assert(left_col > 0, 'left_col > 0')
     call s:assert(right_col > 0, 'right_col > 0')
 
@@ -1149,25 +1178,9 @@ function! s:caw_box_comment() dict "{{{
         call s:assert(width > 0, 'width > 0')
         let tops_and_bottoms = cmt.left . repeat(cmt.top, width + 2) . cmt.right
 
-        for i in range(len(lines))
-            let l = lines[i]
-            " Remove indent.
-            let indent = l[: left_col-2]
-            " Trim left/right whitespaces.
-            if strlen(l) < right_col-1
-                let l .= repeat(' ', (right_col-1) - strlen(l))
-            endif
-            let l = l[left_col-1 : right_col-1]
-            " Add left/right comment and whitespaces.
-            let l =
-            \   cmt.left . s:get_var("caw_box_sp_left")
-            \   . l
-            \   . s:get_var("caw_box_sp_right") . cmt.right
-            " Restore indent.
-            let l = indent . l
-            " Set original line.
-            let lines[i] = l
-        endfor
+        let sp_left = s:get_var("caw_box_sp_left")
+        let sp_right = s:get_var("caw_box_sp_right")
+        call map(lines, 's:wrap_comment_align(v:val, cmt.left . sp_left, sp_right . cmt.right, left_col, right_col)')
         " Padding/Remove left/right whitespaces.
         call insert(lines,
         \   repeat((&expandtab ? ' ' : "\t"), left_col-1)
