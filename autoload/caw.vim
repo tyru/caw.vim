@@ -821,7 +821,7 @@ let s:Togglable = {
 " i {{{
 
 function! s:caw_i_comment_normal(lnum, ...) dict "{{{
-    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
+    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
     let min_indent_num = get(a:000, 1, -1)
 
     let cmt = self.comment_database.get_comment()
@@ -921,7 +921,7 @@ call s:override_methods('s:caw.i', s:caw.i, {
 " I {{{
 
 function! s:caw_I_comment_normal(lnum, ...) dict "{{{
-    let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line'))
+    let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
@@ -950,7 +950,7 @@ call s:override_methods('s:caw.I', s:caw.I, {
 " a {{{
 
 function! s:caw_a_comment_normal(lnum, ...) dict "{{{
-    let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert')
+    let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert') && s:get_context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
