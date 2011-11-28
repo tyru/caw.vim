@@ -24,7 +24,7 @@ function! caw#keymapping_stub(mode, type, action) "{{{
     call s:set_context(context)
 
     try
-        for type in [a:type] + s:caw[a:type].fallback_types
+        for type in [a:type] + get(s:caw[a:type], 'fallback_types', [])
             let old_changedtick = b:changedtick
             if !has_key(s:caw[type], 'comment_database')
             \   || empty(s:caw[type].comment_database.get_comment())
