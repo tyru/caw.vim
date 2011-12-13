@@ -1211,7 +1211,7 @@ function! s:caw_box_comment() dict "{{{
         let sp_left = s:get_var("caw_box_sp_left")
         let sp_right = s:get_var("caw_box_sp_right")
         call map(lines, 's:wrap_comment_align(v:val, cmt.left . sp_left, sp_right . cmt.right, left_col, right_col)')
-        " Padding/Remove left/right whitespaces.
+        " Pad/Remove left/right whitespaces.
         call insert(lines,
         \   repeat((&expandtab ? ' ' : "\t"), left_col-1)
         \   . tops_and_bottoms)
