@@ -174,12 +174,14 @@ endfunction "}}}
 
 function! s:wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col) "{{{
     let l = a:line
-    " Remove indent.
-    let indent = l[: a:left_col-2]
-    " Trim left/right whitespaces.
+    " Save indent.
+    let indent = a:left_col >=# 2 ? l[: a:left_col-2] : ''
+    let indent = indent =~# '^\s*$' ? indent : ''
+    " Pad tail whitespaces.
     if strlen(l) < a:right_col-1
         let l .= repeat(' ', (a:right_col-1) - strlen(l))
     endif
+    " Trim left/right whitespaces.
     let l = l[a:left_col-1 : a:right_col-1]
     " Add left/right comment and whitespaces.
     if a:left_cmt !=# ''
