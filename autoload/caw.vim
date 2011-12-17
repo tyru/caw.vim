@@ -24,6 +24,12 @@ function! caw#keymapping_stub(mode, type, action) "{{{
     call s:set_context(context)
 
     try
+        " TODO:
+        " - Deprecate g:caw_find_another_action and
+        " Implement <Plug>(caw:dwim) like Emacs's dwim-comment
+        " - Stop checking b:changedtick and
+        " let s:caw[type][a:action] just return changed lines,
+        " not modifying buffer.
         for type in [a:type] + get(s:caw[a:type], 'fallback_types', [])
             let old_changedtick = b:changedtick
             if !has_key(s:caw[type], 'comment_database')
