@@ -32,8 +32,8 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         " not modifying buffer.
         for type in [a:type] + get(s:caw[a:type], 'fallback_types', [])
             let old_changedtick = b:changedtick
-            if !has_key(s:caw[type], 'comment_database')
-            \   || empty(s:caw[type].comment_database.get_comment())
+            if has_key(s:caw[type], 'comment_database')
+            \   && empty(s:caw[type].comment_database.get_comment())
                 if s:get_var('caw_find_another_action')
                     continue
                 else
