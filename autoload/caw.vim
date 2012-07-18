@@ -576,7 +576,7 @@ function! s:comments.wrap_oneline.get_comment_builtin() "{{{
     \   'dot': ['/*', '*/'],
     \   'dtml': ['<dtml-comment>', '</dtml-comment>'],
     \   'dylan': ['/*', '*/'],
-    \   'eruby': ['<!--', '-->'],
+    \   'eruby': ['<%#', '%>'],
     \   'fx': ['/*', '*/'],
     \   'genshi': ['<!--', '-->'],
     \   'groovy': ['/*', '*/'],
