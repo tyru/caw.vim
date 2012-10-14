@@ -804,7 +804,9 @@ endfunction "}}}
 " i {{{
 
 function! s:caw_i_comment_normal(lnum, ...) dict "{{{
-    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
+    " NOTE: min_indent_num is byte length. not display width.
+
+    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
 
     let cmt = self.comment_database.get_comment()
@@ -818,7 +820,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         call setline(a:lnum, before . cmt . s:get_var('caw_i_sp') . after)
     elseif line =~# '^\s*$'
         execute 'normal! '.a:lnum.'G"_cc' . cmt . s:get_var('caw_i_sp')
-        if startinsert
+        if startinsert && s:get_context().mode ==# 'n'
             startinsert!
         endif
     else
