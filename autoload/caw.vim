@@ -139,6 +139,10 @@ function! s:get_inserted_indent_num(lnum) "{{{
     return strlen(s:get_inserted_indent(a:lnum))
 endfunction "}}}
 
+function! s:make_indent_str(indent_byte_num)
+    return repeat((&expandtab ? ' ' : "\t"), a:indent_byte_num)
+endfunction
+
 
 function! s:trim_whitespaces(str) "{{{
     let str = a:str
@@ -814,6 +818,10 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
 
     let line = getline(a:lnum)
     if min_indent_num >= 0
+        if min_indent_num > strlen(line)
+            call setline(a:lnum, s:make_indent_str(min_indent_num))
+            let line = getline(a:lnum)
+        endif
         call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
         let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
@@ -834,7 +842,7 @@ function! s:caw_i_comment_visual() dict "{{{
     if s:get_var('caw_i_align')
         let min_indent_num =
         \   s:get_min_indent_num(
-        \       s:get_var('caw_i_skip_blank_line'),
+        \       1,
         \       s:get_context().firstline,
         \       s:get_context().lastline)
     endif
