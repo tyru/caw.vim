@@ -37,6 +37,9 @@ endif
 if !exists('g:caw_I_sp')
     let g:caw_I_sp = ' '
 endif
+if !exists('g:caw_I_sp_blank')
+    let g:caw_I_sp_blank = ''
+endif
 if !exists('g:caw_I_startinsert_at_blank_line')
     let g:caw_I_startinsert_at_blank_line = 1
 endif

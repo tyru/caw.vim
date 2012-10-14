@@ -913,21 +913,24 @@ let s:caw.i = {
 
 function! s:caw_I_comment_normal(lnum, ...) dict "{{{
     let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
+    let line = getline(a:lnum)
+    let caw_I_sp = line =~# '^\s*$' ?
+    \               s:get_var('caw_I_sp_blank') :
+    \               s:get_var('caw_I_sp')
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
-    let line = getline(a:lnum)
     if line =~# '^\s*$'
         if s:get_var('caw_I_skip_blank_line')
             return
         endif
-        call setline(a:lnum, cmt . s:get_var('caw_I_sp'))
+        call setline(a:lnum, cmt . caw_I_sp)
         if startinsert
             startinsert!
         endif
     else
-        call setline(a:lnum, cmt . s:get_var('caw_I_sp') . line)
+        call setline(a:lnum, cmt . caw_I_sp . line)
     endif
 endfunction "}}}
 
