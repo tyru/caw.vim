@@ -203,6 +203,11 @@ g:caw_i_sp								*g:caw_i_sp*
 									(Default: " ")
 	Inserted string after comment with <Plug>(caw:i:comment).
 
+g:caw_i_sp_blank								*g:caw_i_sp_blank*
+									(Default: "")
+	Inserted string after comment with <Plug>(caw:i:comment).
+	but applied only if a current line is blank line.
+
 g:caw_i_startinsert_at_blank_line		*g:caw_i_startinsert_at_blank_line*
 									(Default: 1)
 	If this variable is true,
@@ -228,6 +233,11 @@ g:caw_I_startinsert_at_blank_line		*g:caw_I_startinsert_at_blank_line*
 g:caw_I_sp								*g:caw_I_sp*
 									(Default: " ")
 	Inserted string after comment with <Plug>(caw:I:comment).
+
+g:caw_I_sp_blank								*g:caw_I_sp_blank*
+									(Default: "")
+	Inserted string after comment with <Plug>(caw:I:comment).
+	but applied only if a current line is blank line.
 
 g:caw_a_sp_left							*g:caw_a_sp_left*
 									(Default: "    ")
