@@ -40,7 +40,9 @@ function! caw#keymapping_stub(mode, type, action) "{{{
                     break
                 endif
             endif
+            " echom 'calling s:caw['.string(type).']['.string(a:action).']() ...'
             call s:caw[type][a:action]()
+            " echom 'calling s:caw['.string(type).']['.string(a:action).']() ... done.'
             if b:changedtick !=# old_changedtick
                 break
             endif
