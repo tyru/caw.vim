@@ -21,6 +21,9 @@ endif
 if !exists('g:caw_i_sp')
     let g:caw_i_sp = ' '
 endif
+if !exists('g:caw_i_sp_blank')
+    let g:caw_i_sp_blank = ''
+endif
 if !exists('g:caw_i_startinsert_at_blank_line')
     let g:caw_i_startinsert_at_blank_line = 1
 endif

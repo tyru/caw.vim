@@ -812,11 +812,14 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
 
     let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
+    let line = getline(a:lnum)
+    let caw_i_sp = line =~# '^\s*$' ?
+    \               s:get_var('caw_i_sp_blank') :
+    \               s:get_var('caw_i_sp')
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
-    let line = getline(a:lnum)
     if min_indent_num >= 0
         if min_indent_num > strlen(line)
             call setline(a:lnum, s:make_indent_str(min_indent_num))
@@ -825,16 +828,16 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         call s:assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
         let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-        call setline(a:lnum, before . cmt . s:get_var('caw_i_sp') . after)
+        call setline(a:lnum, before . cmt . caw_i_sp . after)
     elseif line =~# '^\s*$'
-        execute 'normal! '.a:lnum.'G"_cc' . cmt . s:get_var('caw_i_sp')
+        execute 'normal! '.a:lnum.'G"_cc' . cmt . caw_i_sp
         if startinsert && s:get_context().mode ==# 'n'
             startinsert!
         endif
     else
         let indent = s:get_inserted_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
-        call setline(a:lnum, indent . cmt . s:get_var('caw_i_sp') . line)
+        call setline(a:lnum, indent . cmt . caw_i_sp . line)
     endif
 endfunction "}}}
 
