@@ -755,11 +755,13 @@ function! s:CommentDetectable_has_comment_visual() dict "{{{
 endfunction "}}}
 
 function! s:CommentDetectable_has_all_comment() dict "{{{
+    " CommentDetectable.has_all_comment() returns true
+    " when all lines are consisted of commented lines and *blank lines*.
     for lnum in range(
     \   s:get_context().firstline,
     \   s:get_context().lastline
     \)
-        if !self.has_comment_normal(lnum)
+        if getline(lnum) !~# '^\s*$' && !self.has_comment_normal(lnum)
             return 0
         endif
     endfor
