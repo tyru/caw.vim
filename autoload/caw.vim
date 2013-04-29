@@ -518,6 +518,7 @@ function! s:comments.oneline.get_comment_builtin() "{{{
     \   'tf': ';',
     \   'tidy': '#',
     \   'tli': '#',
+    \   'tmux': '#',
     \   'trasys': '$',
     \   'tsalt': '//',
     \   'tsscl': '#',
