@@ -78,6 +78,10 @@ gcO
       "   // call func1()"
       "   func1();"
 
+The comment behaviour only depends on 'filetype', but if you have
+context_filetype.vim installed, caw.vim also depends on the filetype of the
+context of the current cursor location.
+
 }}}
 ==============================================================================
 SUPPORTED FILETYPES						*caw-supported-filetypes* {{{
