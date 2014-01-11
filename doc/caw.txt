@@ -133,7 +133,8 @@ gc					<Plug>(caw:prefix)
 
 NOTE: You can change keymapping prefix by
 writing the following settings in your .vimrc: >
-	nnoremap <Plug>(caw:prefix) <Leader>c
+	nmap <Leader>c <Plug>(caw:prefix)
+	vmap <Leader>c <Plug>(caw:prefix)
 
 
 (nv) <Plug>(caw:i:comment)				*<Plug>(caw:i:comment)*
