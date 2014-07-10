@@ -552,6 +552,7 @@ function! s:comments.oneline.get_comment_builtin() "{{{
     \   'xmath': '#',
     \   'xpm2': '!',
     \   'z8a': ';',
+    \   'zsh': '#',
     \}, s:get_context().filetype, ''), s:get_context().count)
 endfunction "}}}
 " }}}
