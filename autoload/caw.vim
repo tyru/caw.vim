@@ -250,18 +250,10 @@ call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_c
 call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
 
 function! s:comments.oneline.get_comment_detect() "{{{
-    let comments_default = "s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-"
-    if &l:comments ==# comments_default
-        return ''
+    let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
+    if !empty(m) && m[1] !=# '' && m[2] ==# ''
+        return m[1]
     endif
-
-    for c in split(&l:comments, ',')
-        let l = matchlist(c, '^b:\(.*\)$')
-        if !empty(l)
-            return l[1]
-        endif
-    endfor
-
     return ''
 endfunction "}}}
 
@@ -563,10 +555,10 @@ call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline
 
 function! s:comments.wrap_oneline.get_comment_detect() "{{{
     let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
-    if empty(m)
-        return []
+    if !empty(m) && m[1] !=# '' && m[2] !=# ''
+        return m[1:2]
     endif
-    return m[1:2]
+    return []
 endfunction "}}}
 
 function! s:comments.wrap_oneline.get_comment_builtin() "{{{
