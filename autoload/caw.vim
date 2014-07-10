@@ -34,15 +34,15 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         " - Stop checking b:changedtick and
         " let s:caw[type][a:action] just return changed lines,
         " not modifying buffer.
-        for type in [a:type] + get(s:caw[a:type], 'fallback_types', [])
+        let types = [a:type]
+        if s:get_var('caw_find_another_action')
+            let types += get(s:caw[a:type], 'fallback_types', [])
+        endif
+        for type in types
             let old_changedtick = b:changedtick
             if has_key(s:caw[type], 'comment_database')
             \   && empty(s:caw[type].comment_database.get_comment())
-                if s:get_var('caw_find_another_action')
-                    continue
-                else
-                    break
-                endif
+                continue
             endif
             " echom 'calling s:caw['.string(type).']['.string(a:action).']() ...'
             call s:caw[type][a:action]()
