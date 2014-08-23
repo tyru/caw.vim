@@ -102,8 +102,8 @@ fetchmail fgl focexec form fortran foxpro fstab fvwm fx gdb gdmo geek
 gentoo-package-keywords' gentoo-package-mask' gentoo-package-use' gnuplot
 gtkrc haskell hb h help hercules hog html htmldjango htmlos ia64 icon idlang
 idl indent inform inittab ishd iss ist jam java javascript jess jgraph
-jproperties jproperties jsp kconfig kix kscript lace lex lftp lifelines lilo
-lisp lite lotos lout lprolog lscript lss lua lynx m4 mail make maple masm
+jproperties jproperties jsp julia kconfig kix kscript lace lex lftp lifelines
+lilo lisp lite lotos lout lprolog lscript lss lua lynx m4 mail make maple masm
 master matlab mel mf mib mma model moduala.  modula2 modula3 monk mush muttrc
 named nasm nastran natural ncf netdict netrw nqc nroff nsis objc ocaml occam
 omlet omnimark openroad opl ora otl ox pascal passwd pcap pccts perl pfmain
