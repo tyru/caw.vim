@@ -365,6 +365,7 @@ function! s:comments.oneline.get_comment_builtin() "{{{
     \   'groovy': '//',
     \   'gtkrc': '#',
     \   'h': '//',
+    \   'haskell': '--',
     \   'haml': '-#',
     \   'hb': '#',
     \   'hercules': '//',
