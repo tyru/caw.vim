@@ -25,6 +25,7 @@ Supported filetypes		|caw-supported-filetypes|
 Interface				|caw-interface|
   Keymappings			|caw-keymappings|
   Variables				|caw-variables|
+FAQ						|caw-faq|
 Changelog				|caw-changelog|
 
 
@@ -293,6 +294,13 @@ caw_default_oneline_comment				*caw_default_oneline_comment*
 
 
 }}}
+}}}
+==============================================================================
+FAQ								*caw-faq* {{{
+
+Q. How can I change the mapping prefix?
+A. See |<Plug>(caw:prefix)|.
+
 }}}
 ==============================================================================
 CHANGELOG								*caw-changelog* {{{
