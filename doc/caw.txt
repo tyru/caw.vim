@@ -98,7 +98,7 @@ aspvbs atlas autohotkey autoit automake ave awk basic b bc bdf bib bindzone
 bst btm caos catalog c cfg cg ch changelog cl clean clipper cmake conf config
 context cpp crontab cs csc csp css cterm cupl csv cvs dcl debchangelog
 debcontrol debsources def diff django docbk dns dosbatch dosini dot dracula
-dsl dtd dtml dylan ecd eiffel elf elmfilt erlang eruby eterm expect exports
+dsl dtd dtml dylan ecd eiffel elf elm elmfilt erlang eruby eterm expect exports
 fetchmail fgl focexec form fortran foxpro fstab fvwm fx gdb gdmo geek
 gentoo-package-keywords' gentoo-package-mask' gentoo-package-use' gnuplot
 gtkrc haskell hb h help hercules hog html htmldjango htmlos ia64 icon idlang
