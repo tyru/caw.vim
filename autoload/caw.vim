@@ -489,6 +489,7 @@ function! s:comments.oneline.get_comment_builtin() "{{{
     \   'skill': ';',
     \   'slang': '%',
     \   'slice': '//',
+    \   'slim': '/',
     \   'slrnrc': '%',
     \   'sm': '#',
     \   'smith': ';',
