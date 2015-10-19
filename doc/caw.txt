@@ -112,7 +112,7 @@ php phtml pic pike pilrc pine plaintex plm plsql po postscr pov povini ppd
 ppwiz procmail progress prolog psf ptcap python python qf radiance ratpoison r
 rc readline rebol registry remind rexx robots rpl rtf ruby sa samba sas sass
 sather scheme scilab screen scsh sdl sed selectbuf sgml sgmldecl sgmllnx sh
-sicad simula sinda skill slang sl slrnrc sm smarty smil smith sml snnsnet
+sicad simula sinda skill slang sl slim slrnrc sm smarty smil smith sml snnsnet
 snnspat snnsres snobol4 spec specman spice sql sqlforms sqlj sqr squid st stp
 strace svn systemverilog tads taglist tags tak tasm tcl terminfo tex text
 plaintex texinfo texmf tf tidy tli trasys tsalt tsscl tssgm uc uil vb verilog
