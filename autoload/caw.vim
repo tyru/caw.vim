@@ -389,6 +389,7 @@ function! s:comments.oneline.get_comment_builtin() "{{{
     \   'jess': ';',
     \   'jproperties': '#',
     \   'julia': '#',
+    \   'kirikiri': ';',
     \   'kix': ';',
     \   'kscript': '//',
     \   'lace': '--',
