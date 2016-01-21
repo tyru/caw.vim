@@ -425,6 +425,7 @@ function! s:comments.oneline.get_comment_builtin() "{{{
     \   'natural': '/*',
     \   'ncf': ';',
     \   'newlisp': ';',
+    \   'nginx': '#',
     \   'nroff': '\"',
     \   'nsis': '#',
     \   'ntp': '#',
