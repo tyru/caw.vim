@@ -94,7 +94,7 @@ function! s:define_prefix(lhs) "{{{
     let rhs = '<Plug>(caw:prefix)'
     if !hasmapto(rhs)
         execute 'silent! nmap <unique>' a:lhs rhs
-        execute 'silent! vmap <unique>' a:lhs rhs
+        execute 'silent! xmap <unique>' a:lhs rhs
     endif
 endfunction "}}}
 call s:define_prefix('gc')
@@ -102,7 +102,7 @@ call s:define_prefix('gc')
 
 function! s:map_generic(type, action, ...) "{{{
     let lhs = printf('<Plug>(caw:%s:%s)', a:type, a:action)
-    let modes = a:0 ? split(a:1, '\zs') : ['n', 'v']
+    let modes = a:0 ? split(a:1, '\zs') : ['n', 'x']
     for mode in modes
         execute
         \   mode . 'noremap'
@@ -118,7 +118,7 @@ endfunction "}}}
 function! s:map_user(lhs, rhs) "{{{
     let lhs = '<Plug>(caw:prefix)' . a:lhs
     let rhs = printf('<Plug>(caw:%s)', a:rhs)
-    for mode in ['n', 'v']
+    for mode in ['n', 'x']
         if !hasmapto(rhs, mode)
             silent! execute
             \   mode.'map <unique>' lhs rhs

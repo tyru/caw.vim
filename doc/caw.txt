@@ -127,7 +127,7 @@ INTERFACE								*caw-interface* {{{
 KEYMAPPINGS								*caw-keymappings* {{{
 
 
-(nv) <Plug>(caw:prefix)					*<Plug>(caw:prefix)*
+(nx) <Plug>(caw:prefix)					*<Plug>(caw:prefix)*
 
 Default mapping		rhs ~
 gc					<Plug>(caw:prefix)
@@ -135,21 +135,21 @@ gc					<Plug>(caw:prefix)
 NOTE: You can change keymapping prefix by
 writing the following settings in your .vimrc: >
 	nmap <Leader>c <Plug>(caw:prefix)
-	vmap <Leader>c <Plug>(caw:prefix)
+	xmap <Leader>c <Plug>(caw:prefix)
 
 
-(nv) <Plug>(caw:i:comment)				*<Plug>(caw:i:comment)*
-(nv) <Plug>(caw:a:comment)				*<Plug>(caw:a:comment)*
-(nv) <Plug>(caw:i:toggle)				*<Plug>(caw:i:toggle)*
-(nv) <Plug>(caw:a:toggle)				*<Plug>(caw:a:toggle)*
+(nx) <Plug>(caw:i:comment)				*<Plug>(caw:i:comment)*
+(nx) <Plug>(caw:a:comment)				*<Plug>(caw:a:comment)*
+(nx) <Plug>(caw:i:toggle)				*<Plug>(caw:i:toggle)*
+(nx) <Plug>(caw:a:toggle)				*<Plug>(caw:a:toggle)*
 
 Default mapping		rhs ~
 gci					<Plug>(caw:i:comment)
 gca					<Plug>(caw:a:comment)
 
 
-(nv) <Plug>(caw:wrap:comment)			*<Plug>(caw:wrap:comment)*
-(nv) <Plug>(caw:wrap:toggle)			*<Plug>(caw:wrap:toggle)*
+(nx) <Plug>(caw:wrap:comment)			*<Plug>(caw:wrap:comment)*
+(nx) <Plug>(caw:wrap:toggle)			*<Plug>(caw:wrap:toggle)*
 
 Default mapping		rhs ~
 gcw					<Plug>(caw:wrap:comment)
@@ -163,33 +163,33 @@ gco					<Plug>(caw:jump:comment-next)
 gcO					<Plug>(caw:jump:comment-prev)
 
 
-(nv) <Plug>(caw:input:comment)			*<Plug>(caw:input:comment)*
+(nx) <Plug>(caw:input:comment)			*<Plug>(caw:input:comment)*
 
 Default mapping		rhs ~
 gcv					<Plug>(caw:input:comment)
 
 
-(nv) <Plug>(caw:uncomment)				*<Plug>(caw:uncomment)*
+(nx) <Plug>(caw:uncomment)				*<Plug>(caw:uncomment)*
 
 Default mapping		rhs ~
 gcuu				<Plug>(caw:uncomment)
 
 
-(nv) <Plug>(caw:i:uncomment)			*<Plug>(caw:i:uncomment)*
-(nv) <Plug>(caw:a:uncomment)			*<Plug>(caw:a:uncomment)*
+(nx) <Plug>(caw:i:uncomment)			*<Plug>(caw:i:uncomment)*
+(nx) <Plug>(caw:a:uncomment)			*<Plug>(caw:a:uncomment)*
 
 Default mapping		rhs ~
 gcui				<Plug>(caw:i:uncomment)
 gcua				<Plug>(caw:a:uncomment)
 
 
-(nv) <Plug>(caw:wrap:uncomment)			*<Plug>(caw:wrap:uncomment)*
+(nx) <Plug>(caw:wrap:uncomment)			*<Plug>(caw:wrap:uncomment)*
 
 Default mapping		rhs ~
 gcuw				<Plug>(caw:wrap:uncomment)
 
 
-(nv) <Plug>(caw:input:uncomment)		*<Plug>(caw:input:uncomment)*
+(nx) <Plug>(caw:input:uncomment)		*<Plug>(caw:input:uncomment)*
 
 Default mapping		rhs ~
 gcuv				<Plug>(caw:input:uncomment)
