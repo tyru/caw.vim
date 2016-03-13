@@ -402,7 +402,9 @@ function! s:run() abort
     \   keys(oneline) + keys(wrap_oneline) + keys(wrap_multiline))
     \)
     for filetype in all_keys
-        edit `='after/ftplugin/'.filetype.'.vim'`
+        let dir = 'after/ftplugin/'.filetype
+        call mkdir(dir, 'p')
+        edit `=dir.'/caw.vim'`
         read macros/after-ftplugin-template.vim
         1delete _
         let vars = []
