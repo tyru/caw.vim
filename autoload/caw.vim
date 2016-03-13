@@ -44,9 +44,12 @@ function! caw#keymapping_stub(mode, type, action) "{{{
             \   && empty(s:caw[type].comment_database.get_comment())
                 continue
             endif
+
             " echom 'calling s:caw['.string(type).']['.string(a:action).']() ...'
             call s:caw[type][a:action]()
             " echom 'calling s:caw['.string(type).']['.string(a:action).']() ... done.'
+
+            " FIXME: Should check by return value of `s:caw[type][a:action]()`
             if b:changedtick !=# old_changedtick
                 break
             endif
