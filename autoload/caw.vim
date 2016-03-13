@@ -8,7 +8,7 @@ set cpo&vim
 
 
 "caw#keymapping_stub(): All keymappings are bound to this function. {{{
-function! caw#keymapping_stub(mode, type, action) "{{{
+function! caw#keymapping_stub(mode, type, action)
     let context = {}
     let context.mode = a:mode
     let context.visualmode = visualmode()
@@ -61,37 +61,37 @@ function! caw#keymapping_stub(mode, type, action) "{{{
     finally
         call s:set_context({})    " free context.
     endtry
-endfunction "}}}
+endfunction
 " }}}
 
 " Context: context while invoking keymapping. {{{
 let s:context = {}
-function! s:set_context(context) "{{{
+function! s:set_context(context)
     unlockvar! s:context
     let s:context = a:context
     lockvar! s:context
-endfunction "}}}
-function! s:get_context() "{{{
+endfunction
+function! s:get_context()
     return s:context
-endfunction "}}}
+endfunction
 " }}}
 
 " Utilities: Misc. functions. {{{
 
-function s:SID() "{{{
+function s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
-endfunction "}}}
+endfunction
 let s:SID_PREFIX = s:SID()
 delfunc s:SID
 
-function! s:local_func(name) "{{{
+function! s:local_func(name)
     return function(
     \   '<SNR>' . s:SID_PREFIX . '_' . a:name
     \)
-endfunction "}}}
+endfunction
 
 
-function! s:set_and_save_comment_string(comment_string) "{{{
+function! s:set_and_save_comment_string(comment_string)
     let stash = {}
 
     if !exists('b:caw_oneline_comment')
@@ -115,16 +115,16 @@ function! s:set_and_save_comment_string(comment_string) "{{{
     let b:caw_oneline_comment = a:comment_string
 
     return stash
-endfunction "}}}
+endfunction
 
 
-function! s:assert(cond, msg) "{{{
+function! s:assert(cond, msg)
     if !a:cond
         throw 'caw: assertion failure: ' . a:msg
     endif
-endfunction "}}}
+endfunction
 
-function! caw#get_var(varname, ...) "{{{
+function! caw#get_var(varname, ...)
     for ns in [b:, w:, t:, g:]
         if has_key(ns, a:varname)
             return ns[a:varname]
@@ -135,30 +135,30 @@ function! caw#get_var(varname, ...) "{{{
     else
         call s:assert(0, "caw#get_var(): this must be reached")
     endif
-endfunction "}}}
+endfunction
 
 
-function! s:get_inserted_indent(lnum) "{{{
+function! s:get_inserted_indent(lnum)
     return matchstr(getline(a:lnum), '^\s\+')
-endfunction "}}}
+endfunction
 
-function! s:get_inserted_indent_num(lnum) "{{{
+function! s:get_inserted_indent_num(lnum)
     return strlen(s:get_inserted_indent(a:lnum))
-endfunction "}}}
+endfunction
 
 function! s:make_indent_str(indent_byte_num)
     return repeat((&expandtab ? ' ' : "\t"), a:indent_byte_num)
 endfunction
 
 
-function! s:trim_whitespaces(str) "{{{
+function! s:trim_whitespaces(str)
     let str = a:str
     let str = substitute(str, '^\s\+', '', '')
     let str = substitute(str, '\s\+$', '', '')
     return str
-endfunction "}}}
+endfunction
 
-function! s:get_min_indent_num(skip_blank_line, from_lnum, to_lnum) "{{{
+function! s:get_min_indent_num(skip_blank_line, from_lnum, to_lnum)
     let min_indent_num = 1/0
     for lnum in range(a:from_lnum, a:to_lnum)
         if a:skip_blank_line && getline(lnum) =~ '^\s*$'
@@ -170,9 +170,9 @@ function! s:get_min_indent_num(skip_blank_line, from_lnum, to_lnum) "{{{
         endif
     endfor
     return min_indent_num
-endfunction "}}}
+endfunction
 
-function! s:get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum) "{{{
+function! s:get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum)
     let left  = 1/0
     let right = 1
     for line in getline(a:from_lnum, a:to_lnum)
@@ -189,9 +189,9 @@ function! s:get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum) "{{{
         endif
     endfor
     return [left, right]
-endfunction "}}}
+endfunction
 
-function! s:wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col) "{{{
+function! s:wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col)
     let l = a:line
     " Save indent.
     let indent = a:left_col >=# 2 ? l[: a:left_col-2] : ''
@@ -211,7 +211,7 @@ function! s:wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col) "
     endif
     " Restore indent.
     return indent . l
-endfunction "}}}
+endfunction
 
 
 function! s:build_files_cache() abort
@@ -261,15 +261,15 @@ let s:caw = {}
 " s:Commentable_comment() requires:
 " - Derived.comment_normal()
 
-function! s:Commentable_comment() dict "{{{
+function! s:Commentable_comment() dict
     if s:get_context().mode ==# 'n'
         call self.comment_normal(line('.'))
     else
         call self.comment_visual()
     endif
-endfunction "}}}
+endfunction
 
-function! s:Commentable_comment_visual() dict "{{{
+function! s:Commentable_comment_visual() dict
     " Behave linewisely.
     for lnum in range(
     \   s:get_context().firstline,
@@ -277,7 +277,7 @@ function! s:Commentable_comment_visual() dict "{{{
     \)
         call self.comment_normal(lnum)
     endfor
-endfunction "}}}
+endfunction
 
 " }}}
 " s:Uncommentable {{{
@@ -289,22 +289,22 @@ endfunction "}}}
 " - Derived.uncomment_normal()
 
 
-function! s:Uncommentable_uncomment() dict "{{{
+function! s:Uncommentable_uncomment() dict
     if s:get_context().mode ==# 'n'
         call self.uncomment_normal(line('.'))
     else
         call self.uncomment_visual()
     endif
-endfunction "}}}
+endfunction
 
-function! s:Uncommentable_uncomment_visual() dict "{{{
+function! s:Uncommentable_uncomment_visual() dict
     for lnum in range(
     \   s:get_context().firstline,
     \   s:get_context().lastline
     \)
         call self.uncomment_normal(lnum)
     endfor
-endfunction "}}}
+endfunction
 
 " }}}
 " s:CommentDetectable {{{
@@ -316,15 +316,15 @@ endfunction "}}}
 " - Derived.has_comment_normal()
 
 
-function! s:CommentDetectable_has_comment() dict "{{{
+function! s:CommentDetectable_has_comment() dict
     if s:get_context().mode ==# 'n'
         return self.has_comment_normal(line('.'))
     else
         return self.has_comment_visual()
     endif
-endfunction "}}}
+endfunction
 
-function! s:CommentDetectable_has_comment_visual() dict "{{{
+function! s:CommentDetectable_has_comment_visual() dict
     for lnum in range(
     \   s:get_context().firstline,
     \   s:get_context().lastline
@@ -334,9 +334,9 @@ function! s:CommentDetectable_has_comment_visual() dict "{{{
         endif
     endfor
     return 0
-endfunction "}}}
+endfunction
 
-function! s:CommentDetectable_has_all_comment() dict "{{{
+function! s:CommentDetectable_has_all_comment() dict
     " CommentDetectable.has_all_comment() returns true
     " when all lines are consisted of commented lines and *blank lines*.
     for lnum in range(
@@ -348,7 +348,7 @@ function! s:CommentDetectable_has_all_comment() dict "{{{
         endif
     endfor
     return 1
-endfunction "}}}
+endfunction
 
 " }}}
 " s:Togglable {{{
@@ -361,7 +361,7 @@ endfunction "}}}
 " - Derived.comment()
 
 
-function! s:Togglable_toggle() dict "{{{
+function! s:Togglable_toggle() dict
     let all_comment = self.has_all_comment()
     let mixed = !all_comment && self.has_comment()
     if s:get_context().mode ==# 'n'
@@ -384,14 +384,14 @@ function! s:Togglable_toggle() dict "{{{
             call self.comment()
         endif
     endif
-endfunction "}}}
+endfunction
 
 " }}}
 
 
 " i {{{
 
-function! s:caw_i_comment_normal(lnum, ...) dict "{{{
+function! s:caw_i_comment_normal(lnum, ...) dict
     " NOTE: min_indent_num is byte length. not display width.
 
     let startinsert = get(a:000, 0, caw#get_var('caw_i_startinsert_at_blank_line'))
@@ -423,9 +423,9 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
         call setline(a:lnum, indent . cmt . caw_i_sp . line)
     endif
-endfunction "}}}
+endfunction
 
-function! s:caw_i_comment_visual() dict "{{{
+function! s:caw_i_comment_visual() dict
     if caw#get_var('caw_i_align')
         let min_indent_num =
         \   s:get_min_indent_num(
@@ -447,15 +447,15 @@ function! s:caw_i_comment_visual() dict "{{{
             call self.comment_normal(lnum, 0)
         endif
     endfor
-endfunction "}}}
+endfunction
 
-function! s:caw_i_has_comment_normal(lnum) dict "{{{
+function! s:caw_i_has_comment_normal(lnum) dict
     let line_without_indent = substitute(getline(a:lnum), '^[ \t]\+', '', '')
     let cmt = caw#new('comments.oneline').get_comment()
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
-endfunction "}}}
+endfunction
 
-function! s:caw_i_uncomment_normal(lnum) dict "{{{
+function! s:caw_i_uncomment_normal(lnum) dict
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
@@ -472,7 +472,7 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
             call setline(a:lnum, indent . line)
         endif
     endif
-endfunction "}}}
+endfunction
 
 
 let s:caw.i = {
@@ -495,7 +495,7 @@ let s:caw.i = {
 
 " I {{{
 
-function! s:caw_I_comment_normal(lnum, ...) dict "{{{
+function! s:caw_I_comment_normal(lnum, ...) dict
     let startinsert = get(a:000, 0, caw#get_var('caw_I_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
     let line = getline(a:lnum)
     let caw_I_sp = line =~# '^\s*$' ?
@@ -516,7 +516,7 @@ function! s:caw_I_comment_normal(lnum, ...) dict "{{{
     else
         call setline(a:lnum, cmt . caw_I_sp . line)
     endif
-endfunction "}}}
+endfunction
 
 
 let s:caw.I = deepcopy(s:caw.i)
@@ -525,7 +525,7 @@ let s:caw.I.comment_normal = s:local_func('caw_I_comment_normal')
 
 " a {{{
 
-function! s:caw_a_comment_normal(lnum, ...) dict "{{{
+function! s:caw_a_comment_normal(lnum, ...) dict
     let startinsert = a:0 ? a:1 : caw#get_var('caw_a_startinsert') && s:get_context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
@@ -541,9 +541,9 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     if startinsert
         startinsert!
     endif
-endfunction "}}}
+endfunction
 
-function! s:caw_a_get_comment_col(lnum) "{{{
+function! s:caw_a_get_comment_col(lnum)
     let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
         return -1
@@ -571,13 +571,13 @@ function! s:caw_a_get_comment_col(lnum) "{{{
         endfor
     endfor
     return -1
-endfunction "}}}
+endfunction
 
-function! s:caw_a_has_comment_normal(lnum) dict "{{{
+function! s:caw_a_has_comment_normal(lnum) dict
     return s:caw_a_get_comment_col(a:lnum) > 0
-endfunction "}}}
+endfunction
 
-function! s:caw_a_uncomment_normal(lnum) dict "{{{
+function! s:caw_a_uncomment_normal(lnum) dict
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
@@ -598,7 +598,7 @@ function! s:caw_a_uncomment_normal(lnum) dict "{{{
 
         call setline(a:lnum, before)
     endif
-endfunction "}}}
+endfunction
 
 
 let s:caw.a = {
@@ -621,7 +621,7 @@ let s:caw.a = {
 
 " wrap {{{
 
-function! s:caw_wrap_comment_normal(lnum, ...) dict "{{{
+function! s:caw_wrap_comment_normal(lnum, ...) dict
     let left_col = get(a:000, 0, -1)
     let right_col = get(a:000, 1, -1)
 
@@ -654,9 +654,9 @@ function! s:caw_wrap_comment_normal(lnum, ...) dict "{{{
         let line = s:get_inserted_indent(a:lnum) . line
         call setline(a:lnum, line)
     endif
-endfunction "}}}
+endfunction
 
-function! s:caw_wrap_comment_visual() dict "{{{
+function! s:caw_wrap_comment_visual() dict
     let wiseness = get({
     \   'v': 'characterwise',
     \   'V': 'linewise',
@@ -689,9 +689,9 @@ function! s:caw_wrap_comment_visual() dict "{{{
             call self.comment_normal(lnum)
         endif
     endfor
-endfunction "}}}
+endfunction
 
-function! s:comment_visual_characterwise_comment_out(text) "{{{
+function! s:comment_visual_characterwise_comment_out(text)
     let cmt = caw#new('comments.wrap_oneline').get_comment()
     if empty(cmt)
         return a:text
@@ -702,8 +702,8 @@ function! s:comment_visual_characterwise_comment_out(text) "{{{
         \   . caw#get_var('caw_wrap_sp_right')
         \   . cmt[1]
     endif
-endfunction "}}}
-function! s:operate_on_word(funcname) "{{{
+endfunction
+function! s:operate_on_word(funcname)
     normal! gv
 
     let reg_z_save     = getreg('z', 1)
@@ -716,14 +716,14 @@ function! s:operate_on_word(funcname) "{{{
     finally
         call setreg('z', reg_z_save, regtype_z_save)
     endtry
-endfunction "}}}
-function! s:caw_wrap_comment_visual_characterwise() dict "{{{
+endfunction
+function! s:caw_wrap_comment_visual_characterwise() dict
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
     call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
-endfunction "}}}
+endfunction
 
-function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
+function! s:caw_wrap_has_comment_normal(lnum) dict
     let cmt = caw#new('comments.wrap_oneline').get_comment()
     if empty(cmt)
         return 0
@@ -736,9 +736,9 @@ function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
     return
     \   (left == '' || line[: strlen(left) - 1] ==# left)
     \   && (right == '' || line[strlen(line) - strlen(right) :] ==# right)
-endfunction "}}}
+endfunction
 
-function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
+function! s:caw_wrap_uncomment_normal(lnum) dict
     let cmt = caw#new('comments.wrap_oneline').get_comment()
     if !empty(cmt) && self.has_comment_normal(a:lnum)
         let [left, right] = cmt
@@ -755,7 +755,7 @@ function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
         let line = s:trim_whitespaces(line)
         call setline(a:lnum, indent . line)
     endif
-endfunction "}}}
+endfunction
 
 
 let s:caw.wrap = {
@@ -783,7 +783,7 @@ let s:caw.wrap = {
 " - s:caw_box_uncomment()
 
 
-function! s:caw_box_comment() dict "{{{
+function! s:caw_box_comment() dict
     " Get current filetype comments.
     " Use oneline comment for top/bottom comments.
     " Use wrap comment for left/right comments if possible.
@@ -835,7 +835,7 @@ function! s:caw_box_comment() dict "{{{
     finally
         call setreg('z', reg, regtype)
     endtry
-endfunction "}}}
+endfunction
 
 let s:caw.box = {
 \   'comment': s:local_func('caw_box_comment'),
@@ -845,15 +845,15 @@ let s:caw.box = {
 
 " jump {{{
 
-function! s:caw_jump_comment_next() dict "{{{
+function! s:caw_jump_comment_next() dict
     return call('s:caw_jump_comment', [1], self)
-endfunction "}}}
+endfunction
 
-function! s:caw_jump_comment_prev() dict "{{{
+function! s:caw_jump_comment_prev() dict
     return call('s:caw_jump_comment', [0], self)
-endfunction "}}}
+endfunction
 
-function! s:caw_jump_comment(next) dict "{{{
+function! s:caw_jump_comment(next) dict
     let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
         return
@@ -875,7 +875,7 @@ function! s:caw_jump_comment(next) dict "{{{
         call cursor(lnum, 1)
         startinsert!
     endif
-endfunction "}}}
+endfunction
 
 
 let s:caw.jump = {
@@ -888,7 +888,7 @@ let s:caw.jump = {
 
 " input {{{
 
-function! s:caw_input_comment() dict "{{{
+function! s:caw_input_comment() dict
     let [pos, pos_opt] = s:caw_input_get_pos()
     if !has_key(s:caw, pos) || !has_key(s:caw[pos], 'comment')
         echohl WarningMsg
@@ -914,22 +914,22 @@ function! s:caw_input_comment() dict "{{{
             call org_status.restore()
         endif
     endtry
-endfunction "}}}
+endfunction
 
-function! s:caw_input_comment_normal(lnum, pos) dict "{{{
+function! s:caw_input_comment_normal(lnum, pos) dict
     call s:caw[a:pos].comment_normal(a:lnum)
-endfunction "}}}
+endfunction
 
-function! s:caw_input_comment_visual(pos) dict "{{{
+function! s:caw_input_comment_visual(pos) dict
     for lnum in range(
     \   s:get_context().firstline,
     \   s:get_context().lastline
     \)
         call self.comment_normal(lnum, a:pos)
     endfor
-endfunction "}}}
+endfunction
 
-function! s:caw_input_get_pos() "{{{
+function! s:caw_input_get_pos()
     let NONE = ['', '']
 
     let pos = get({
@@ -955,9 +955,9 @@ function! s:caw_input_get_pos() "{{{
     else
         return [pos, '']
     endif
-endfunction "}}}
+endfunction
 
-function! s:getchar(...) "{{{
+function! s:getchar(...)
     call inputsave()
     try
         let c = call('getchar', a:000)
@@ -965,16 +965,16 @@ function! s:getchar(...) "{{{
     finally
         call inputrestore()
     endtry
-endfunction "}}}
+endfunction
 
-function! s:input(...) "{{{
+function! s:input(...)
     call inputsave()
     try
         return call('input', a:000)
     finally
         call inputrestore()
     endtry
-endfunction "}}}
+endfunction
 
 
 let s:caw.input = {
