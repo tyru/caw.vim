@@ -35,7 +35,7 @@ function! caw#keymapping_stub(mode, type, action) "{{{
         " let s:caw[type][a:action] just return changed lines,
         " not modifying buffer.
         let types = [a:type]
-        if s:get_var('caw_find_another_action')
+        if caw#get_var('caw_find_another_action')
             let types += get(s:caw[a:type], 'fallback_types', [])
         endif
         for type in types
@@ -124,7 +124,7 @@ function! s:assert(cond, msg) "{{{
     endif
 endfunction "}}}
 
-function! s:get_var(varname, ...) "{{{
+function! caw#get_var(varname, ...) "{{{
     for ns in [b:, w:, t:, g:]
         if has_key(ns, a:varname)
             return ns[a:varname]
@@ -133,7 +133,7 @@ function! s:get_var(varname, ...) "{{{
     if a:0
         return a:1
     else
-        call s:assert(0, "s:get_var(): this must be reached")
+        call s:assert(0, "caw#get_var(): this must be reached")
     endif
 endfunction "}}}
 
@@ -213,76 +213,40 @@ function! s:wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col) "
     return indent . l
 endfunction "}}}
 
-" }}}
 
-" s:comments: Comment string database. {{{
-let s:comments = {'oneline': {}, 'wrap_oneline': {}, 'wrap_multiline': {}}
+function! s:build_files_cache() abort
+endfunction
 
+" TODO: newer globpath() can return List.
+function! s:globpath(path, expr) abort
+    return split(globpath(a:path, a:expr, 1), '\n')
+endfunction
 
-function! s:comments_get_comment() dict "{{{
-    for method in self.__get_comment_fn_list
-        let r = self[method]()
-        if !empty(r)
-            return r
-        endif
-        unlet r
-    endfor
-    return self.__get_comment_empty_value
-endfunction "}}}
-function! s:create_get_comment(fn_list, empty_value) "{{{
-    return {
-    \   '__get_comment_empty_value': a:empty_value,
-    \   '__get_comment_fn_list': a:fn_list,
-    \   'get_comment': s:local_func('comments_get_comment'),
-    \}
-endfunction "}}}
-
-function! s:comments_get_comment_vars() dict "{{{
-    return s:get_var(self.__get_comment_vars_varname, '')
-endfunction "}}}
-function! s:create_get_comment_vars(comment) "{{{
-    return {
-    \   '__get_comment_vars_varname': a:comment,
-    \   'get_comment_vars': s:local_func('comments_get_comment_vars'),
-    \}
-endfunction "}}}
-
-
-" oneline {{{
-call extend(s:comments.oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect'], ''), 'error')
-call extend(s:comments.oneline, s:create_get_comment_vars('caw_oneline_comment'), 'error')
-
-function! s:comments.oneline.get_comment_detect() "{{{
-    let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
-    if !empty(m) && m[1] !=# '' && m[2] ==# ''
-        return m[1]
+" '.../autoload/caw'
+let s:root_dir = expand('<sfile>:h') . '/caw'
+let s:modules = {}
+function! caw#new(module, ...) abort
+    " If the module is already loaded, return it.
+    let id = a:module . '|' . string(a:000)
+    if has_key(s:modules, id)
+        return s:modules[id]
     endif
-    return ''
-endfunction "}}}
-
-" }}}
-
-" wrap_oneline "{{{
-call extend(s:comments.wrap_oneline, s:create_get_comment(['get_comment_vars', 'get_comment_detect'], []), 'error')
-call extend(s:comments.wrap_oneline, s:create_get_comment_vars('caw_wrap_oneline_comment'), 'error')
-
-function! s:comments.wrap_oneline.get_comment_detect() "{{{
-    let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
-    if !empty(m) && m[1] !=# '' && m[2] !=# ''
-        return m[1:2]
+    " Load file
+    let file = tr(a:module, '.', '/') . '.vim'
+    source `=s:root_dir.'/'.file`
+    " Call depends() function
+    let depends = 'caw#' . tr(a:module, '.', '#') . '#depends'
+    if exists('*'.depends)
+        for module in call(depends, [])
+            call caw#new(module)
+        endfor
     endif
-    return []
-endfunction "}}}
+    " Call new() function
+    let constructor = 'caw#' . tr(a:module, '.', '#') . '#new'
+    let s:modules[id] = call(constructor, a:000)
+    return s:modules[id]
+endfunction
 
-" }}}
-
-" wrap_multiline {{{
-call extend(s:comments.wrap_multiline, s:create_get_comment(['get_comment_vars'], {}), 'error')
-call extend(s:comments.wrap_multiline, s:create_get_comment_vars('caw_wrap_multiline_comment'), 'error')
-
-" }}}
-
-lockvar! s:comments
 " }}}
 
 " s:caw: Comment types (styles) and those actions. {{{
@@ -430,12 +394,12 @@ endfunction "}}}
 function! s:caw_i_comment_normal(lnum, ...) dict "{{{
     " NOTE: min_indent_num is byte length. not display width.
 
-    let startinsert = get(a:000, 0, s:get_var('caw_i_startinsert_at_blank_line'))
+    let startinsert = get(a:000, 0, caw#get_var('caw_i_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
     let line = getline(a:lnum)
     let caw_i_sp = line =~# '^\s*$' ?
-    \               s:get_var('caw_i_sp_blank') :
-    \               s:get_var('caw_i_sp')
+    \               caw#get_var('caw_i_sp_blank') :
+    \               caw#get_var('caw_i_sp')
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
@@ -462,7 +426,7 @@ function! s:caw_i_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 function! s:caw_i_comment_visual() dict "{{{
-    if s:get_var('caw_i_align')
+    if caw#get_var('caw_i_align')
         let min_indent_num =
         \   s:get_min_indent_num(
         \       1,
@@ -474,10 +438,10 @@ function! s:caw_i_comment_visual() dict "{{{
     \   s:get_context().firstline,
     \   s:get_context().lastline
     \)
-        if s:get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
+        if caw#get_var('caw_i_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
-        if s:get_var('caw_i_align')
+        if caw#get_var('caw_i_align')
             call self.comment_normal(lnum, 0, min_indent_num)
         else
             call self.comment_normal(lnum, 0)
@@ -487,7 +451,7 @@ endfunction "}}}
 
 function! s:caw_i_has_comment_normal(lnum) dict "{{{
     let line_without_indent = substitute(getline(a:lnum), '^[ \t]\+', '', '')
-    let cmt = s:comments.oneline.get_comment()
+    let cmt = caw#new('comments.oneline').get_comment()
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
 endfunction "}}}
 
@@ -502,8 +466,8 @@ function! s:caw_i_uncomment_normal(lnum) dict "{{{
             " Remove comment.
             let line = line[strlen(cmt) :]
             " 'caw_i_sp'
-            if stridx(line, s:get_var('caw_i_sp')) ==# 0
-                let line = line[strlen(s:get_var('caw_i_sp')) :]
+            if stridx(line, caw#get_var('caw_i_sp')) ==# 0
+                let line = line[strlen(caw#get_var('caw_i_sp')) :]
             endif
             call setline(a:lnum, indent . line)
         endif
@@ -524,7 +488,7 @@ let s:caw.i = {
 \   'has_comment_normal': s:local_func('caw_i_has_comment_normal'),
 \   'toggle': s:local_func('Togglable_toggle'),
 \
-\   'comment_database': s:comments.oneline,
+\   'comment_database': caw#new('comments.oneline'),
 \   'fallback_types': ['wrap'],
 \}
 " }}}
@@ -532,17 +496,17 @@ let s:caw.i = {
 " I {{{
 
 function! s:caw_I_comment_normal(lnum, ...) dict "{{{
-    let startinsert = get(a:000, 0, s:get_var('caw_I_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
+    let startinsert = get(a:000, 0, caw#get_var('caw_I_startinsert_at_blank_line')) && s:get_context().mode ==# 'n'
     let line = getline(a:lnum)
     let caw_I_sp = line =~# '^\s*$' ?
-    \               s:get_var('caw_I_sp_blank') :
-    \               s:get_var('caw_I_sp')
+    \               caw#get_var('caw_I_sp_blank') :
+    \               caw#get_var('caw_I_sp')
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
 
     if line =~# '^\s*$'
-        if s:get_var('caw_I_skip_blank_line')
+        if caw#get_var('caw_I_skip_blank_line')
             return
         endif
         call setline(a:lnum, cmt . caw_I_sp)
@@ -562,7 +526,7 @@ let s:caw.I.comment_normal = s:local_func('caw_I_comment_normal')
 " a {{{
 
 function! s:caw_a_comment_normal(lnum, ...) dict "{{{
-    let startinsert = a:0 ? a:1 : s:get_var('caw_a_startinsert') && s:get_context().mode ==# 'n'
+    let startinsert = a:0 ? a:1 : caw#get_var('caw_a_startinsert') && s:get_context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
@@ -570,9 +534,9 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
     call setline(
     \   a:lnum,
     \   getline(a:lnum)
-    \       . s:get_var('caw_a_sp_left')
+    \       . caw#get_var('caw_a_sp_left')
     \       . cmt
-    \       . s:get_var('caw_a_sp_right')
+    \       . caw#get_var('caw_a_sp_right')
     \)
     if startinsert
         startinsert!
@@ -580,7 +544,7 @@ function! s:caw_a_comment_normal(lnum, ...) dict "{{{
 endfunction "}}}
 
 function! s:caw_a_get_comment_col(lnum) "{{{
-    let cmt = s:comments.oneline.get_comment()
+    let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
         return -1
     endif
@@ -650,7 +614,7 @@ let s:caw.a = {
 \   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
 \   'toggle': s:local_func('Togglable_toggle'),
 \
-\   'comment_database': s:comments.oneline,
+\   'comment_database': caw#new('comments.oneline'),
 \   'fallback_types': ['wrap'],
 \}
 " }}}
@@ -664,7 +628,7 @@ function! s:caw_wrap_comment_normal(lnum, ...) dict "{{{
     let cmt = self.comment_database.get_comment()
     call s:assert(!empty(cmt), "`cmt` must not be empty.")
     if s:get_context().mode ==# 'n'
-    \   && s:get_var('caw_wrap_skip_blank_line')
+    \   && caw#get_var('caw_wrap_skip_blank_line')
     \   && getline(a:lnum) =~# '^\s*$'
         return
     endif
@@ -674,18 +638,18 @@ function! s:caw_wrap_comment_normal(lnum, ...) dict "{{{
     if left_col > 0 && right_col > 0
         let line = s:wrap_comment_align(
         \   line,
-        \   left_cmt . s:get_var("caw_wrap_sp_left"),
-        \   s:get_var("caw_wrap_sp_right") . right_cmt,
+        \   left_cmt . caw#get_var("caw_wrap_sp_left"),
+        \   caw#get_var("caw_wrap_sp_right") . right_cmt,
         \   left_col,
         \   right_col)
         call setline(a:lnum, line)
     else
         let line = substitute(line, '^\s\+', '', '')
         if left_cmt != ''
-            let line = left_cmt . s:get_var('caw_wrap_sp_left') . line
+            let line = left_cmt . caw#get_var('caw_wrap_sp_left') . line
         endif
         if right_cmt != ''
-            let line = line . s:get_var('caw_wrap_sp_right') . right_cmt
+            let line = line . caw#get_var('caw_wrap_sp_right') . right_cmt
         endif
         let line = s:get_inserted_indent(a:lnum) . line
         call setline(a:lnum, line)
@@ -704,10 +668,10 @@ function! s:caw_wrap_comment_visual() dict "{{{
         return
     endif
 
-    if s:get_var('caw_wrap_align')
+    if caw#get_var('caw_wrap_align')
         let [left_col, right_col] =
         \   s:get_both_sides_space_cols(
-        \       s:get_var('caw_wrap_skip_blank_line'),
+        \       caw#get_var('caw_wrap_skip_blank_line'),
         \       s:get_context().firstline,
         \       s:get_context().lastline)
     endif
@@ -716,10 +680,10 @@ function! s:caw_wrap_comment_visual() dict "{{{
     \   s:get_context().firstline,
     \   s:get_context().lastline
     \)
-        if s:get_var('caw_wrap_skip_blank_line') && getline(lnum) =~ '^\s*$'
+        if caw#get_var('caw_wrap_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
-        if s:get_var('caw_wrap_align')
+        if caw#get_var('caw_wrap_align')
             call self.comment_normal(lnum, left_col, right_col)
         else
             call self.comment_normal(lnum)
@@ -728,14 +692,14 @@ function! s:caw_wrap_comment_visual() dict "{{{
 endfunction "}}}
 
 function! s:comment_visual_characterwise_comment_out(text) "{{{
-    let cmt = s:comments.wrap_oneline.get_comment()
+    let cmt = caw#new('comments.wrap_oneline').get_comment()
     if empty(cmt)
         return a:text
     else
         return cmt[0]
-        \   . s:get_var('caw_wrap_sp_left')
+        \   . caw#get_var('caw_wrap_sp_left')
         \   . a:text
-        \   . s:get_var('caw_wrap_sp_right')
+        \   . caw#get_var('caw_wrap_sp_right')
         \   . cmt[1]
     endif
 endfunction "}}}
@@ -760,7 +724,7 @@ function! s:caw_wrap_comment_visual_characterwise() dict "{{{
 endfunction "}}}
 
 function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
-    let cmt = s:comments.wrap_oneline.get_comment()
+    let cmt = caw#new('comments.wrap_oneline').get_comment()
     if empty(cmt)
         return 0
     endif
@@ -775,7 +739,7 @@ function! s:caw_wrap_has_comment_normal(lnum) dict "{{{
 endfunction "}}}
 
 function! s:caw_wrap_uncomment_normal(lnum) dict "{{{
-    let cmt = s:comments.wrap_oneline.get_comment()
+    let cmt = caw#new('comments.wrap_oneline').get_comment()
     if !empty(cmt) && self.has_comment_normal(a:lnum)
         let [left, right] = cmt
         let line = s:trim_whitespaces(getline(a:lnum))
@@ -808,7 +772,7 @@ let s:caw.wrap = {
 \   'has_all_comment': s:local_func('CommentDetectable_has_all_comment'),
 \   'toggle': s:local_func('Togglable_toggle'),
 \
-\   'comment_database': s:comments.wrap_oneline,
+\   'comment_database': caw#new('comments.wrap_oneline'),
 \   'fallback_types': ['i'],
 \}
 " }}}
@@ -852,8 +816,8 @@ function! s:caw_box_comment() dict "{{{
         call s:assert(width > 0, 'width > 0')
         let tops_and_bottoms = cmt.left . repeat(cmt.top, width + 2) . cmt.right
 
-        let sp_left = s:get_var("caw_box_sp_left")
-        let sp_right = s:get_var("caw_box_sp_right")
+        let sp_left = caw#get_var("caw_box_sp_left")
+        let sp_right = caw#get_var("caw_box_sp_right")
         call map(lines, 's:wrap_comment_align(v:val, cmt.left . sp_left, sp_right . cmt.right, left_col, right_col)')
         " Pad/Remove left/right whitespaces.
         call insert(lines,
@@ -875,7 +839,7 @@ endfunction "}}}
 
 let s:caw.box = {
 \   'comment': s:local_func('caw_box_comment'),
-\   'comment_database': s:comments.wrap_multiline,
+\   'comment_database': caw#new('comments.wrap_multiline'),
 \}
 " }}}
 
@@ -890,7 +854,7 @@ function! s:caw_jump_comment_prev() dict "{{{
 endfunction "}}}
 
 function! s:caw_jump_comment(next) dict "{{{
-    let cmt = s:comments.oneline.get_comment()
+    let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
         return
     endif
@@ -899,14 +863,14 @@ function! s:caw_jump_comment(next) dict "{{{
     if a:next
         " Begin a new line and insert
         " the online comment leader with whitespaces.
-        execute 'normal! o' . cmt .  s:get_var('caw_jump_sp')
+        execute 'normal! o' . cmt .  caw#get_var('caw_jump_sp')
         " Start Insert mode at the end of the inserted line.
         call cursor(lnum + 1, 1)
         startinsert!
     else
         " NOTE: `lnum` is target lnum.
         " because new line was inserted just now.
-        execute 'normal! O' . cmt . s:get_var('caw_jump_sp')
+        execute 'normal! O' . cmt . caw#get_var('caw_jump_sp')
         " Start Insert mode at the end of the inserted line.
         call cursor(lnum, 1)
         startinsert!
@@ -933,7 +897,7 @@ function! s:caw_input_comment() dict "{{{
         return
     endif
 
-    let default_cmt = s:comments.oneline.get_comment()
+    let default_cmt = caw#new('comments.oneline').get_comment()
     let cmt = s:input('any comment?:', default_cmt)
 
     if !empty(default_cmt) && default_cmt !=# cmt
