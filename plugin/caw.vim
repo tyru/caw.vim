@@ -201,6 +201,15 @@ if !g:caw_no_default_keymappings
 endif
 " }}}
 
+
+" Cleanup {{{
+
+delfunction s:define_prefix
+delfunction s:map_generic
+delfunction s:map_user
+
+" }}}
+
 " }}}
 
 
