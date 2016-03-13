@@ -20,9 +20,9 @@ function! caw#keymapping_stub(mode, type, action)
         let context.lastline  = line("'>")
     endif
     if exists('*context_filetype#get_filetype')
-      let context.filetype = context_filetype#get_filetype()
+        let context.filetype = context_filetype#get_filetype()
     else
-      let context.filetype = &filetype
+        let context.filetype = &filetype
     endif
     let context.count = v:count1
     call s:set_context(context)
