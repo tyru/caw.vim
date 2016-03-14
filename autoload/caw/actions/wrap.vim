@@ -22,7 +22,7 @@ function! caw#actions#wrap#new() abort
 endfunction
 
 
-let s:wrap = {'fallback_types': ['i']}
+let s:wrap = {'fallback_types': ['small_i']}
 
 function! s:wrap.comment_normal(lnum, ...) abort
     let left_col = get(a:000, 0, -1)
