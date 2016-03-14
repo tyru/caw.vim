@@ -19,7 +19,7 @@ function! s:wrap_oneline.get_comment() abort
 endfunction
 
 function! s:wrap_oneline.get_comment_vars()
-    return caw#get_var('caw_wrap_oneline_comment', '')
+    return caw#get_var('caw_wrap_oneline_comment', [])
 endfunction
 
 function! s:wrap_oneline.get_comment_detect()
