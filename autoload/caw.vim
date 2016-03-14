@@ -194,29 +194,41 @@ function! s:globpath(path, expr) abort
     return split(globpath(a:path, a:expr, 1), '\n')
 endfunction
 
+
 " '.../autoload/caw'
 let s:root_dir = expand('<sfile>:h') . '/caw'
+" s:modules[module_name][cache_key]
+" cache_key = string(a:000)
 let s:modules = {}
-function! caw#new(module, ...) abort
+
+function! caw#load(name) abort
     " If the module is already loaded, return it.
-    let id = a:module . '|' . string(a:000)
-    if has_key(s:modules, id)
-        return copy(s:modules[id])
+    if has_key(s:modules, a:name)
+        return
     endif
-    " Load file
-    let file = tr(a:module, '.', '/') . '.vim'
+    " Load script file.
+    let file = tr(a:name, '.', '/') . '.vim'
     source `=s:root_dir.'/'.file`
-    " Call depends() function
-    let depends = 'caw#' . tr(a:module, '.', '#') . '#depends'
+    " Call depends() function.
+    let depends = 'caw#' . tr(a:name, '.', '#') . '#depends'
     if exists('*'.depends)
         for module in call(depends, [])
-            call caw#new(module)
+            call caw#load(module)
         endfor
     endif
-    " Call new() function
-    let constructor = 'caw#' . tr(a:module, '.', '#') . '#new'
-    let s:modules[id] = call(constructor, a:000)
-    return copy(s:modules[id])
+    let s:modules[a:name] = {}
+endfunction
+
+function! caw#new(name, ...) abort
+    let id = string(a:000)
+    if has_key(s:modules, a:name) && has_key(s:modules[a:name], id)
+        return copy(s:modules[a:name][id])
+    endif
+    call caw#load(a:name)
+    " Call new() function.
+    let constructor = 'caw#' . tr(a:name, '.', '#') . '#new'
+    let s:modules[a:name][id] = call(constructor, a:000)
+    return copy(s:modules[a:name][id])
 endfunction
 
 " }}}
