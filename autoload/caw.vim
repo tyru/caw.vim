@@ -231,6 +231,11 @@ function! caw#new(name, ...) abort
     return copy(s:modules[a:name][id])
 endfunction
 
+function! caw#__inject_for_test__(name, mock, ...) abort
+    let id = string(a:000)
+    let s:modules[a:name][id] = copy(a:mock)
+endfunction
+
 " }}}
 
 " Restore 'cpoptions' {{{
