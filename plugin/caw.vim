@@ -100,10 +100,11 @@ endfunction "}}}
 call s:define_prefix('gc')
 
 
-function! s:map_generic(type, action, ...) "{{{
-    let lhs = printf('<Plug>(caw:%s:%s)', a:type, a:action)
-    let modes = a:0 ? split(a:1, '\zs') : ['n', 'x']
-    for mode in modes
+function! s:map_generic(action, method, ...) "{{{
+    let lhs = printf('<Plug>(caw:%s:%s)', a:action, a:method)
+    let modes = get(a:000, 0, 'nx')
+    let sent_action = get(a:000, 1, a:action)
+    for mode in split(modes, '\zs')
         execute
         \   mode . 'noremap'
         \   '<silent>'
@@ -111,8 +112,8 @@ function! s:map_generic(type, action, ...) "{{{
         \   printf(
         \       ':<C-u>call caw#keymapping_stub(%s, %s, %s)<CR>',
         \       string(mode),
-        \       string(a:type),
-        \       string(a:action))
+        \       string(sent_action),
+        \       string(a:method))
     endfor
 endfunction "}}}
 function! s:map_user(lhs, rhs) "{{{
@@ -129,9 +130,9 @@ endfunction "}}}
 
 
 " i {{{
-call s:map_generic('i', 'comment')
-call s:map_generic('i', 'uncomment')
-call s:map_generic('i', 'toggle')
+call s:map_generic('i', 'comment', 'nx', 'small_i')
+call s:map_generic('i', 'uncomment', 'nx', 'small_i')
+call s:map_generic('i', 'toggle', 'nx', 'small_i')
 
 if !g:caw_no_default_keymappings
     call s:map_user('i', 'i:comment')
@@ -141,9 +142,9 @@ endif
 " }}}
 
 " I {{{
-call s:map_generic('I', 'comment')
-call s:map_generic('I', 'uncomment')
-call s:map_generic('I', 'toggle')
+call s:map_generic('I', 'comment', 'nx', 'capital_i')
+call s:map_generic('I', 'uncomment', 'nx', 'capital_i')
+call s:map_generic('I', 'toggle', 'nx', 'capital_i')
 
 if !g:caw_no_default_keymappings
     call s:map_user('I', 'I:comment')
@@ -199,6 +200,15 @@ if !g:caw_no_default_keymappings
     call s:map_user('v', 'input:comment')
     call s:map_user('uv', 'input:uncomment')
 endif
+" }}}
+
+
+" Cleanup {{{
+
+delfunction s:define_prefix
+delfunction s:map_generic
+delfunction s:map_user
+
 " }}}
 
 " }}}

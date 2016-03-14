@@ -87,38 +87,12 @@ context of the current cursor location.
 ==============================================================================
 SUPPORTED FILETYPES						*caw-supported-filetypes* {{{
 
-Same as NERD Commenter (http://www.vim.org/scripts/script.php?script_id=1218).
-Because almost comment strings are from NERD Commenter's code.
-(I think it would be nice to be able to separate
-comment strings into indivisual data.
-Other comment plugins also use it.)
+Most comment strings were imported from NERD Commenter.
+http://www.vim.org/scripts/script.php?script_id=1218
+https://github.com/scrooloose/nerdcommenter
 
-abaqus abc acedb ada ahdl amiga aml ampl ant apache apachestyle asm68k asm asn
-aspvbs atlas autohotkey autoit automake ave awk basic b bc bdf bib bindzone
-bst btm caos catalog c cfg cg ch changelog cl clean clipper cmake conf config
-context cpp crontab cs csc csp css cterm cupl csv cvs dcl debchangelog
-debcontrol debsources def diff django docbk dns dosbatch dosini dot dracula
-dsl dtd dtml dylan ecd eiffel elf elm elmfilt erlang eruby eterm expect exports
-fetchmail fgl focexec form fortran foxpro fstab fvwm fx gdb gdmo geek
-gentoo-package-keywords' gentoo-package-mask' gentoo-package-use' gnuplot
-gtkrc haskell hb h help hercules hog html htmldjango htmlos ia64 icon idlang
-idl indent inform inittab ishd iss ist jam java javascript jess jgraph
-jproperties jproperties jsp julia kconfig kix kscript lace lex lftp lifelines
-lilo lisp lite lotos lout lprolog lscript lss lua lynx m4 mail make maple masm
-master matlab mel mf mib mma model moduala.  modula2 modula3 monk mush muttrc
-named nasm nastran natural ncf netdict netrw nqc nroff nsis objc ocaml occam
-omlet omnimark openroad opl ora otl ox pascal passwd pcap pccts perl pfmain
-php phtml pic pike pilrc pine plaintex plm plsql po postscr pov povini ppd
-ppwiz procmail progress prolog psf ptcap python python qf radiance ratpoison r
-rc readline rebol registry remind rexx robots rpl rtf ruby sa samba sas sass
-sather scheme scilab screen scsh sdl sed selectbuf sgml sgmldecl sgmllnx sh
-sicad simula sinda skill slang sl slim slrnrc sm smarty smil smith sml snnsnet
-snnspat snnsres snobol4 spec specman spice sql sqlforms sqlj sqr squid st stp
-strace svn systemverilog tads taglist tags tak tasm tcl terminfo tex text
-plaintex texinfo texmf tf tidy tli trasys tsalt tsscl tssgm uc uil vb verilog
-verilog_systemverilog vgrindefs vhdl vim viminfo virata vo_base vrml vsejcl
-webmacro wget winbatch wml wvdial xdefaults xf86conf xhtml xkb xmath xml
-xmodmap xpm2 xpm xslt yacc yaml z8a
+But more filetypes have been added by users (Thanks!).
+See <repos>/after/ftplugin/* for current supported filetypes.
 
 }}}
 ==============================================================================
@@ -132,11 +106,7 @@ KEYMAPPINGS								*caw-keymappings* {{{
 Default mapping		rhs ~
 gc					<Plug>(caw:prefix)
 
-NOTE: You can change keymapping prefix by
-writing the following settings in your .vimrc: >
-	nmap <Leader>c <Plug>(caw:prefix)
-	xmap <Leader>c <Plug>(caw:prefix)
-
+NOTE: See |caw-faq-1| for how to change prefix keymapping.
 
 (nx) <Plug>(caw:i:comment)				*<Plug>(caw:i:comment)*
 (nx) <Plug>(caw:a:comment)				*<Plug>(caw:a:comment)*
@@ -298,8 +268,20 @@ caw_default_oneline_comment				*caw_default_oneline_comment*
 ==============================================================================
 FAQ								*caw-faq* {{{
 
-Q. How can I change the mapping prefix?
-A. See |<Plug>(caw:prefix)|.
+					*caw-faq-1*
+Q. How can I change the prefix mapping?
+A. You can change prefix mapping
+   by writing the following settings in your .vimrc: >
+	nmap <Leader>c <Plug>(caw:prefix)
+	xmap <Leader>c <Plug>(caw:prefix)
+<
+					*caw-faq-2*
+Q. How to support a new filetype?
+A. Place "after/ftplugin/{filetype}/caw.vim" in your 'runtimepath'.
+   See the template example for "macros/after-ftplugin-template.vim".
+
+   We will support generating above ftplugin file from template file
+   in the feature (TODO).
 
 }}}
 ==============================================================================
