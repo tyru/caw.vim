@@ -16,7 +16,7 @@ function! caw#actions#wrap#new() abort
     let obj.has_all_comment = comment_detectable.has_all_comment
     let obj.toggle = togglable.toggle
     " Import comment database.
-    let obj.comment_database = caw#new('comments.wrap_multiline')
+    let obj.comment_database = caw#new('comments.wrap_oneline')
 
     return obj
 endfunction
