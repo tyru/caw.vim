@@ -41,7 +41,7 @@ function! s:comment_detectable.has_all_comment() abort
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if getline(lnum) !~# '^\s*$' && !self.has_comment_normal(lnum)
+        if caw#getline(lnum) !~# '^\s*$' && !self.has_comment_normal(lnum)
             return 0
         endif
     endfor

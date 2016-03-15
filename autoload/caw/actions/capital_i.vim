@@ -11,7 +11,7 @@ let s:capital_i = {}
 
 function! s:capital_i.comment_normal(lnum, ...) abort
     let startinsert = get(a:000, 0, caw#get_var('caw_I_startinsert_at_blank_line')) && caw#context().mode ==# 'n'
-    let line = getline(a:lnum)
+    let line = caw#getline(a:lnum)
     let caw_I_sp = line =~# '^\s*$' ?
     \               caw#get_var('caw_I_sp_blank') :
     \               caw#get_var('caw_I_sp')

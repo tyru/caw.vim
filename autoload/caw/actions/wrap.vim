@@ -32,11 +32,11 @@ function! s:wrap.comment_normal(lnum, ...) abort
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
     if caw#context().mode ==# 'n'
     \   && caw#get_var('caw_wrap_skip_blank_line')
-    \   && getline(a:lnum) =~# '^\s*$'
+    \   && caw#getline(a:lnum) =~# '^\s*$'
         return
     endif
 
-    let line = getline(a:lnum)
+    let line = caw#getline(a:lnum)
     let [left_cmt, right_cmt] = cmt
     if left_col > 0 && right_col > 0
         let line = caw#wrap_comment_align(
@@ -83,7 +83,7 @@ function! s:wrap.comment_visual() abort
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if caw#get_var('caw_wrap_skip_blank_line') && getline(lnum) =~ '^\s*$'
+        if caw#get_var('caw_wrap_skip_blank_line') && caw#getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
         if exists('left_col') && exists('right_col')
@@ -134,7 +134,7 @@ function! s:wrap.has_comment_normal(lnum) abort
         return 0
     endif
 
-    let line = caw#trim_whitespaces(getline(a:lnum))
+    let line = caw#trim_whitespaces(caw#getline(a:lnum))
 
     " line begins with left, ends with right.
     let [left, right] = cmt
@@ -147,7 +147,7 @@ function! s:wrap.uncomment_normal(lnum) abort
     let cmt = caw#new('comments.wrap_oneline').get_comment()
     if !empty(cmt) && self.has_comment_normal(a:lnum)
         let [left, right] = cmt
-        let line = caw#trim_whitespaces(getline(a:lnum))
+        let line = caw#trim_whitespaces(caw#getline(a:lnum))
 
         if left != '' && line[: strlen(left) - 1] ==# left
             let line = line[strlen(left) :]

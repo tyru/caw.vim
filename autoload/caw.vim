@@ -114,7 +114,7 @@ endfunction
 
 
 function! caw#get_inserted_indent(lnum)
-    return matchstr(getline(a:lnum), '^\s\+')
+    return matchstr(caw#getline(a:lnum), '^\s\+')
 endfunction
 
 function! s:get_inserted_indent_num(lnum)
@@ -136,7 +136,7 @@ endfunction
 function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum)
     let min_indent_num = 1/0
     for lnum in range(a:from_lnum, a:to_lnum)
-        if a:skip_blank_line && getline(lnum) =~ '^\s*$'
+        if a:skip_blank_line && caw#getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
         let n = s:get_inserted_indent_num(lnum)
@@ -150,7 +150,7 @@ endfunction
 function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum)
     let left  = 1/0
     let right = 1
-    for line in getline(a:from_lnum, a:to_lnum)
+    for line in caw#getline(a:from_lnum, a:to_lnum)
         if a:skip_blank_line && line =~ '^\s*$'
             continue    " Skip blank line.
         endif
@@ -232,8 +232,13 @@ endfunction
 
 
 " For vmock#mock()
-function! caw#setline(lnum, text) abort
-    return setline(a:lnum, a:text)
+function! caw#getline(...) abort
+    return call('getline', a:000)
+endfunction
+
+" For vmock#mock()
+function! caw#setline(...) abort
+    return call('setline', a:000)
 endfunction
 
 " For vmock#mock()

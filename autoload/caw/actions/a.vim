@@ -33,7 +33,7 @@ function! s:pos_a.comment_normal(lnum, ...) dict
 
     call caw#setline(
     \   a:lnum,
-    \   getline(a:lnum)
+    \   caw#getline(a:lnum)
     \       . caw#get_var('caw_a_sp_left')
     \       . cmt
     \       . caw#get_var('caw_a_sp_right')
@@ -49,7 +49,7 @@ function! s:get_comment_col(lnum)
         return -1
     endif
 
-    let line = getline(a:lnum)
+    let line = caw#getline(a:lnum)
     let cols = []
     let idx  = -1
     while 1
@@ -89,7 +89,7 @@ function! s:pos_a.uncomment_normal(lnum) dict
         endif
         let idx = col - 1
 
-        let line = getline(a:lnum)
+        let line = caw#getline(a:lnum)
         let [l, r] = [line[idx : idx + strlen(cmt) - 1], cmt]
         call caw#assert(l ==# r, "s:caw.a.uncomment_normal(): ".string(l).' ==# '.string(r))
 
