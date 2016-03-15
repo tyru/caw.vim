@@ -86,7 +86,7 @@ function! s:wrap.comment_visual() abort
         if caw#get_var('caw_wrap_skip_blank_line') && getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
-        if caw#get_var('caw_wrap_align')
+        if exists('left_col') && exists('right_col')
             call self.comment_normal(lnum, left_col, right_col)
         else
             call self.comment_normal(lnum)

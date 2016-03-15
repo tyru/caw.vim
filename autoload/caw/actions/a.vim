@@ -51,6 +51,7 @@ function! s:get_comment_col(lnum)
 
     let line = getline(a:lnum)
     let cols = []
+    let idx  = -1
     while 1
         let idx = stridx(line, cmt, empty(cols) ? 0 : idx + 1)
         if idx == -1

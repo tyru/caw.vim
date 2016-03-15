@@ -395,6 +395,8 @@ endfunction
 
 
 let s:root_dir = expand('<sfile>:h:h')
+
+" @vimlint(EVL102, 1, l:vars)
 function! s:run() abort
     let oneline = s:oneline()
     let wrap_oneline = s:wrap_oneline()
@@ -436,6 +438,7 @@ function! s:run() abort
         write
     endfor
 endfunction
+" @vimlint(EVL102, 0, l:vars)
 
 call s:run()
 " quit
