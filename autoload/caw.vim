@@ -189,12 +189,6 @@ function! caw#wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col)
 endfunction
 
 
-" TODO: newer globpath() can return List.
-function! s:globpath(path, expr) abort
-    return split(globpath(a:path, a:expr, 1), '\n')
-endfunction
-
-
 " '.../autoload/caw'
 let s:root_dir = expand('<sfile>:h') . '/caw'
 " s:modules[module_name][cache_key]
