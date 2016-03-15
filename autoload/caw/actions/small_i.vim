@@ -39,22 +39,22 @@ function! s:small_i.comment_normal(lnum, ...) abort
 
     if min_indent_num >= 0
         if min_indent_num > strlen(line)
-            call setline(a:lnum, s:make_indent_str(min_indent_num))
+            call caw#setline(a:lnum, s:make_indent_str(min_indent_num))
             let line = getline(a:lnum)
         endif
         call caw#assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
         let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-        call setline(a:lnum, before . cmt . caw_i_sp . after)
+        call caw#setline(a:lnum, before . cmt . caw_i_sp . after)
     elseif line =~# '^\s*$'
         execute 'normal! '.a:lnum.'G"_cc' . cmt . caw_i_sp
         if startinsert && caw#context().mode ==# 'n'
-            startinsert!
+            call caw#startinsert('A')
         endif
     else
         let indent = caw#get_inserted_indent(a:lnum)
         let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
-        call setline(a:lnum, indent . cmt . caw_i_sp . line)
+        call caw#setline(a:lnum, indent . cmt . caw_i_sp . line)
     endif
 endfunction
 
@@ -102,7 +102,7 @@ function! s:small_i.uncomment_normal(lnum) abort
             if stridx(line, caw#get_var('caw_i_sp')) ==# 0
                 let line = line[strlen(caw#get_var('caw_i_sp')) :]
             endif
-            call setline(a:lnum, indent . line)
+            call caw#setline(a:lnum, indent . line)
         endif
     endif
 endfunction

@@ -31,7 +31,7 @@ function! s:pos_a.comment_normal(lnum, ...) dict
     let cmt = self.comment_database.get_comment()
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
 
-    call setline(
+    call caw#setline(
     \   a:lnum,
     \   getline(a:lnum)
     \       . caw#get_var('caw_a_sp_left')
@@ -39,7 +39,7 @@ function! s:pos_a.comment_normal(lnum, ...) dict
     \       . caw#get_var('caw_a_sp_right')
     \)
     if startinsert
-        startinsert!
+        call caw#startinsert('A')
     endif
 endfunction
 
@@ -96,6 +96,6 @@ function! s:pos_a.uncomment_normal(lnum) dict
         " 'caw_a_sp_left'
         let before = substitute(before, '\s\+$', '', '')
 
-        call setline(a:lnum, before)
+        call caw#setline(a:lnum, before)
     endif
 endfunction

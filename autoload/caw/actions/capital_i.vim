@@ -23,11 +23,11 @@ function! s:capital_i.comment_normal(lnum, ...) abort
         if caw#get_var('caw_I_skip_blank_line')
             return
         endif
-        call setline(a:lnum, cmt . caw_I_sp)
+        call caw#setline(a:lnum, cmt . caw_I_sp)
         if startinsert
-            startinsert!
+            call caw#startinsert('A')
         endif
     else
-        call setline(a:lnum, cmt . caw_I_sp . line)
+        call caw#setline(a:lnum, cmt . caw_I_sp . line)
     endif
 endfunction

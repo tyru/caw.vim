@@ -230,6 +230,25 @@ function! caw#__inject_for_test__(name, mock, ...) abort
     let s:modules[a:name][id] = copy(a:mock)
 endfunction
 
+
+" For vmock#mock()
+function! caw#setline(lnum, text) abort
+    return setline(a:lnum, a:text)
+endfunction
+
+" For vmock#mock()
+function! caw#startinsert(pos) abort
+    if index(['i', 'A'], a:pos) is -1
+        throw 'caw: caw#startinsert(): '
+        \   . 'a:pos = ' . string(a:pos) . ' is invalid.'
+    endif
+    if a:pos ==# 'i'
+        startinsert
+    else
+        startinsert!
+    endif
+endfunction
+
 " }}}
 
 " Restore 'cpoptions' {{{

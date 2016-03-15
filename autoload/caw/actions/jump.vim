@@ -30,13 +30,13 @@ function! s:caw_jump_comment(next) dict
         execute 'normal! o' . cmt .  caw#get_var('caw_jump_sp')
         " Start Insert mode at the end of the inserted line.
         call cursor(lnum + 1, 1)
-        startinsert!
+        call caw#startinsert('A')
     else
         " NOTE: `lnum` is target lnum.
         " because new line was inserted just now.
         execute 'normal! O' . cmt . caw#get_var('caw_jump_sp')
         " Start Insert mode at the end of the inserted line.
         call cursor(lnum, 1)
-        startinsert!
+        call caw#startinsert('A')
     endif
 endfunction

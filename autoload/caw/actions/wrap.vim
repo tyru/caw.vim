@@ -45,7 +45,7 @@ function! s:wrap.comment_normal(lnum, ...) abort
         \   caw#get_var("caw_wrap_sp_right") . right_cmt,
         \   left_col,
         \   right_col)
-        call setline(a:lnum, line)
+        call caw#setline(a:lnum, line)
     else
         let line = substitute(line, '^\s\+', '', '')
         if left_cmt != ''
@@ -55,7 +55,7 @@ function! s:wrap.comment_normal(lnum, ...) abort
             let line = line . caw#get_var('caw_wrap_sp_right') . right_cmt
         endif
         let line = caw#get_inserted_indent(a:lnum) . line
-        call setline(a:lnum, line)
+        call caw#setline(a:lnum, line)
     endif
 endfunction
 
@@ -158,6 +158,6 @@ function! s:wrap.uncomment_normal(lnum) abort
 
         let indent = caw#get_inserted_indent(a:lnum)
         let line = caw#trim_whitespaces(line)
-        call setline(a:lnum, indent . line)
+        call caw#setline(a:lnum, indent . line)
     endif
 endfunction
