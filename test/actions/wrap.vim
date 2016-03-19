@@ -1,6 +1,6 @@
 scriptencoding utf-8
 
-let s:suite = themis#suite('basic')
+let s:suite = themis#suite('actions.wrap')
 let s:assert = themis#helper('assert')
 
 let s:NORMAL_MODE_CONTEXT = {
