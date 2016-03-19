@@ -271,10 +271,12 @@ function! caw#startinsert(pos) abort
     endif
 endfunction
 
+" For vmock#mock()
 function! caw#synstack(...) abort
     return call('synstack', a:000)
 endfunction
 
+" For vmock#mock()
 function! caw#synIDattr(...) abort
     return call('synIDattr', a:000)
 endfunction
