@@ -10,7 +10,7 @@ set cpo&vim
 "caw#keymapping_stub(): All keymappings are bound to this function. {{{
 " Call actions' methods until it succeeded
 " (currently seeing b:changedtick but it is bad idea)
-function! caw#keymapping_stub(mode, action, method)
+function! caw#keymapping_stub(mode, action, method) abort
     " Set up context.
     let context = {}
     let context.mode = a:mode
@@ -65,6 +65,16 @@ function! caw#keymapping_stub(mode, action, method)
         let s:context = {}
     endtry
 endfunction
+
+function! caw#keymapping_stub_deprecated(mode, action, method, old_action) abort
+    let oldmap = printf('<Plug>(caw:%s:%s)', a:old_action, a:method)
+    let newmap = printf('<Plug>(caw:%s:%s)', a:action, a:method)
+    echohl WarningMsg
+    echomsg oldmap . ' was deprecated. please use ' . newmap . ' instead.'
+    echohl None
+
+    return caw#keymapping_stub(a:mode, a:action, a:method)
+endfunction
 " }}}
 
 " Context: context while invoking keymapping. {{{
@@ -114,7 +124,8 @@ function! caw#get_var(varname, ...)
     if a:0
         return a:1
     else
-        call caw#assert(0, "caw#get_var(): this must be reached")
+        call caw#assert(0, "caw#get_var(" . string(a:varname) . "):"
+        \                . " this must be reached!")
     endif
 endfunction
 

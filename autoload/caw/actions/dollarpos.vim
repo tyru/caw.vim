@@ -1,12 +1,12 @@
 scriptencoding utf-8
 
-function! caw#actions#a#new() abort
+function! caw#actions#dollarpos#new() abort
     let commentable = caw#new('actions.traits.commentable')
     let uncommentable = caw#new('actions.traits.uncommentable')
     let togglable = caw#new('actions.traits.togglable')
     let comment_detectable = caw#new('actions.traits.comment_detectable')
 
-    let obj = deepcopy(s:pos_a)
+    let obj = deepcopy(s:dollarpos)
     " Implements methods.
     let obj.comment = commentable.comment
     let obj.comment_visual = commentable.comment_visual
@@ -23,10 +23,10 @@ function! caw#actions#a#new() abort
 endfunction
 
 
-let s:pos_a = {'fallback_types': ['wrap']}
+let s:dollarpos = {'fallback_types': ['wrap']}
 
-function! s:pos_a.comment_normal(lnum, ...) dict
-    let startinsert = a:0 ? a:1 : caw#get_var('caw_a_startinsert') && caw#context().mode ==# 'n'
+function! s:dollarpos.comment_normal(lnum, ...) dict
+    let startinsert = a:0 ? a:1 : caw#get_var('caw_dollarpos_startinsert') && caw#context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
@@ -34,9 +34,9 @@ function! s:pos_a.comment_normal(lnum, ...) dict
     call caw#setline(
     \   a:lnum,
     \   caw#getline(a:lnum)
-    \       . caw#get_var('caw_a_sp_left')
+    \       . caw#get_var('caw_dollarpos_sp_left')
     \       . cmt
-    \       . caw#get_var('caw_a_sp_right')
+    \       . caw#get_var('caw_dollarpos_sp_right')
     \)
     if startinsert
         call caw#startinsert('A')
@@ -74,11 +74,11 @@ function! s:get_comment_col(lnum)
     return -1
 endfunction
 
-function! s:pos_a.has_comment_normal(lnum) dict
+function! s:dollarpos.has_comment_normal(lnum) dict
     return s:get_comment_col(a:lnum) > 0
 endfunction
 
-function! s:pos_a.uncomment_normal(lnum) dict
+function! s:dollarpos.uncomment_normal(lnum) dict
     let cmt = self.comment_database.get_comment()
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
 
@@ -94,7 +94,7 @@ function! s:pos_a.uncomment_normal(lnum) dict
         call caw#assert(l ==# r, "s:caw.a.uncomment_normal(): ".string(l).' ==# '.string(r))
 
         let before = line[0 : idx - 1]
-        " 'caw_a_sp_left'
+        " 'caw_dollarpos_sp_left'
         let before = substitute(before, '\s\+$', '', '')
 
         call caw#setline(a:lnum, before)

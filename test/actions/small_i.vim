@@ -17,7 +17,7 @@ function! s:suite.before() abort
 endfunction
 
 function! s:suite.before_each() abort
-    let s:small_i = caw#new('actions.small_i')
+    let s:tildepos = caw#new('actions.tildepos')
 endfunction
 
 function! s:suite.after_each() abort
@@ -36,7 +36,7 @@ function! s:suite.comment() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '"')
-    call s:small_i.comment()
+    call s:tildepos.comment()
 endfunction
 
 function! s:suite.comment_indent() abort
@@ -48,7 +48,7 @@ function! s:suite.comment_indent() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '"')
-    call s:small_i.comment()
+    call s:tildepos.comment()
 endfunction
 
 function! s:suite.uncomment() abort
@@ -60,7 +60,7 @@ function! s:suite.uncomment() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '"')
-    call s:small_i.uncomment()
+    call s:tildepos.uncomment()
 endfunction
 
 function! s:suite.uncomment_indent() abort
@@ -72,5 +72,5 @@ function! s:suite.uncomment_indent() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '"')
-    call s:small_i.uncomment()
+    call s:tildepos.uncomment()
 endfunction

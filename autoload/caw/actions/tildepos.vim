@@ -1,12 +1,12 @@
 scriptencoding utf-8
 
-function! caw#actions#small_i#new() abort
+function! caw#actions#tildepos#new() abort
     let commentable = caw#new('actions.traits.commentable')
     let uncommentable = caw#new('actions.traits.uncommentable')
     let togglable = caw#new('actions.traits.togglable')
     let comment_detectable = caw#new('actions.traits.comment_detectable')
 
-    let obj = deepcopy(s:small_i)
+    let obj = deepcopy(s:tildepos)
     " Implements methods.
     let obj.comment = commentable.comment
     let obj.uncomment = uncommentable.uncomment
@@ -22,17 +22,17 @@ function! caw#actions#small_i#new() abort
 endfunction
 
 
-let s:small_i = {'fallback_types': ['wrap']}
+let s:tildepos = {'fallback_types': ['wrap']}
 
-function! s:small_i.comment_normal(lnum, ...) abort
+function! s:tildepos.comment_normal(lnum, ...) abort
     " NOTE: min_indent_num is byte length. not display width.
 
-    let startinsert = get(a:000, 0, caw#get_var('caw_i_startinsert_at_blank_line'))
+    let startinsert = get(a:000, 0, caw#get_var('caw_tildepos_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
     let line = caw#getline(a:lnum)
-    let caw_i_sp = line =~# '^\s*$' ?
-    \               caw#get_var('caw_i_sp_blank') :
-    \               caw#get_var('caw_i_sp')
+    let caw_tildepos_sp = line =~# '^\s*$' ?
+    \               caw#get_var('caw_tildepos_sp_blank') :
+    \               caw#get_var('caw_tildepos_sp')
 
     let cmt = self.comment_database.get_comment()
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
@@ -45,21 +45,21 @@ function! s:small_i.comment_normal(lnum, ...) abort
         call caw#assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
         let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-        call caw#setline(a:lnum, before . cmt . caw_i_sp . after)
+        call caw#setline(a:lnum, before . cmt . caw_tildepos_sp . after)
     elseif line =~# '^\s*$'
-        execute 'normal! '.a:lnum.'G"_cc' . cmt . caw_i_sp
+        execute 'normal! '.a:lnum.'G"_cc' . cmt . caw_tildepos_sp
         if startinsert && caw#context().mode ==# 'n'
             call caw#startinsert('A')
         endif
     else
         let indent = caw#get_inserted_indent(a:lnum)
         let line = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
-        call caw#setline(a:lnum, indent . cmt . caw_i_sp . line)
+        call caw#setline(a:lnum, indent . cmt . caw_tildepos_sp . line)
     endif
 endfunction
 
-function! s:small_i.comment_visual() abort
-    if caw#get_var('caw_i_align')
+function! s:tildepos.comment_visual() abort
+    if caw#get_var('caw_tildepos_align')
         let min_indent_num =
         \   caw#get_min_indent_num(
         \       1,
@@ -71,7 +71,7 @@ function! s:small_i.comment_visual() abort
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if caw#get_var('caw_i_skip_blank_line') && caw#getline(lnum) =~ '^\s*$'
+        if caw#get_var('caw_tildepos_skip_blank_line') && caw#getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
         if exists('min_indent_num')
@@ -82,13 +82,13 @@ function! s:small_i.comment_visual() abort
     endfor
 endfunction
 
-function! s:small_i.has_comment_normal(lnum) abort
+function! s:tildepos.has_comment_normal(lnum) abort
     let line_without_indent = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
     let cmt = caw#new('comments.oneline').get_comment()
     return !empty(cmt) && stridx(line_without_indent, cmt) == 0
 endfunction
 
-function! s:small_i.uncomment_normal(lnum) abort
+function! s:tildepos.uncomment_normal(lnum) abort
     let cmt = self.comment_database.get_comment()
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
 
@@ -98,9 +98,9 @@ function! s:small_i.uncomment_normal(lnum) abort
         if stridx(line, cmt) == 0
             " Remove comment.
             let line = line[strlen(cmt) :]
-            " 'caw_i_sp'
-            if stridx(line, caw#get_var('caw_i_sp')) ==# 0
-                let line = line[strlen(caw#get_var('caw_i_sp')) :]
+            " 'caw_tildepos_sp'
+            if stridx(line, caw#get_var('caw_tildepos_sp')) ==# 0
+                let line = line[strlen(caw#get_var('caw_tildepos_sp')) :]
             endif
             call caw#setline(a:lnum, indent . line)
         endif
