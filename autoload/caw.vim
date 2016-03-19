@@ -8,7 +8,10 @@ set cpo&vim
 
 
 "caw#keymapping_stub(): All keymappings are bound to this function. {{{
+" Call actions' methods until it succeeded
+" (currently seeing b:changedtick but it is bad idea)
 function! caw#keymapping_stub(mode, action, method)
+    " Set up context.
     let context = {}
     let context.mode = a:mode
     let context.visualmode = visualmode()
@@ -19,16 +22,11 @@ function! caw#keymapping_stub(mode, action, method)
         let context.firstline = line("'<")
         let context.lastline  = line("'>")
     endif
-    if exists('*context_filetype#get_filetype')
-        let context.filetype = context_filetype#get_filetype()
-    else
-        let context.filetype = &filetype
-    endif
-    let context.count = v:count1
-    call s:set_context(context)
+    unlockvar! s:context
+    let s:context = context
+    lockvar! s:context
 
     try
-        " TODO: Check the action exists.
         let actions = [caw#new('actions.' . a:action)]
 
         " TODO:
@@ -62,20 +60,28 @@ function! caw#keymapping_stub(mode, action, method)
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
     finally
-        call s:set_context({})    " free context.
+        " Free context.
+        unlockvar! s:context
+        let s:context = {}
     endtry
 endfunction
 " }}}
 
 " Context: context while invoking keymapping. {{{
 let s:context = {}
-function! s:set_context(context)
-    unlockvar! s:context
+
+" For test.
+function! caw#__set_context__(context)
     let s:context = a:context
-    lockvar! s:context
 endfunction
+
+" For test.
+function! caw#__clear_context__()
+    let s:context = {}
+endfunction
+
 function! caw#context()
-    return s:context
+    return copy(s:context)
 endfunction
 " }}}
 
