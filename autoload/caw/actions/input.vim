@@ -14,8 +14,8 @@ function! s:input.comment() abort
             throw 'Invalid character is pressed.'
         endif
         let action = caw#new('actions.' . actname)
-        if !has_key(action, 'comment_normal')
-            throw "No 'comment_normal' method for '" . actname . "'."
+        if !has_key(action, method)
+            throw "No '" . method . "' method for '" . actname . "'."
         endif
     catch
         echohl ErrorMsg
@@ -33,9 +33,11 @@ function! s:input.comment() abort
     try
         let context = caw#context()
         if context.mode ==# 'n'
-            call self.comment_normal(action, method, context.firstline)
+            call action[method](context.firstline)
         else
-            call self.comment_visual(action, method)
+            for lnum in range(context.firstline, context.lastline)
+                call action[method](lnum)
+            endfor
         endif
     finally
         if exists('org_status')
@@ -48,9 +50,9 @@ function! s:ask_action() abort
     let NONE = ['', '']
 
     let actname = get({
-    \   'i': 'i',
-    \   'I': 'I',
-    \   'a': 'a',
+    \   'i': 'tildepos',
+    \   'I': 'zeropos',
+    \   'a': 'dollarpos',
     \   'j': 'jump',
     \   'w': 'wrap',
     \}, s:getchar(), '')
@@ -96,19 +98,6 @@ function! s:set_and_save_comment_string(comment_string) abort
     let b:caw_oneline_comment = a:comment_string
 
     return stash
-endfunction
-
-function! s:input.comment_normal(action, method, lnum) abort
-    call a:action[a:method](a:lnum)
-endfunction
-
-function! s:input.comment_visual(action, method) abort
-    for lnum in range(
-    \   caw#context().firstline,
-    \   caw#context().lastline
-    \)
-        call self.comment_normal(a:action, a:method, lnum)
-    endfor
 endfunction
 
 function! s:getchar(...) abort
