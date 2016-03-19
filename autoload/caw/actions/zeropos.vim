@@ -1,8 +1,8 @@
 scriptencoding utf-8
 
 function! caw#actions#zeropos#new() abort
-    let obj = deepcopy(s:zeropos)
-    let obj = extend(obj, caw#new('actions.tildepos'))
+    let obj = deepcopy(caw#new('actions.tildepos'))
+    let obj = extend(obj, deepcopy(s:zeropos), 'force')
     return obj
 endfunction
 
