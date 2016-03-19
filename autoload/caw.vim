@@ -271,6 +271,14 @@ function! caw#startinsert(pos) abort
     endif
 endfunction
 
+function! caw#synstack(...) abort
+    return call('synstack', a:000)
+endfunction
+
+function! caw#synIDattr(...) abort
+    return call('synIDattr', a:000)
+endfunction
+
 " }}}
 
 " Restore 'cpoptions' {{{

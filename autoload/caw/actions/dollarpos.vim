@@ -66,8 +66,8 @@ function! s:get_comment_col(lnum) abort
     endif
 
     for col in cols
-        for id in synstack(a:lnum, col)
-            if synIDattr(synIDtrans(id), 'name') ==# 'Comment'
+        for id in caw#synstack(a:lnum, col)
+            if caw#synIDattr(synIDtrans(id), 'name') ==# 'Comment'
                 return col
             endif
         endfor
