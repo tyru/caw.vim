@@ -14,76 +14,34 @@ set cpo&vim
 
 
 " Global variables {{{
-if !exists('g:caw_no_default_keymappings')
-    let g:caw_no_default_keymappings = 0
-endif
+let g:caw_no_default_keymappings = get(g:, 'caw_no_default_keymappings', 0)
 
-if !exists('g:caw_i_sp')
-    let g:caw_i_sp = ' '
-endif
-if !exists('g:caw_i_sp_blank')
-    let g:caw_i_sp_blank = ''
-endif
-if !exists('g:caw_i_startinsert_at_blank_line')
-    let g:caw_i_startinsert_at_blank_line = 1
-endif
-if !exists('g:caw_i_skip_blank_line')
-    let g:caw_i_skip_blank_line = 0
-endif
-if !exists('g:caw_i_align')
-    let g:caw_i_align = 1
-endif
+let g:caw_i_sp = get(g:, 'caw_i_sp', ' ')
+let g:caw_i_sp_blank = get(g:, 'caw_i_sp_blank', '')
+let g:caw_i_startinsert_at_blank_line = get(g:, 'caw_i_startinsert_at_blank_line', 1)
+let g:caw_i_skip_blank_line = get(g:, 'caw_i_skip_blank_line', 0)
+let g:caw_i_align = get(g:, 'caw_i_align', 1)
 
-if !exists('g:caw_I_sp')
-    let g:caw_I_sp = ' '
-endif
-if !exists('g:caw_I_sp_blank')
-    let g:caw_I_sp_blank = ''
-endif
-if !exists('g:caw_I_startinsert_at_blank_line')
-    let g:caw_I_startinsert_at_blank_line = 1
-endif
-if !exists('g:caw_I_skip_blank_line')
-    let g:caw_I_skip_blank_line = 0
-endif
+let g:caw_I_sp = get(g:, 'caw_I_sp', ' ')
+let g:caw_I_sp_blank = get(g:, 'caw_I_sp_blank', '')
+let g:caw_I_startinsert_at_blank_line = get(g:, 'caw_I_startinsert_at_blank_line', 1)
+let g:caw_I_skip_blank_line = get(g:, 'caw_I_skip_blank_line', 0)
 
-if !exists('g:caw_a_sp_left')
-    let g:caw_a_sp_left = repeat(' ', 4)
-endif
-if !exists('g:caw_a_sp_right')
-    let g:caw_a_sp_right = ' '
-endif
-if !exists('g:caw_a_startinsert')
-    let g:caw_a_startinsert = 1
-endif
+let g:caw_a_sp_left = get(g:, 'caw_a_sp_left', repeat(' ', 4))
+let g:caw_a_sp_right = get(g:, 'caw_a_sp_right', ' ')
+let g:caw_a_startinsert = get(g:, 'caw_a_startinsert', 1)
 
-if !exists('g:caw_wrap_sp_left')
-    let g:caw_wrap_sp_left = ' '
-endif
-if !exists('g:caw_wrap_sp_right')
-    let g:caw_wrap_sp_right = ' '
-endif
-if !exists('g:caw_wrap_skip_blank_line')
-    let g:caw_wrap_skip_blank_line = 1
-endif
-if !exists('g:caw_wrap_align')
-    let g:caw_wrap_align = 1
-endif
+let g:caw_wrap_sp_left = get(g:, 'caw_wrap_sp_left', ' ')
+let g:caw_wrap_sp_right = get(g:, 'caw_wrap_sp_right', ' ')
+let g:caw_wrap_skip_blank_line = get(g:, 'caw_wrap_skip_blank_line', 1)
+let g:caw_wrap_align = get(g:, 'caw_wrap_align', 1)
 
-if !exists('g:caw_jump_sp')
-    let g:caw_jump_sp = ' '
-endif
+let g:caw_jump_sp = get(g:, 'caw_jump_sp', ' ')
 
-if !exists('g:caw_box_sp_left')
-    let g:caw_box_sp_left = ' '
-endif
-if !exists('g:caw_box_sp_right')
-    let g:caw_box_sp_right = ' '
-endif
+let g:caw_box_sp_left = get(g:, 'caw_box_sp_left', ' ')
+let g:caw_box_sp_right = get(g:, 'caw_box_sp_right', ' ')
 
-if !exists('g:caw_find_another_action')
-    let g:caw_find_another_action = 1
-endif
+let g:caw_find_another_action = get(g:, 'caw_find_another_action', 1)
 " }}}
 
 
