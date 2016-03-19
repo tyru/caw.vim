@@ -31,8 +31,9 @@ function! s:input.comment() abort
         let org_status = s:set_and_save_comment_string(cmt)
     endif
     try
-        if caw#context().mode ==# 'n'
-            call self.comment_normal(action, method, line('.'))
+        let context = caw#context()
+        if context.mode ==# 'n'
+            call self.comment_normal(action, method, context.firstline)
         else
             call self.comment_visual(action, method)
         endif

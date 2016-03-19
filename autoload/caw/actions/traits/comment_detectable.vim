@@ -15,8 +15,9 @@ let s:comment_detectable = {}
 " - Derived.has_comment_normal()
 
 function! s:comment_detectable.has_comment() abort
-    if caw#context().mode ==# 'n'
-        return self.has_comment_normal(line('.'))
+    let context = caw#context()
+    if context.mode ==# 'n'
+        call self.has_comment_normal(context.firstline)
     else
         return self.has_comment_visual()
     endif

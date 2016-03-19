@@ -23,7 +23,7 @@ function! s:caw_jump_comment(next) dict
         return
     endif
 
-    let lnum = line('.')
+    let lnum = caw#context().firstline
     if a:next
         " Begin a new line and insert
         " the online comment leader with whitespaces.

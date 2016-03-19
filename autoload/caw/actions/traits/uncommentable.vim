@@ -16,8 +16,9 @@ let s:uncommentable = {}
 
 
 function! s:uncommentable.uncomment() abort
-    if caw#context().mode ==# 'n'
-        call self.uncomment_normal(line('.'))
+    let context = caw#context()
+    if context.mode ==# 'n'
+        call self.uncomment_normal(context.firstline)
     else
         call self.uncomment_visual()
     endif

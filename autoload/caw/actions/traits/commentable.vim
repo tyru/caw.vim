@@ -14,8 +14,9 @@ let s:commentable = {}
 " - Derived.comment_normal()
 
 function! s:commentable.comment() abort
-    if caw#context().mode ==# 'n'
-        call self.comment_normal(line('.'))
+    let context = caw#context()
+    if context.mode ==# 'n'
+        call self.comment_normal(context.firstline)
     else
         call self.comment_visual()
     endif
