@@ -33,35 +33,21 @@ function! s:box.comment() abort
     call caw#assert(left_col > 0, 'left_col > 0')
     call caw#assert(right_col > 0, 'right_col > 0')
 
-    " Box string!
-    let reg = getreg('z', 1)
-    let regtype = getregtype('z')
-    try
-        " Delete target lines.
-        silent execute top_lnum.','.bottom_lnum.'delete z'
-        let lines = split(@z, "\n")
+    " Get and delete target lines.
+    let lines = caw#getline(top_lnum, bottom_lnum)
+    silent execute top_lnum.','.bottom_lnum.'delete _'
 
-        let width = right_col - left_col
-        call caw#assert(width > 0, 'width > 0')
-        let tops_and_bottoms = cmt.left . repeat(cmt.top, width + 2) . cmt.right
+    let width = right_col - left_col
+    call caw#assert(width > 0, 'width > 0')
 
-        let sp_left = caw#get_var("caw_box_sp_left")
-        let sp_right = caw#get_var("caw_box_sp_right")
-        call map(lines, 'caw#wrap_comment_align(v:val, cmt.left . sp_left, sp_right . cmt.right, left_col, right_col)')
-        " Pad/Remove left/right whitespaces.
-        call insert(lines,
-        \   repeat((&expandtab ? ' ' : "\t"), left_col-1)
-        \   . tops_and_bottoms)
-        call add(lines,
-        \   repeat((&expandtab ? ' ' : "\t"), left_col-1)
-        \   . tops_and_bottoms)
+    let sp_left = caw#get_var("caw_box_sp_left")
+    let sp_right = caw#get_var("caw_box_sp_right")
+    call map(lines, 'caw#wrap_comment_align(v:val, cmt.left . sp_left, sp_right . cmt.right, left_col, right_col)')
+    " Pad/Remove left/right whitespaces.
+    let tops_and_bottoms = caw#make_indent_str(left_col-1)
+    \                   . (cmt.left . repeat(cmt.top, width + 2) . cmt.right)
+    let lines = [tops_and_bottoms] + lines + [tops_and_bottoms]
 
-        " Put modified lines.
-        let @z = join(lines, "\n")
-        " If top_lnum == line('.') + 1, `execute top_lnum.'put! z'` will cause an error.
-        silent execute (top_lnum - 1).'put z'
-
-    finally
-        call setreg('z', reg, regtype)
-    endtry
+    " Put modified lines.
+    call caw#append(top_lnum - 1, lines)
 endfunction

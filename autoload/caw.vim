@@ -138,7 +138,7 @@ function! s:get_inserted_indent_num(lnum) abort
     return strlen(caw#get_inserted_indent(a:lnum))
 endfunction
 
-function! s:make_indent_str(indent_byte_num) abort
+function! caw#make_indent_str(indent_byte_num) abort
     return repeat((&expandtab ? ' ' : "\t"), a:indent_byte_num)
 endfunction
 
@@ -279,6 +279,11 @@ endfunction
 " For vmock#mock()
 function! caw#synIDattr(...) abort
     return call('synIDattr', a:000)
+endfunction
+
+" For vmock#mock()
+function! caw#append(...) abort
+    return call('append', a:000)
 endfunction
 
 " }}}
