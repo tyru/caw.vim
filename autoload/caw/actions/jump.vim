@@ -26,26 +26,20 @@ function! s:caw_jump_comment(next) abort
     " Begin a new line and insert
     " the online comment leader with whitespaces.
     " And start Insert mode at the end of the inserted line.
-    let lnum = caw#context().firstline
+    call caw#actions#jump#ex_opencmd(a:next,
+    \       cmt .  caw#get_var('caw_jump_sp'))
     if a:next
-        let save_fo = &l:formatoptions
-        setlocal formatoptions-=o
-        try
-            execute 'normal! o' . cmt .  caw#get_var('caw_jump_sp')
-        finally
-            let &l:formatoptions = save_fo
-        endtry
-        call cursor(lnum + 1, 1)
-        call caw#startinsert('A')
-    else
-        let save_fo = &l:formatoptions
-        setlocal formatoptions-=o
-        try
-            execute 'normal! O' . cmt .  caw#get_var('caw_jump_sp')
-        finally
-            let &l:formatoptions = save_fo
-        endtry
-        call cursor(lnum, 1)
-        call caw#startinsert('A')
+        call caw#cursor(caw#context().firstline + 1, 1)
     endif
+    call caw#startinsert('A')
+endfunction
+
+function! caw#actions#jump#ex_opencmd(next, insert_str) abort
+    let save_fo = &l:formatoptions
+    setlocal formatoptions-=o
+    try
+        execute 'normal! ' . (a:next ? 'o' : 'O') . a:insert_str
+    finally
+        let &l:formatoptions = save_fo
+    endtry
 endfunction

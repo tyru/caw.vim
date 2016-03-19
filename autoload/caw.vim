@@ -286,6 +286,11 @@ function! caw#append(...) abort
     return call('append', a:000)
 endfunction
 
+" For vmock#mock()
+function! caw#cursor(...) abort
+    return call('cursor', a:000)
+endfunction
+
 " }}}
 
 " Restore 'cpoptions' {{{
