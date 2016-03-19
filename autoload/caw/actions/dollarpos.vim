@@ -43,6 +43,7 @@ function! s:dollarpos.comment_normal(lnum, ...) abort
     endif
 endfunction
 
+" TODO: Move this to comments.traits.comment_detectable ?
 function! s:get_comment_col(lnum) abort
     let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
@@ -53,7 +54,7 @@ function! s:get_comment_col(lnum) abort
     let cols = []
     let idx  = -1
     while 1
-        let idx = stridx(line, cmt, empty(cols) ? 0 : idx + 1)
+        let idx = stridx(line, cmt, (idx ==# -1 ? 0 : idx + 1))
         if idx == -1
             break
         endif

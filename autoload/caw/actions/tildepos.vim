@@ -83,9 +83,10 @@ function! s:tildepos.comment_visual() abort
 endfunction
 
 function! s:tildepos.has_comment_normal(lnum) abort
-    let line_without_indent = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
     let cmt = caw#new('comments.oneline').get_comment()
-    return !empty(cmt) && stridx(line_without_indent, cmt) == 0
+    if empty(cmt) | return 0 | endif
+    let line_without_indent = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
+    return stridx(line_without_indent, cmt) == 0
 endfunction
 
 function! s:tildepos.uncomment_normal(lnum) abort
