@@ -1,8 +1,8 @@
 scriptencoding utf-8
 
 function! caw#actions#capital_i#new() abort
-    let obj = deepcopy(s:capital_i)
-    let obj = extend(obj, caw#new('actions.small_i'))
+    let obj = deepcopy(caw#new('actions.small_i'))
+    let obj = extend(obj, deepcopy(s:capital_i), 'force')
     return obj
 endfunction
 
