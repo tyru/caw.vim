@@ -23,10 +23,11 @@ function! s:caw_jump_comment(next) abort
         return
     endif
 
+    " Begin a new line and insert
+    " the online comment leader with whitespaces.
+    " And start Insert mode at the end of the inserted line.
     let lnum = caw#context().firstline
     if a:next
-        " Begin a new line and insert
-        " the online comment leader with whitespaces.
         let save_fo = &l:formatoptions
         setlocal formatoptions-=o
         try
@@ -34,12 +35,9 @@ function! s:caw_jump_comment(next) abort
         finally
             let &l:formatoptions = save_fo
         endtry
-        " Start Insert mode at the end of the inserted line.
         call cursor(lnum + 1, 1)
         call caw#startinsert('A')
     else
-        " NOTE: `lnum` is target lnum.
-        " because new line was inserted just now.
         let save_fo = &l:formatoptions
         setlocal formatoptions-=o
         try
@@ -47,7 +45,6 @@ function! s:caw_jump_comment(next) abort
         finally
             let &l:formatoptions = save_fo
         endtry
-        " Start Insert mode at the end of the inserted line.
         call cursor(lnum, 1)
         call caw#startinsert('A')
     endif
