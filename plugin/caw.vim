@@ -82,23 +82,22 @@ delfunction s:def
 " Define default keymappings and <Plug> keymappings. {{{
 
 " NOTE: You can change <Plug>(caw:prefix) to change prefix.
-function! s:define_prefix(lhs) "{{{
+function! s:define_prefix(lhs) abort
     let rhs = '<Plug>(caw:prefix)'
     if !hasmapto(rhs)
         execute 'silent! nmap <unique>' a:lhs rhs
         execute 'silent! xmap <unique>' a:lhs rhs
     endif
-endfunction "}}}
+endfunction
 call s:define_prefix('gc')
 
 
-function! s:map_generic(action, method, ...) "{{{
+function! s:map_generic(action, method, ...) abort
     let has_deprecated_action = has_key(s:deprecated, a:action)
     let lhs = printf('<Plug>(caw:%s:%s)', a:action, a:method)
     let deprecated_lhs = printf('<Plug>(caw:%s:%s)',
     \                       get(s:deprecated, a:action, ''), a:method)
     let modes = get(a:000, 0, 'nx')
-    let sent_action = get(a:000, 1, a:action)
     for mode in split(modes, '\zs')
         execute
         \   mode . 'noremap'
@@ -123,8 +122,9 @@ function! s:map_generic(action, method, ...) "{{{
             \       string(s:deprecated[a:action]))
         endif
     endfor
-endfunction "}}}
-function! s:map_user(lhs, rhs) "{{{
+endfunction
+
+function! s:map_user(lhs, rhs) abort
     let lhs = '<Plug>(caw:prefix)' . a:lhs
     let rhs = printf('<Plug>(caw:%s)', a:rhs)
     for mode in ['n', 'x']
@@ -133,7 +133,7 @@ function! s:map_user(lhs, rhs) "{{{
             \   mode.'map <unique>' lhs rhs
         endif
     endfor
-endfunction "}}}
+endfunction
 
 
 

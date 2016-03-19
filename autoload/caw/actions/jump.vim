@@ -7,17 +7,17 @@ endfunction
 
 let s:jump = {}
 
-function! s:jump.comment_next() dict
+function! s:jump.comment_next() abort
     return call('s:caw_jump_comment', [1], self)
 endfunction
 let s:jump['comment-next'] = s:jump.comment_next
 
-function! s:jump.comment_prev() dict
+function! s:jump.comment_prev() abort
     return call('s:caw_jump_comment', [0], self)
 endfunction
 let s:jump['comment-prev'] = s:jump.comment_prev
 
-function! s:caw_jump_comment(next) dict
+function! s:caw_jump_comment(next) abort
     let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
         return

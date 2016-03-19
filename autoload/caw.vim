@@ -81,41 +81,41 @@ endfunction
 let s:context = {}
 
 " For test.
-function! caw#__set_context__(context)
+function! caw#__set_context__(context) abort
     let s:context = a:context
 endfunction
 
 " For test.
-function! caw#__clear_context__()
+function! caw#__clear_context__() abort
     let s:context = {}
 endfunction
 
-function! caw#context()
+function! caw#context() abort
     return copy(s:context)
 endfunction
 " }}}
 
 " Utilities: Misc. functions. {{{
 
-function s:SID()
+function s:SID() abort
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
 let s:SNR_PREFIX = '<SNR>' . s:SID() . '_'
 delfunc s:SID
 
-function! s:local_func(name)
+function! s:local_func(name) abort
     return function(s:SNR_PREFIX . a:name)
 endfunction
 
 
 
-function! caw#assert(cond, msg)
+function! caw#assert(cond, msg) abort
     if !a:cond
         throw 'caw: assertion failure: ' . a:msg
     endif
 endfunction
 
-function! caw#get_var(varname, ...)
+function! caw#get_var(varname, ...) abort
     for ns in [b:, w:, t:, g:]
         if has_key(ns, a:varname)
             return ns[a:varname]
@@ -130,27 +130,27 @@ function! caw#get_var(varname, ...)
 endfunction
 
 
-function! caw#get_inserted_indent(lnum)
+function! caw#get_inserted_indent(lnum) abort
     return matchstr(caw#getline(a:lnum), '^\s\+')
 endfunction
 
-function! s:get_inserted_indent_num(lnum)
+function! s:get_inserted_indent_num(lnum) abort
     return strlen(caw#get_inserted_indent(a:lnum))
 endfunction
 
-function! s:make_indent_str(indent_byte_num)
+function! s:make_indent_str(indent_byte_num) abort
     return repeat((&expandtab ? ' ' : "\t"), a:indent_byte_num)
 endfunction
 
 
-function! caw#trim_whitespaces(str)
+function! caw#trim_whitespaces(str) abort
     let str = a:str
     let str = substitute(str, '^\s\+', '', '')
     let str = substitute(str, '\s\+$', '', '')
     return str
 endfunction
 
-function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum)
+function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum) abort
     let min_indent_num = 1/0
     for lnum in range(a:from_lnum, a:to_lnum)
         if a:skip_blank_line && caw#getline(lnum) =~ '^\s*$'
@@ -164,7 +164,7 @@ function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum)
     return min_indent_num
 endfunction
 
-function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum)
+function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum) abort
     let left  = 1/0
     let right = 1
     for line in caw#getline(a:from_lnum, a:to_lnum)
@@ -183,7 +183,7 @@ function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum)
     return [left, right]
 endfunction
 
-function! caw#wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col)
+function! caw#wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col) abort
     let l = a:line
     " Save indent.
     let indent = a:left_col >=# 2 ? l[: a:left_col-2] : ''

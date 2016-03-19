@@ -18,6 +18,6 @@ function! s:wrap_multiline.get_comment() abort
     return {}
 endfunction
 
-function! s:wrap_multiline.get_comment_vars()
+function! s:wrap_multiline.get_comment_vars() abort
     return caw#get_var('caw_wrap_multiline_comment', '')
 endfunction

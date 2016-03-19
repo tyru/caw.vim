@@ -76,19 +76,19 @@ function! s:set_and_save_comment_string(comment_string) abort
     let stash = {}
 
     if !exists('b:caw_oneline_comment')
-        function stash.restore()
+        function stash.restore() abort
             unlet b:caw_oneline_comment
         endfunction
     elseif type(b:caw_oneline_comment) != type("")
         let stash.org_value = copy(b:caw_oneline_comment)
-        function stash.restore()
+        function stash.restore() abort
             unlet b:caw_oneline_comment
             let b:caw_oneline_comment = self.org_value
         endfunction
         unlet b:caw_oneline_comment    " to avoid type error at :let below
     else
         let stash.org_value = copy(b:caw_oneline_comment)
-        function stash.restore()
+        function stash.restore() abort
             let b:caw_oneline_comment = self.org_value
         endfunction
     endif

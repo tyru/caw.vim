@@ -25,7 +25,7 @@ endfunction
 
 let s:dollarpos = {'fallback_types': ['wrap']}
 
-function! s:dollarpos.comment_normal(lnum, ...) dict
+function! s:dollarpos.comment_normal(lnum, ...) abort
     let startinsert = a:0 ? a:1 : caw#get_var('caw_dollarpos_startinsert') && caw#context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
@@ -43,7 +43,7 @@ function! s:dollarpos.comment_normal(lnum, ...) dict
     endif
 endfunction
 
-function! s:get_comment_col(lnum)
+function! s:get_comment_col(lnum) abort
     let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
         return -1
@@ -74,11 +74,11 @@ function! s:get_comment_col(lnum)
     return -1
 endfunction
 
-function! s:dollarpos.has_comment_normal(lnum) dict
+function! s:dollarpos.has_comment_normal(lnum) abort
     return s:get_comment_col(a:lnum) > 0
 endfunction
 
-function! s:dollarpos.uncomment_normal(lnum) dict
+function! s:dollarpos.uncomment_normal(lnum) abort
     let cmt = self.comment_database.get_comment()
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
 

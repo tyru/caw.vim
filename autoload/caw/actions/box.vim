@@ -12,7 +12,7 @@ endfunction
 
 let s:box = {}
 
-function! s:box.comment() dict
+function! s:box.comment() abort
     " Get current filetype comments.
     " Use oneline comment for top/bottom comments.
     " Use wrap comment for left/right comments if possible.
