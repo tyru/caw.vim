@@ -100,6 +100,7 @@ INTERFACE								*caw-interface* {{{
 ------------------------------------------------------------------------------
 KEYMAPPINGS								*caw-keymappings* {{{
 
+See |caw-introduction| for how below keymappings work.
 
 (nx) <Plug>(caw:prefix)					*<Plug>(caw:prefix)*
 
@@ -108,14 +109,29 @@ gc					<Plug>(caw:prefix)
 
 NOTE: See |caw-faq-1| for how to change prefix keymapping.
 
-(nx) <Plug>(caw:i:comment)				*<Plug>(caw:i:comment)*
-(nx) <Plug>(caw:a:comment)				*<Plug>(caw:a:comment)*
-(nx) <Plug>(caw:i:toggle)				*<Plug>(caw:i:toggle)*
-(nx) <Plug>(caw:a:toggle)				*<Plug>(caw:a:toggle)*
+		*<Plug>(caw:tildepos:comment)* *<Plug>(caw:i:comment)*
+(nx) <Plug>(caw:tildepos:comment)
+
+	NOTE: An old keymapping was |<Plug>(caw:i:comment)|.
+
+		*<Plug>(caw:dollarpos:comment)* *<Plug>(caw:a:comment)*
+(nx) <Plug>(caw:dollarpos:comment)
+
+	NOTE: An old keymapping was |<Plug>(caw:a:comment)|.
+
+		*<Plug>(caw:tildepos:toggle)* *<Plug>(caw:i:toggle)*
+(nx) <Plug>(caw:tildepos:toggle)
+
+	NOTE: An old keymapping was |<Plug>(caw:i:toggle)|.
+
+		*<Plug>(caw:dollarpos:toggle)* *<Plug>(caw:a:toggle)*
+(nx) <Plug>(caw:dollarpos:toggle)
+
+	NOTE: An old keymapping was |<Plug>(caw:a:toggle)|.
 
 Default mapping		rhs ~
-gci					<Plug>(caw:i:comment)
-gca					<Plug>(caw:a:comment)
+gci					<Plug>(caw:tildepos:comment)
+gca					<Plug>(caw:dollarpos:comment)
 
 
 (nx) <Plug>(caw:wrap:comment)			*<Plug>(caw:wrap:comment)*
@@ -145,12 +161,12 @@ Default mapping		rhs ~
 gcuu				<Plug>(caw:uncomment)
 
 
-(nx) <Plug>(caw:i:uncomment)			*<Plug>(caw:i:uncomment)*
-(nx) <Plug>(caw:a:uncomment)			*<Plug>(caw:a:uncomment)*
+(nx) <Plug>(caw:tildepos:uncomment)			*<Plug>(caw:tildepos:uncomment)*
+(nx) <Plug>(caw:dollarpos:uncomment)			*<Plug>(caw:dollarpos:uncomment)*
 
 Default mapping		rhs ~
-gcui				<Plug>(caw:i:uncomment)
-gcua				<Plug>(caw:a:uncomment)
+gcui				<Plug>(caw:tildepos:uncomment)
+gcua				<Plug>(caw:dollarpos:uncomment)
 
 
 (nx) <Plug>(caw:wrap:uncomment)			*<Plug>(caw:wrap:uncomment)*
@@ -175,58 +191,96 @@ g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
 	caw does not map default keymappings.
 	See |caw-keymappings| for default keymappings.
 
-g:caw_i_sp								*g:caw_i_sp*
+						*g:caw_tildepos_sp* *g:caw_i_sp*
+g:caw_tildepos_sp
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:i:comment).
+	Inserted string after comment with <Plug>(caw:tildepos:comment).
 
-g:caw_i_sp_blank								*g:caw_i_sp_blank*
+	NOTE: An old variable name was |g:caw_i_sp|.
+
+						*g:caw_tildepos_sp_blank* *g:caw_i_sp_blank*
+g:caw_tildepos_sp_blank
 									(Default: "")
-	Inserted string after comment with <Plug>(caw:i:comment).
+	Inserted string after comment with <Plug>(caw:tildepos:comment).
 	but applied only if a current line is blank line.
 
-g:caw_i_startinsert_at_blank_line		*g:caw_i_startinsert_at_blank_line*
+	NOTE: An old variable name was |g:caw_i_sp_blank|.
+
+						*g:caw_tildepos_startinsert_at_blank_line*
+						*g:caw_i_startinsert_at_blank_line*
+g:caw_tildepos_startinsert_at_blank_line
 									(Default: 1)
 	If this variable is true,
 	if current line is blank line,
-	enter |Insert-mode| after <Plug>(caw:i:comment).
+	enter |Insert-mode| after <Plug>(caw:tildepos:comment).
 
-g:caw_i_skip_blank_line					*g:caw_i_skip_blank_line*
+	NOTE: An old variable name was |g:caw_i_startinsert_at_blank_line|.
+
+						*g:caw_tildepos_skip_blank_line*
+						*g:caw_i_skip_blank_line*
+g:caw_tildepos_skip_blank_line
 									(Default: 0)
 
-g:caw_i_align							*g:caw_i_align*
+	TODO
+
+	NOTE: An old variable name was |g:caw_i_skip_blank_line|.
+
+						*g:caw_tildepos_align* *g:caw_i_align*
+g:caw_tildepos_align
 									(Default: 1)
 	If this variable is true,
-	Align all <Plug>(caw:i:comment) comments' cols.
+	Align all <Plug>(caw:tildepos:comment) comments' cols.
 
 	TODO: example
 
-g:caw_I_startinsert_at_blank_line		*g:caw_I_startinsert_at_blank_line*
+	NOTE: An old variable name was |g:caw_i_align|.
+
+						*g:caw_zeropos_startinsert_at_blank_line*
+						*g:caw_I_startinsert_at_blank_line*
+g:caw_zeropos_startinsert_at_blank_line
 									(Default: 1)
 	If this variable is true,
 	if current line is blank line,
-	enter |Insert-mode| after <Plug>(caw:I:comment).
+	enter |Insert-mode| after <Plug>(caw:zeropos:comment).
 
-g:caw_I_sp								*g:caw_I_sp*
+	NOTE: An old variable name was |g:caw_I_startinsert_at_blank_line|.
+
+						*g:caw_zeropos_sp* *g:caw_I_sp*
+g:caw_zeropos_sp
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:I:comment).
+	Inserted string after comment with <Plug>(caw:zeropos:comment).
 
-g:caw_I_sp_blank								*g:caw_I_sp_blank*
+	NOTE: An old variable name was |g:caw_I_sp|.
+
+						*g:caw_zeropos_sp_blank* *g:caw_I_sp_blank*
+g:caw_zeropos_sp_blank
 									(Default: "")
-	Inserted string after comment with <Plug>(caw:I:comment).
+	Inserted string after comment with <Plug>(caw:zeropos:comment).
 	but applied only if a current line is blank line.
 
-g:caw_a_sp_left							*g:caw_a_sp_left*
+	NOTE: An old variable name was |g:caw_I_sp_blank|.
+
+						*g:caw_dollarpos_sp_left* *g:caw_a_sp_left*
+g:caw_dollarpos_sp_left
 									(Default: "    ")
-	Inserted string before comment with <Plug>(caw:a:comment).
+	Inserted string before comment with <Plug>(caw:dollarpos:comment).
 
-g:caw_a_sp_right						*g:caw_a_sp_right*
+	NOTE: An old variable name was |g:caw_a_sp_left|.
+
+						*g:caw_dollarpos_sp_right* *g:caw_a_sp_right*
+g:caw_dollarpos_sp_right
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:a:comment).
+	Inserted string after comment with <Plug>(caw:dollarpos:comment).
 
-g:caw_a_startinsert						*g:caw_a_startinsert*
+	NOTE: An old variable name was |g:caw_a_sp_right|.
+
+						*g:caw_dollarpos_startinsert* *g:caw_a_startinsert*
+g:caw_dollarpos_startinsert
 									(Default: 1)
 	If this variable is true,
-	enter |Insert-mode| after <Plug>(caw:a:comment).
+	enter |Insert-mode| after <Plug>(caw:dollarpos:comment).
+
+	NOTE: An old variable name was |g:caw_a_startinsert|.
 
 g:caw_wrap_sp_left						*g:caw_wrap_sp_left*
 									(Default: " ")
