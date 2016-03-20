@@ -185,6 +185,21 @@ gcuv				<Plug>(caw:input:uncomment)
 ------------------------------------------------------------------------------
 VARIABLES								*caw-variables* {{{
 
+								*caw-variables-scopes*
+NOTE: You can define the following variables in every scope
+for each variable below.
+
+priority	scope ~
+1			buffer-local variable
+2			window-local variable
+3			tabpage-local variable
+4			global variable
+
+For example, you can define buffer-local variable "b:caw_tildepos_sp"
+for |g:caw_tildepos_sp|. The buffer-local variable is read instead of
+its global variable if it is defined.
+
+
 g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
 									(Default: 0)
 	If this variable is true,
