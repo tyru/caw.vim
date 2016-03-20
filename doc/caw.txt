@@ -2,7 +2,7 @@
 
 Author:
   tyru <tyru.exe@gmail.com>
-Version: 1.x.x
+Version: 1.0.0
 License:
 NEW BSD LICENSE {{{
   Copyright (c) 2009, tyru
@@ -374,8 +374,9 @@ CHANGELOG								*caw-changelog* {{{
 
 1.0.0:
 - Initial upload.
-1.0.1:
-- Fix bug that CommentAnyWay.Base.GetIndent() can't get proper indent
+
+See below for the more previous releases (CommentAnyWay.vim).
+http://www.vim.org/scripts/script.php?script_id=2554
 
 }}}
 ==============================================================================
