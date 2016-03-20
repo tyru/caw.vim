@@ -26,6 +26,16 @@ function! caw#keymapping_stub(mode, action, method) abort
     let s:context = context
     lockvar! s:context
 
+    " Context filetype support.
+    " https://github.com/Shougo/context_filetype.vim
+    if exists('*context_filetype#get_filetype')
+        let conft = context_filetype#get_filetype()
+        if conft !=# &l:filetype
+            let old_filetype = &l:filetype
+            let &l:filetype = conft
+        endif
+    endif
+
     try
         let actions = [caw#new('actions.' . a:action)]
 
@@ -60,6 +70,9 @@ function! caw#keymapping_stub(mode, action, method) abort
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
     finally
+        if exists('old_filetype')
+            let &l:filetype = old_filetype
+        endif
         " Free context.
         unlockvar! s:context
         let s:context = {}
