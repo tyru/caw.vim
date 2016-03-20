@@ -18,11 +18,12 @@ function! s:oneline.get_comment() abort
     return ''
 endfunction
 
-function! s:oneline.get_comment_vars()
+function! s:oneline.get_comment_vars() abort
     return caw#get_var('caw_oneline_comment', '')
 endfunction
 
-function! s:oneline.get_comment_detect()
+" XXX: Should see 'comments' rather than 'commentstring'?
+function! s:oneline.get_comment_detect() abort
     let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
     if !empty(m) && m[1] !=# '' && m[2] ==# ''
         return m[1]

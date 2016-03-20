@@ -15,8 +15,9 @@ let s:comment_detectable = {}
 " - Derived.has_comment_normal()
 
 function! s:comment_detectable.has_comment() abort
-    if caw#context().mode ==# 'n'
-        return self.has_comment_normal(line('.'))
+    let context = caw#context()
+    if context.mode ==# 'n'
+        call self.has_comment_normal(context.firstline)
     else
         return self.has_comment_visual()
     endif
@@ -41,7 +42,7 @@ function! s:comment_detectable.has_all_comment() abort
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if getline(lnum) !~# '^\s*$' && !self.has_comment_normal(lnum)
+        if caw#getline(lnum) !~# '^\s*$' && !self.has_comment_normal(lnum)
             return 0
         endif
     endfor

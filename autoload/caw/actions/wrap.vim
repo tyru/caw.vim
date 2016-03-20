@@ -16,13 +16,13 @@ function! caw#actions#wrap#new() abort
     let obj.has_all_comment = comment_detectable.has_all_comment
     let obj.toggle = togglable.toggle
     " Import comment database.
-    let obj.comment_database = caw#new('comments.wrap_multiline')
+    let obj.comment_database = caw#new('comments.wrap_oneline')
 
     return obj
 endfunction
 
 
-let s:wrap = {'fallback_types': ['small_i']}
+let s:wrap = {'fallback_types': ['tildepos']}
 
 function! s:wrap.comment_normal(lnum, ...) abort
     let left_col = get(a:000, 0, -1)
@@ -32,11 +32,11 @@ function! s:wrap.comment_normal(lnum, ...) abort
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
     if caw#context().mode ==# 'n'
     \   && caw#get_var('caw_wrap_skip_blank_line')
-    \   && getline(a:lnum) =~# '^\s*$'
+    \   && caw#getline(a:lnum) =~# '^\s*$'
         return
     endif
 
-    let line = getline(a:lnum)
+    let line = caw#getline(a:lnum)
     let [left_cmt, right_cmt] = cmt
     if left_col > 0 && right_col > 0
         let line = caw#wrap_comment_align(
@@ -45,7 +45,7 @@ function! s:wrap.comment_normal(lnum, ...) abort
         \   caw#get_var("caw_wrap_sp_right") . right_cmt,
         \   left_col,
         \   right_col)
-        call setline(a:lnum, line)
+        call caw#setline(a:lnum, line)
     else
         let line = substitute(line, '^\s\+', '', '')
         if left_cmt != ''
@@ -55,7 +55,7 @@ function! s:wrap.comment_normal(lnum, ...) abort
             let line = line . caw#get_var('caw_wrap_sp_right') . right_cmt
         endif
         let line = caw#get_inserted_indent(a:lnum) . line
-        call setline(a:lnum, line)
+        call caw#setline(a:lnum, line)
     endif
 endfunction
 
@@ -83,10 +83,10 @@ function! s:wrap.comment_visual() abort
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if caw#get_var('caw_wrap_skip_blank_line') && getline(lnum) =~ '^\s*$'
+        if caw#get_var('caw_wrap_skip_blank_line') && caw#getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
-        if caw#get_var('caw_wrap_align')
+        if exists('left_col') && exists('right_col')
             call self.comment_normal(lnum, left_col, right_col)
         else
             call self.comment_normal(lnum)
@@ -134,7 +134,7 @@ function! s:wrap.has_comment_normal(lnum) abort
         return 0
     endif
 
-    let line = caw#trim_whitespaces(getline(a:lnum))
+    let line = caw#trim_whitespaces(caw#getline(a:lnum))
 
     " line begins with left, ends with right.
     let [left, right] = cmt
@@ -147,7 +147,7 @@ function! s:wrap.uncomment_normal(lnum) abort
     let cmt = caw#new('comments.wrap_oneline').get_comment()
     if !empty(cmt) && self.has_comment_normal(a:lnum)
         let [left, right] = cmt
-        let line = caw#trim_whitespaces(getline(a:lnum))
+        let line = caw#trim_whitespaces(caw#getline(a:lnum))
 
         if left != '' && line[: strlen(left) - 1] ==# left
             let line = line[strlen(left) :]
@@ -158,6 +158,6 @@ function! s:wrap.uncomment_normal(lnum) abort
 
         let indent = caw#get_inserted_indent(a:lnum)
         let line = caw#trim_whitespaces(line)
-        call setline(a:lnum, indent . line)
+        call caw#setline(a:lnum, indent . line)
     endif
 endfunction

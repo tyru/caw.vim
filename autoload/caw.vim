@@ -8,7 +8,10 @@ set cpo&vim
 
 
 "caw#keymapping_stub(): All keymappings are bound to this function. {{{
-function! caw#keymapping_stub(mode, action, method)
+" Call actions' methods until it succeeded
+" (currently seeing b:changedtick but it is bad idea)
+function! caw#keymapping_stub(mode, action, method) abort
+    " Set up context.
     let context = {}
     let context.mode = a:mode
     let context.visualmode = visualmode()
@@ -19,16 +22,11 @@ function! caw#keymapping_stub(mode, action, method)
         let context.firstline = line("'<")
         let context.lastline  = line("'>")
     endif
-    if exists('*context_filetype#get_filetype')
-        let context.filetype = context_filetype#get_filetype()
-    else
-        let context.filetype = &filetype
-    endif
-    let context.count = v:count1
-    call s:set_context(context)
+    unlockvar! s:context
+    let s:context = context
+    lockvar! s:context
 
     try
-        " TODO: Check the action exists.
         let actions = [caw#new('actions.' . a:action)]
 
         " TODO:
@@ -62,44 +60,62 @@ function! caw#keymapping_stub(mode, action, method)
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
     finally
-        call s:set_context({})    " free context.
+        " Free context.
+        unlockvar! s:context
+        let s:context = {}
     endtry
+endfunction
+
+function! caw#keymapping_stub_deprecated(mode, action, method, old_action) abort
+    let oldmap = printf('<Plug>(caw:%s:%s)', a:old_action, a:method)
+    let newmap = printf('<Plug>(caw:%s:%s)', a:action, a:method)
+    echohl WarningMsg
+    echomsg oldmap . ' was deprecated. please use ' . newmap . ' instead.'
+    echohl None
+
+    return caw#keymapping_stub(a:mode, a:action, a:method)
 endfunction
 " }}}
 
 " Context: context while invoking keymapping. {{{
 let s:context = {}
-function! s:set_context(context)
-    unlockvar! s:context
+
+" For test.
+function! caw#__set_context__(context) abort
     let s:context = a:context
-    lockvar! s:context
 endfunction
-function! caw#context()
-    return s:context
+
+" For test.
+function! caw#__clear_context__() abort
+    let s:context = {}
+endfunction
+
+function! caw#context() abort
+    return copy(s:context)
 endfunction
 " }}}
 
 " Utilities: Misc. functions. {{{
 
-function s:SID()
+function s:SID() abort
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
 let s:SNR_PREFIX = '<SNR>' . s:SID() . '_'
 delfunc s:SID
 
-function! s:local_func(name)
+function! s:local_func(name) abort
     return function(s:SNR_PREFIX . a:name)
 endfunction
 
 
 
-function! caw#assert(cond, msg)
+function! caw#assert(cond, msg) abort
     if !a:cond
         throw 'caw: assertion failure: ' . a:msg
     endif
 endfunction
 
-function! caw#get_var(varname, ...)
+function! caw#get_var(varname, ...) abort
     for ns in [b:, w:, t:, g:]
         if has_key(ns, a:varname)
             return ns[a:varname]
@@ -108,35 +124,36 @@ function! caw#get_var(varname, ...)
     if a:0
         return a:1
     else
-        call caw#assert(0, "caw#get_var(): this must be reached")
+        call caw#assert(0, "caw#get_var(" . string(a:varname) . "):"
+        \                . " this must be reached!")
     endif
 endfunction
 
 
-function! caw#get_inserted_indent(lnum)
-    return matchstr(getline(a:lnum), '^\s\+')
+function! caw#get_inserted_indent(lnum) abort
+    return matchstr(caw#getline(a:lnum), '^\s\+')
 endfunction
 
-function! s:get_inserted_indent_num(lnum)
+function! s:get_inserted_indent_num(lnum) abort
     return strlen(caw#get_inserted_indent(a:lnum))
 endfunction
 
-function! s:make_indent_str(indent_byte_num)
+function! caw#make_indent_str(indent_byte_num) abort
     return repeat((&expandtab ? ' ' : "\t"), a:indent_byte_num)
 endfunction
 
 
-function! caw#trim_whitespaces(str)
+function! caw#trim_whitespaces(str) abort
     let str = a:str
     let str = substitute(str, '^\s\+', '', '')
     let str = substitute(str, '\s\+$', '', '')
     return str
 endfunction
 
-function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum)
+function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum) abort
     let min_indent_num = 1/0
     for lnum in range(a:from_lnum, a:to_lnum)
-        if a:skip_blank_line && getline(lnum) =~ '^\s*$'
+        if a:skip_blank_line && caw#getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
         let n = s:get_inserted_indent_num(lnum)
@@ -147,10 +164,10 @@ function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum)
     return min_indent_num
 endfunction
 
-function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum)
+function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum) abort
     let left  = 1/0
     let right = 1
-    for line in getline(a:from_lnum, a:to_lnum)
+    for line in caw#getline(a:from_lnum, a:to_lnum)
         if a:skip_blank_line && line =~ '^\s*$'
             continue    " Skip blank line.
         endif
@@ -166,7 +183,7 @@ function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum)
     return [left, right]
 endfunction
 
-function! caw#wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col)
+function! caw#wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col) abort
     let l = a:line
     " Save indent.
     let indent = a:left_col >=# 2 ? l[: a:left_col-2] : ''
@@ -189,34 +206,89 @@ function! caw#wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col)
 endfunction
 
 
-" TODO: newer globpath() can return List.
-function! s:globpath(path, expr) abort
-    return split(globpath(a:path, a:expr, 1), '\n')
-endfunction
-
 " '.../autoload/caw'
 let s:root_dir = expand('<sfile>:h') . '/caw'
+" s:modules[module_name][cache_key]
+" cache_key = string(a:000)
 let s:modules = {}
-function! caw#new(module, ...) abort
+
+function! caw#load(name) abort
     " If the module is already loaded, return it.
-    let id = a:module . '|' . string(a:000)
-    if has_key(s:modules, id)
-        return copy(s:modules[id])
+    if has_key(s:modules, a:name)
+        return
     endif
-    " Load file
-    let file = tr(a:module, '.', '/') . '.vim'
+    " Load script file.
+    let file = tr(a:name, '.', '/') . '.vim'
     source `=s:root_dir.'/'.file`
-    " Call depends() function
-    let depends = 'caw#' . tr(a:module, '.', '#') . '#depends'
+    " Call depends() function.
+    let depends = 'caw#' . tr(a:name, '.', '#') . '#depends'
     if exists('*'.depends)
         for module in call(depends, [])
-            call caw#new(module)
+            call caw#load(module)
         endfor
     endif
-    " Call new() function
-    let constructor = 'caw#' . tr(a:module, '.', '#') . '#new'
-    let s:modules[id] = call(constructor, a:000)
-    return copy(s:modules[id])
+    let s:modules[a:name] = {}
+endfunction
+
+function! caw#new(name, ...) abort
+    let id = string(a:000)
+    if has_key(s:modules, a:name) && has_key(s:modules[a:name], id)
+        return copy(s:modules[a:name][id])
+    endif
+    call caw#load(a:name)
+    " Call new() function.
+    let constructor = 'caw#' . tr(a:name, '.', '#') . '#new'
+    let s:modules[a:name][id] = call(constructor, a:000)
+    return copy(s:modules[a:name][id])
+endfunction
+
+function! caw#__inject_for_test__(name, mock, ...) abort
+    let id = string(a:000)
+    let s:modules[a:name][id] = copy(a:mock)
+endfunction
+
+
+" For vmock#mock()
+function! caw#getline(...) abort
+    return call('getline', a:000)
+endfunction
+
+" For vmock#mock()
+function! caw#setline(...) abort
+    return call('setline', a:000)
+endfunction
+
+" For vmock#mock()
+function! caw#startinsert(pos) abort
+    if index(['i', 'A'], a:pos) is -1
+        throw 'caw: caw#startinsert(): '
+        \   . 'a:pos = ' . string(a:pos) . ' is invalid.'
+    endif
+    if a:pos ==# 'i'
+        startinsert
+    else
+        startinsert!
+    endif
+endfunction
+
+" For vmock#mock()
+function! caw#synstack(...) abort
+    return call('synstack', a:000)
+endfunction
+
+" For vmock#mock()
+function! caw#synIDattr(...) abort
+    return call('synIDattr', a:000)
+endfunction
+
+" For vmock#mock()
+function! caw#append(...) abort
+    return call('append', a:000)
+endfunction
+
+" For vmock#mock()
+function! caw#cursor(...) abort
+    return call('cursor', a:000)
 endfunction
 
 " }}}

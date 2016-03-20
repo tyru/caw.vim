@@ -1,5 +1,5 @@
 
-function! s:oneline()
+function! s:oneline() abort
     return {
     \   'aap': '#',
     \   'abc': '%',
@@ -296,7 +296,7 @@ function! s:oneline()
     \}
 endfunction
 
-function! s:wrap_oneline()
+function! s:wrap_oneline() abort
     return {
     \   'aap': ['/*', '*/'],
     \   'actionscript': ['/*', '*/'],
@@ -383,7 +383,7 @@ function! s:wrap_oneline()
     \}
 endfunction
 
-function! s:wrap_multiline()
+function! s:wrap_multiline() abort
     return {
     \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
     \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
@@ -395,6 +395,8 @@ endfunction
 
 
 let s:root_dir = expand('<sfile>:h:h')
+
+" @vimlint(EVL102, 1, l:vars)
 function! s:run() abort
     let oneline = s:oneline()
     let wrap_oneline = s:wrap_oneline()
@@ -436,6 +438,7 @@ function! s:run() abort
         write
     endfor
 endfunction
+" @vimlint(EVL102, 0, l:vars)
 
 call s:run()
 " quit

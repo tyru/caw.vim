@@ -13,97 +13,91 @@ set cpo&vim
 " }}}
 
 
+" key: current action name, value: old action name
+let s:deprecated = {
+\   'tildepos': 'i',
+\   'zeropos': 'I',
+\   'dollarpos': 'a',
+\}
+
 " Global variables {{{
-if !exists('g:caw_no_default_keymappings')
-    let g:caw_no_default_keymappings = 0
-endif
+let g:caw_no_default_keymappings = get(g:, 'caw_no_default_keymappings', 0)
+" If a old variable exists, show deprecation message
+" and set the value to a new variable.
+function! s:def_deprecated(name, value) abort
+    let m = matchlist(a:name, '\v^caw_(tildepos|zeropos|dollarpos)')
+    if !empty(m)
+        let oldvarname = substitute(
+        \   a:name, '^caw_' . m[1], 'caw_' . s:deprecated[m[1]], ''
+        \)
+        if has_key(g:, oldvarname)
+            echohl WarningMsg
+            echomsg printf('g:%s is deprecated. please use g:%s instead.', oldvarname, a:name)
+            echohl None
+            let g:[a:name] = g:[oldvarname]
+        else
+            let g:[a:name] = get(g:, a:name, a:value)
+        endif
+    else
+        let g:[a:name] = get(g:, a:name, a:value)
+    endif
+endfunction
 
-if !exists('g:caw_i_sp')
-    let g:caw_i_sp = ' '
-endif
-if !exists('g:caw_i_sp_blank')
-    let g:caw_i_sp_blank = ''
-endif
-if !exists('g:caw_i_startinsert_at_blank_line')
-    let g:caw_i_startinsert_at_blank_line = 1
-endif
-if !exists('g:caw_i_skip_blank_line')
-    let g:caw_i_skip_blank_line = 0
-endif
-if !exists('g:caw_i_align')
-    let g:caw_i_align = 1
-endif
+function! s:def(name, value) abort
+    let g:[a:name] = get(g:, a:name, a:value)
+endfunction
 
-if !exists('g:caw_I_sp')
-    let g:caw_I_sp = ' '
-endif
-if !exists('g:caw_I_sp_blank')
-    let g:caw_I_sp_blank = ''
-endif
-if !exists('g:caw_I_startinsert_at_blank_line')
-    let g:caw_I_startinsert_at_blank_line = 1
-endif
-if !exists('g:caw_I_skip_blank_line')
-    let g:caw_I_skip_blank_line = 0
-endif
+call s:def_deprecated('caw_tildepos_sp', ' ')
+call s:def_deprecated('caw_tildepos_sp_blank', '')
+call s:def_deprecated('caw_tildepos_startinsert_at_blank_line', 1)
+call s:def_deprecated('caw_tildepos_skip_blank_line', 0)
+call s:def_deprecated('caw_tildepos_align', 1)
 
-if !exists('g:caw_a_sp_left')
-    let g:caw_a_sp_left = repeat(' ', 4)
-endif
-if !exists('g:caw_a_sp_right')
-    let g:caw_a_sp_right = ' '
-endif
-if !exists('g:caw_a_startinsert')
-    let g:caw_a_startinsert = 1
-endif
+call s:def_deprecated('caw_zeropos_sp', ' ')
+call s:def_deprecated('caw_zeropos_sp_blank', '')
+call s:def_deprecated('caw_zeropos_startinsert_at_blank_line', 1)
+call s:def_deprecated('caw_zeropos_skip_blank_line', 0)
 
-if !exists('g:caw_wrap_sp_left')
-    let g:caw_wrap_sp_left = ' '
-endif
-if !exists('g:caw_wrap_sp_right')
-    let g:caw_wrap_sp_right = ' '
-endif
-if !exists('g:caw_wrap_skip_blank_line')
-    let g:caw_wrap_skip_blank_line = 1
-endif
-if !exists('g:caw_wrap_align')
-    let g:caw_wrap_align = 1
-endif
+call s:def_deprecated('caw_dollarpos_sp_left', repeat(' ', 4))
+call s:def_deprecated('caw_dollarpos_sp_right', ' ')
+call s:def_deprecated('caw_dollarpos_startinsert', 1)
 
-if !exists('g:caw_jump_sp')
-    let g:caw_jump_sp = ' '
-endif
+call s:def('caw_wrap_sp_left', ' ')
+call s:def('caw_wrap_sp_right', ' ')
+call s:def('caw_wrap_skip_blank_line', 1)
+call s:def('caw_wrap_align', 1)
 
-if !exists('g:caw_box_sp_left')
-    let g:caw_box_sp_left = ' '
-endif
-if !exists('g:caw_box_sp_right')
-    let g:caw_box_sp_right = ' '
-endif
+call s:def('caw_jump_sp', ' ')
 
-if !exists('g:caw_find_another_action')
-    let g:caw_find_another_action = 1
-endif
+call s:def('caw_box_sp_left', ' ')
+call s:def('caw_box_sp_right', ' ')
+
+call s:def('caw_find_another_action', 1)
+
+delfunction s:def_deprecated
+delfunction s:def
 " }}}
 
 
-" Define default <Plug> keymapping. {{{
+" Define default keymappings and <Plug> keymappings. {{{
 
 " NOTE: You can change <Plug>(caw:prefix) to change prefix.
-function! s:define_prefix(lhs) "{{{
+function! s:define_prefix(lhs) abort
     let rhs = '<Plug>(caw:prefix)'
     if !hasmapto(rhs)
         execute 'silent! nmap <unique>' a:lhs rhs
         execute 'silent! xmap <unique>' a:lhs rhs
     endif
-endfunction "}}}
+endfunction
 call s:define_prefix('gc')
 
 
-function! s:map_generic(action, method, ...) "{{{
+function! s:map_generic(action, method, ...) abort
+    let has_deprecated_action = has_key(s:deprecated, a:action)
     let lhs = printf('<Plug>(caw:%s:%s)', a:action, a:method)
+    let deprecated_lhs = printf('<Plug>(caw:%s:%s)',
+    \                       get(s:deprecated, a:action, ''), a:method)
     let modes = get(a:000, 0, 'nx')
-    let sent_action = get(a:000, 1, a:action)
     for mode in split(modes, '\zs')
         execute
         \   mode . 'noremap'
@@ -112,11 +106,25 @@ function! s:map_generic(action, method, ...) "{{{
         \   printf(
         \       ':<C-u>call caw#keymapping_stub(%s, %s, %s)<CR>',
         \       string(mode),
-        \       string(sent_action),
+        \       string(a:action),
         \       string(a:method))
+        if has_deprecated_action
+            execute
+            \   mode . 'noremap'
+            \   '<silent>'
+            \   deprecated_lhs
+            \   printf(
+            \       ':<C-u>call caw#keymapping_stub_deprecated'
+            \                       . '(%s, %s, %s, %s)<CR>',
+            \       string(mode),
+            \       string(a:action),
+            \       string(a:method),
+            \       string(s:deprecated[a:action]))
+        endif
     endfor
-endfunction "}}}
-function! s:map_user(lhs, rhs) "{{{
+endfunction
+
+function! s:map_user(lhs, rhs) abort
     let lhs = '<Plug>(caw:prefix)' . a:lhs
     let rhs = printf('<Plug>(caw:%s)', a:rhs)
     for mode in ['n', 'x']
@@ -125,41 +133,41 @@ function! s:map_user(lhs, rhs) "{{{
             \   mode.'map <unique>' lhs rhs
         endif
     endfor
-endfunction "}}}
+endfunction
 
 
 
-" i {{{
-call s:map_generic('i', 'comment', 'nx', 'small_i')
-call s:map_generic('i', 'uncomment', 'nx', 'small_i')
-call s:map_generic('i', 'toggle', 'nx', 'small_i')
+" tildepos {{{
+call s:map_generic('tildepos', 'comment', 'nx')
+call s:map_generic('tildepos', 'uncomment', 'nx')
+call s:map_generic('tildepos', 'toggle', 'nx')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('i', 'i:comment')
-    call s:map_user('ui', 'i:uncomment')
-    call s:map_user('c', 'i:toggle')
+    call s:map_user('i', 'tildepos:comment')
+    call s:map_user('ui', 'tildepos:uncomment')
+    call s:map_user('c', 'tildepos:toggle')
 endif
 " }}}
 
-" I {{{
-call s:map_generic('I', 'comment', 'nx', 'capital_i')
-call s:map_generic('I', 'uncomment', 'nx', 'capital_i')
-call s:map_generic('I', 'toggle', 'nx', 'capital_i')
+" zeropos {{{
+call s:map_generic('zeropos', 'comment', 'nx')
+call s:map_generic('zeropos', 'uncomment', 'nx')
+call s:map_generic('zeropos', 'toggle', 'nx')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('I', 'I:comment')
-    call s:map_user('uI', 'I:uncomment')
+    call s:map_user('I', 'zeropos:comment')
+    call s:map_user('uI', 'zeropos:uncomment')
 endif
 " }}}
 
-" a {{{
-call s:map_generic('a', 'comment')
-call s:map_generic('a', 'uncomment')
-call s:map_generic('a', 'toggle')
+" dollarpos {{{
+call s:map_generic('dollarpos', 'comment')
+call s:map_generic('dollarpos', 'uncomment')
+call s:map_generic('dollarpos', 'toggle')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('a', 'a:comment')
-    call s:map_user('ua', 'a:uncomment')
+    call s:map_user('a', 'dollarpos:comment')
+    call s:map_user('ua', 'dollarpos:uncomment')
 endif
 " }}}
 
@@ -205,6 +213,7 @@ endif
 
 " Cleanup {{{
 
+unlet s:deprecated
 delfunction s:define_prefix
 delfunction s:map_generic
 delfunction s:map_user
