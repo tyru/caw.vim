@@ -3,6 +3,10 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
+if exists("b:did_caw_ftplugin")
+    finish
+endif
+
 <ONELINE>
 <WRAP_ONELINE>
 <WRAP_MULTILINE>
@@ -12,6 +16,8 @@ if exists('b:undo_ftplugin')
 else
   let b:undo_ftplugin = ''
 endif
-<UNDO_FTPLUGIN>
+let b:undo_ftplugin .= 'unlet! b:caw_oneline_comment b:caw_wrap_oneline_comment b:caw_wrap_multiline_comment'
+
+let b:did_caw_ftplugin = 1
 
 let &cpo = s:save_cpo

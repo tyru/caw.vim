@@ -396,7 +396,6 @@ endfunction
 
 let s:root_dir = expand('<sfile>:h:h')
 
-" @vimlint(EVL102, 1, l:vars)
 function! s:run() abort
     let oneline = s:oneline()
     let wrap_oneline = s:wrap_oneline()
@@ -408,37 +407,35 @@ function! s:run() abort
         " Create /after/ftplugin/{filetype}/caw.vim
         let dir = s:root_dir . '/after/ftplugin/'.filetype
         silent! call mkdir(dir, 'p')
-        edit `=dir.'/caw.vim'`
-        %delete _
-        read macros/after-ftplugin-template.vim
-        1delete _
-        let vars = []
+        silent edit `=dir.'/caw.vim'`
+        silent %delete _
+        silent read macros/after-ftplugin-template.vim
+        silent 1delete _
 
+        " b:caw_oneline_comment
         if has_key(oneline, filetype)
             %s@<ONELINE>@\='let b:caw_oneline_comment = '.string(oneline[filetype])@
-            let vars += ['b:caw_oneline_comment']
         else
             g/<ONELINE>/d
         endif
+
+        " b:caw_wrap_oneline_comment
         if has_key(wrap_oneline, filetype)
             %s@<WRAP_ONELINE>@\='let b:caw_wrap_oneline_comment = '.string(wrap_oneline[filetype])@
-            let vars += ['b:caw_wrap_oneline_comment']
         else
             g/<WRAP_ONELINE>/d
         endif
+
+        " b:caw_wrap_multiline_comment
         if has_key(wrap_multiline, filetype)
             %s@<WRAP_MULTILINE>@\='let b:caw_wrap_multiline_comment = '.string(wrap_multiline[filetype])@
-            let vars += ['b:caw_wrap_multiline_comment']
         else
             g/<WRAP_MULTILINE>/d
         endif
 
-        %s@<UNDO_FTPLUGIN>@\='let b:undo_ftplugin .= ''unlet '.join(vars, ' ')."'"@
-
         write
     endfor
 endfunction
-" @vimlint(EVL102, 0, l:vars)
 
 call s:run()
 " quit
