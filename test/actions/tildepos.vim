@@ -13,6 +13,7 @@ let s:NORMAL_MODE_CONTEXT = {
 function! s:suite.before() abort
     " Load filetype=c comment strings.
     " setlocal filetype=c    " XXX: Why this isn't working?
+    unlet! b:did_caw_ftplugin
     runtime! after/ftplugin/c/caw.vim
 endfunction
 
