@@ -19,9 +19,9 @@ install:
       [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
       $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
   # themis
-  - 'git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5 --single-branch --depth 1 %TEMP%\vim-themis'
+  - 'git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5.1 --single-branch --depth 1 %TEMP%\vim-themis'
   # vmock
-  - 'git -c advice.detachedHead=false clone https://github.com/kannokanno/vmock --quiet --single-branch --depth 1 %TEMP%\vmock'
+  - 'git -c advice.detachedHead=false clone https://github.com/tyru/vmock --quiet --branch maint --depth 1 %TEMP%\vmock'
   # https://groups.google.com/forum/#!msg/vim_dev/3AkHqiD1NLE/vFw52yh_AAAJ
   - 'reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:32'
   - 'reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:64'
@@ -29,5 +29,5 @@ build: off
 test_script:
   - ps: |
       & $Env:THEMIS_VIM --version
-      & $Env:TEMP\vim-themis\bin\themis.bat -r --runtimepath %TEMP%\vmock --reporter dot
+      & $Env:TEMP\vim-themis\bin\themis.bat -r --runtimepath $Env:TEMP\vmock --reporter dot
 deploy: off
