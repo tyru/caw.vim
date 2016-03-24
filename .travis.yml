@@ -2,7 +2,7 @@ before_script:
   - git clone https://github.com/syngan/vim-vimlint /tmp/vim-vimlint
   - git clone https://github.com/ynkdir/vim-vimlparser /tmp/vim-vimlparser
   - git clone https://github.com/kannokanno/vmock /tmp/vmock
-  - git clone https://github.com/thinca/vim-themis --branch v1.5 --single-branch --depth 1 /tmp/vim-themis
+  - git clone https://github.com/thinca/vim-themis --branch v1.5.1 --single-branch --depth 1 /tmp/vim-themis
 
 script:
   - which -a vim
