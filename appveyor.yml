@@ -29,5 +29,5 @@ build: off
 test_script:
   - ps: |
       & $Env:THEMIS_VIM --version
-      & $Env:TEMP\vim-themis\bin\themis.bat -r --runtimepath %TEMP%\vmock --reporter dot
+      & $Env:TEMP\vim-themis\bin\themis.bat -r --runtimepath $Env:TEMP\vmock --reporter dot
 deploy: off
