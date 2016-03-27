@@ -98,10 +98,7 @@ call s:define_prefix('gc')
 
 
 function! s:map_generic(action, method, ...) abort
-    let has_deprecated_action = has_key(s:deprecated, a:action)
     let lhs = printf('<Plug>(caw:%s:%s)', a:action, a:method)
-    let deprecated_lhs = printf('<Plug>(caw:%s:%s)',
-    \                       get(s:deprecated, a:action, ''), a:method)
     let modes = get(a:000, 0, 'nx')
     for mode in split(modes, '\zs')
         execute
@@ -113,19 +110,19 @@ function! s:map_generic(action, method, ...) abort
         \       string(mode),
         \       string(a:action),
         \       string(a:method))
-        if has_deprecated_action
+        for deprecated_action in get(s:deprecated, a:action, [])
             execute
             \   mode . 'noremap'
             \   '<silent>'
-            \   deprecated_lhs
+            \   printf('<Plug>(caw:%s:%s)', deprecated_action, a:method)
             \   printf(
             \       ':<C-u>call caw#keymapping_stub_deprecated'
             \                       . '(%s, %s, %s, %s)<CR>',
             \       string(mode),
             \       string(a:action),
             \       string(a:method),
-            \       string(s:deprecated[a:action]))
-        endif
+            \       string(deprecated_action))
+        endfor
     endfor
 endfunction
 
