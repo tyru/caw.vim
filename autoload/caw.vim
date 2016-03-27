@@ -88,6 +88,15 @@ function! caw#keymapping_stub_deprecated(mode, action, method, old_action) abort
 
     return caw#keymapping_stub(a:mode, a:action, a:method)
 endfunction
+
+function! caw#operator_wrap_toggle(motion_wise) abort
+    if a:motion_wise == 'char'
+        execute "normal `[v`]\<Plug>(caw:wrap:toggle)"
+    else
+        execute "normal `[V`]\<Plug>(caw:wrap:toggle)"
+    endif
+endfunction
+
 " }}}
 
 " Context: context while invoking keymapping. {{{

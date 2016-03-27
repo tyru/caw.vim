@@ -212,6 +212,13 @@ if !g:caw_no_default_keymappings
 endif
 " }}}
 
+" operator {{{
+try
+    call operator#user#define('caw_wrap_toggle', 'caw#operator_wrap_toggle')
+catch /^Vim\%((\a\+)\)\=:E117/
+    " vim-operator-user is not installed
+endtry
+" }}}
 
 " Cleanup {{{
 
