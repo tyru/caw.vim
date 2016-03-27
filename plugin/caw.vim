@@ -212,7 +212,7 @@ endif
 
 " operator {{{
 try
-    call operator#user#define('caw', 'caw#operator_wrap')
+    call operator#user#define('caw_wrap_toggle', 'caw#operator_wrap_toggle')
 catch /^Vim\%((\a\+)\)\=:E117/
     " vim-operator-user is not installed
 endtry
