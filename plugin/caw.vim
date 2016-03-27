@@ -210,6 +210,9 @@ if !g:caw_no_default_keymappings
 endif
 " }}}
 
+" operator {{{
+silent! call operator#user#define('caw', 'caw#operator_wrap')
+" }}}
 
 " Cleanup {{{
 
