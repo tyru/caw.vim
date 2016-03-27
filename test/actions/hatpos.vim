@@ -1,6 +1,6 @@
 scriptencoding utf-8
 
-let s:suite = themis#suite('actions.tildepos')
+let s:suite = themis#suite('actions.hatpos')
 let s:assert = themis#helper('assert')
 
 let s:NORMAL_MODE_CONTEXT = {
@@ -18,7 +18,7 @@ function! s:suite.before() abort
 endfunction
 
 function! s:suite.before_each() abort
-    let s:tildepos = caw#new('actions.tildepos')
+    let s:hatpos = caw#new('actions.hatpos')
 endfunction
 
 function! s:suite.after_each() abort
@@ -37,7 +37,7 @@ function! s:suite.comment() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '//')
-    call s:tildepos.comment()
+    call s:hatpos.comment()
 endfunction
 
 function! s:suite.comment_indent() abort
@@ -49,7 +49,7 @@ function! s:suite.comment_indent() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '//')
-    call s:tildepos.comment()
+    call s:hatpos.comment()
 endfunction
 
 function! s:suite.uncomment() abort
@@ -61,7 +61,7 @@ function! s:suite.uncomment() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '//')
-    call s:tildepos.uncomment()
+    call s:hatpos.uncomment()
 endfunction
 
 function! s:suite.uncomment_indent() abort
@@ -73,7 +73,7 @@ function! s:suite.uncomment_indent() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '//')
-    call s:tildepos.uncomment()
+    call s:hatpos.uncomment()
 endfunction
 
 function! s:suite.uncomment_no_spaces() abort
@@ -85,5 +85,5 @@ function! s:suite.uncomment_no_spaces() abort
     call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
 
     call s:assert.equals(b:caw_oneline_comment, '//')
-    call s:tildepos.uncomment()
+    call s:hatpos.uncomment()
 endfunction
