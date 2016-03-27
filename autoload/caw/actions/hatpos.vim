@@ -39,7 +39,7 @@ function! s:hatpos.comment_normal(lnum, ...) abort
 
     if min_indent_num >= 0
         if min_indent_num > strlen(line)
-            call caw#setline(a:lnum, s:make_indent_str(min_indent_num))
+            call caw#setline(a:lnum, caw#make_indent_str(min_indent_num))
             let line = caw#getline(a:lnum)
         endif
         call caw#assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
