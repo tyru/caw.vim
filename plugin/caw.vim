@@ -15,27 +15,32 @@ set cpo&vim
 
 " key: current action name, value: old action name
 let s:deprecated = {
-\   'tildepos': 'i',
-\   'zeropos': 'I',
-\   'dollarpos': 'a',
+\   'hatpos': ['i', 'tildepos'],
+\   'zeropos': ['I'],
+\   'dollarpos': ['a'],
 \}
 
 " Global variables {{{
 let g:caw_no_default_keymappings = get(g:, 'caw_no_default_keymappings', 0)
-" If a old variable exists, show deprecation message
+" If any of old variables exists, show deprecation message
 " and set the value to a new variable.
 function! s:def_deprecated(name, value) abort
-    let m = matchlist(a:name, '\v^caw_(tildepos|zeropos|dollarpos)')
+    let m = matchlist(a:name, '\v^caw_(hatpos|zeropos|dollarpos)')
     if !empty(m)
-        let oldvarname = substitute(
-        \   a:name, '^caw_' . m[1], 'caw_' . s:deprecated[m[1]], ''
-        \)
-        if has_key(g:, oldvarname)
-            echohl WarningMsg
-            echomsg printf('g:%s is deprecated. please use g:%s instead.', oldvarname, a:name)
-            echohl None
-            let g:[a:name] = g:[oldvarname]
-        else
+        let found = 0
+        for d in s:deprecated[m[1]]
+            let oldvarname = substitute(
+            \   a:name, '^caw_' . m[1], 'caw_' . d, ''
+            \)
+            if has_key(g:, oldvarname)
+                echohl WarningMsg
+                echomsg printf('g:%s is deprecated. please use g:%s instead.', oldvarname, a:name)
+                echohl None
+                let g:[a:name] = g:[oldvarname]
+                let found = 1
+            endif
+        endfor
+        if !found
             let g:[a:name] = get(g:, a:name, a:value)
         endif
     else
@@ -47,11 +52,11 @@ function! s:def(name, value) abort
     let g:[a:name] = get(g:, a:name, a:value)
 endfunction
 
-call s:def_deprecated('caw_tildepos_sp', ' ')
-call s:def_deprecated('caw_tildepos_sp_blank', '')
-call s:def_deprecated('caw_tildepos_startinsert_at_blank_line', 1)
-call s:def_deprecated('caw_tildepos_skip_blank_line', 0)
-call s:def_deprecated('caw_tildepos_align', 1)
+call s:def_deprecated('caw_hatpos_sp', ' ')
+call s:def_deprecated('caw_hatpos_sp_blank', '')
+call s:def_deprecated('caw_hatpos_startinsert_at_blank_line', 1)
+call s:def_deprecated('caw_hatpos_skip_blank_line', 0)
+call s:def_deprecated('caw_hatpos_align', 1)
 
 call s:def_deprecated('caw_zeropos_sp', ' ')
 call s:def_deprecated('caw_zeropos_sp_blank', '')
@@ -137,15 +142,15 @@ endfunction
 
 
 
-" tildepos {{{
-call s:map_generic('tildepos', 'comment', 'nx')
-call s:map_generic('tildepos', 'uncomment', 'nx')
-call s:map_generic('tildepos', 'toggle', 'nx')
+" hatpos {{{
+call s:map_generic('hatpos', 'comment', 'nx')
+call s:map_generic('hatpos', 'uncomment', 'nx')
+call s:map_generic('hatpos', 'toggle', 'nx')
 
 if !g:caw_no_default_keymappings
-    call s:map_user('i', 'tildepos:comment')
-    call s:map_user('ui', 'tildepos:uncomment')
-    call s:map_user('c', 'tildepos:toggle')
+    call s:map_user('i', 'hatpos:comment')
+    call s:map_user('ui', 'hatpos:uncomment')
+    call s:map_user('c', 'hatpos:toggle')
 endif
 " }}}
 
