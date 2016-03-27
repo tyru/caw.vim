@@ -91,14 +91,30 @@ function! s:define_prefix(lhs) abort
 endfunction
 call s:define_prefix('gc')
 
+let s:operator_user_installed =
+\   (globpath(&rtp, 'autoload/operator/user.vim') !=# '')
+function! s:map(action, method, ...) abort
+    let modes = get(a:000, 0, 'nx')
+    call s:map_plug(a:action, a:method, modes)
+    if s:operator_user_installed
+        call s:map_operator(a:action, a:method)
+    endif
+endfunction
 
-function! s:map_generic(action, method, ...) abort
+function! s:map_operator(action, method) abort
+    let name = 'caw-' . a:action . '-' . a:method
+    let excmd = printf('call caw#__operator_init__(%s, %s)',
+    \                   string(a:action), string(a:method))
+    call operator#user#define(name, 'caw#__do_operator__', excmd)
+endfunction
+
+function! s:map_plug(action, method, modes) abort
     let has_deprecated_action = has_key(s:deprecated, a:action)
     let lhs = printf('<Plug>(caw:%s:%s)', a:action, a:method)
     let deprecated_lhs = printf('<Plug>(caw:%s:%s)',
     \                       get(s:deprecated, a:action, ''), a:method)
     let modes = get(a:000, 0, 'nx')
-    for mode in split(modes, '\zs')
+    for mode in split(a:modes, '\zs')
         execute
         \   mode . 'noremap'
         \   '<silent>'
@@ -138,9 +154,9 @@ endfunction
 
 
 " tildepos {{{
-call s:map_generic('tildepos', 'comment', 'nx')
-call s:map_generic('tildepos', 'uncomment', 'nx')
-call s:map_generic('tildepos', 'toggle', 'nx')
+call s:map('tildepos', 'comment', 'nx')
+call s:map('tildepos', 'uncomment', 'nx')
+call s:map('tildepos', 'toggle', 'nx')
 
 if !g:caw_no_default_keymappings
     call s:map_user('i', 'tildepos:comment')
@@ -150,9 +166,9 @@ endif
 " }}}
 
 " zeropos {{{
-call s:map_generic('zeropos', 'comment', 'nx')
-call s:map_generic('zeropos', 'uncomment', 'nx')
-call s:map_generic('zeropos', 'toggle', 'nx')
+call s:map('zeropos', 'comment', 'nx')
+call s:map('zeropos', 'uncomment', 'nx')
+call s:map('zeropos', 'toggle', 'nx')
 
 if !g:caw_no_default_keymappings
     call s:map_user('I', 'zeropos:comment')
@@ -161,9 +177,9 @@ endif
 " }}}
 
 " dollarpos {{{
-call s:map_generic('dollarpos', 'comment')
-call s:map_generic('dollarpos', 'uncomment')
-call s:map_generic('dollarpos', 'toggle')
+call s:map('dollarpos', 'comment')
+call s:map('dollarpos', 'uncomment')
+call s:map('dollarpos', 'toggle')
 
 if !g:caw_no_default_keymappings
     call s:map_user('a', 'dollarpos:comment')
@@ -172,9 +188,9 @@ endif
 " }}}
 
 " wrap {{{
-call s:map_generic('wrap', 'comment')
-call s:map_generic('wrap', 'uncomment')
-call s:map_generic('wrap', 'toggle')
+call s:map('wrap', 'comment')
+call s:map('wrap', 'uncomment')
+call s:map('wrap', 'toggle')
 
 if !g:caw_no_default_keymappings
     call s:map_user('w', 'wrap:comment')
@@ -183,7 +199,7 @@ endif
 " }}}
 
 " box {{{
-call s:map_generic('box', 'comment')
+call s:map('box', 'comment')
 
 if !g:caw_no_default_keymappings
     call s:map_user('b', 'box:comment')
@@ -191,8 +207,8 @@ endif
 " }}}
 
 " jump {{{
-call s:map_generic('jump', 'comment-next', 'n')
-call s:map_generic('jump', 'comment-prev', 'n')
+call s:map('jump', 'comment-next', 'n')
+call s:map('jump', 'comment-prev', 'n')
 
 if !g:caw_no_default_keymappings
     call s:map_user('o', 'jump:comment-next')
@@ -201,8 +217,8 @@ endif
 " }}}
 
 " input {{{
-call s:map_generic('input', 'comment')
-call s:map_generic('input', 'uncomment')
+call s:map('input', 'comment')
+call s:map('input', 'uncomment')
 
 if !g:caw_no_default_keymappings
     call s:map_user('v', 'input:comment')
@@ -210,19 +226,13 @@ if !g:caw_no_default_keymappings
 endif
 " }}}
 
-" operator {{{
-try
-    call operator#user#define('caw', 'caw#operator_wrap')
-catch /^Vim\%((\a\+)\)\=:E117/
-    " vim-operator-user is not installed
-endtry
-" }}}
-
 " Cleanup {{{
 
 unlet s:deprecated
 delfunction s:define_prefix
-delfunction s:map_generic
+delfunction s:map
+delfunction s:map_operator
+delfunction s:map_plug
 delfunction s:map_user
 
 " }}}
