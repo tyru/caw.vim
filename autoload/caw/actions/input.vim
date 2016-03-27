@@ -50,7 +50,7 @@ function! s:ask_action() abort
     let NONE = ['', '']
 
     let actname = get({
-    \   'i': 'tildepos',
+    \   'i': 'hatpos',
     \   'I': 'zeropos',
     \   'a': 'dollarpos',
     \   'j': 'jump',
