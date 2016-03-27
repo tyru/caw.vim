@@ -114,9 +114,7 @@ function! s:map_operator(action, method) abort
 endfunction
 
 function! s:map_plug(action, method, modes) abort
-    let has_deprecated_action = has_key(s:deprecated, a:action)
     let lhs = printf('<Plug>(caw:%s:%s)', a:action, a:method)
-    let modes = get(a:000, 0, 'nx')
     for mode in split(a:modes, '\zs')
         execute
         \   mode . 'noremap'
