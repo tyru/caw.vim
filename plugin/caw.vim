@@ -211,7 +211,11 @@ endif
 " }}}
 
 " operator {{{
-silent! call operator#user#define('caw', 'caw#operator_wrap')
+try
+    call operator#user#define('caw', 'caw#operator_wrap')
+catch /^Vim\%((\a\+)\)\=:E117/
+    " vim-operator-user is not installed
+endtry
 " }}}
 
 " Cleanup {{{
