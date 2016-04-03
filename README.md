@@ -7,4 +7,5 @@
 
 
 # caw.vim
-sophisticated comment plugin
+
+Vim comment plugin: easy to use, provide sane default config, customizable
