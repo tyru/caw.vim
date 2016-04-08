@@ -6,6 +6,71 @@
 | AppVeyor | [![AppVeyor](https://ci.appveyor.com/api/projects/status/9ewm3btund11qrlp/branch/master?svg=true)](https://ci.appveyor.com/project/tyru/caw.vim/branch/master) |
 
 
-# caw.vim
+# Introduction
 
-Vim comment plugin: easy to use, provide sane default config, customizable
+The below are the examples in "filetype=c".
+caw.vim supports 300+ filetypes (see |caw-supported-filetypes|).
+
+```
+Type "gci" (toggle: "gcc", uncomment: "gcui")
+  before:
+      "   <- inserted here"
+  after:
+      "   # <- inserted here"
+
+Type "gcI" (uncomment: "gcuI")
+  before:
+      "   inserted the first column"
+  after:
+      "#    inserted the first column"
+
+Type "gca" (uncomment: "gcua")
+  before:
+      "inserted after this"
+  after:
+      "inserted after this    # "
+
+Type "gcw" (uncomment: "gcuw")
+  before:
+      "  wrap!"
+  after:
+      "  /* wrap! */"
+
+Type "gcb"
+  before:
+      "  box!"
+  after:
+      "  /********/"
+      "  /* box! */"
+      "  /********/"
+
+Type "gco"
+  before:
+      "   func1();"
+  after:
+      "   func1()"
+      "   // "  (now cursor is at the end and entered insert-mode)
+
+Type "gcO"
+  before:
+      "   func1();"
+  after:
+      "   // "  (now cursor is at the end and entered insert-mode)
+      "   func1();"
+```
+
+# Features
+
+* Supports 300+ filetypes (see |caw-supported-filetypes|).
+  * But caw.vim does not slow down your Vim startup because each comment
+    string are defined at ftplugin files (after/ftplugin/<filetype>/caw.vim).
+* Supports operator mappings (|caw-keymappings-operator|)
+* Supports also non-operator mappings (|caw-keymappings-non-operator|)
+* Dot-repeatable if you installed repeat.vim
+  https://github.com/kana/vim-repeat
+* The comment behavior only depends on 'filetype' by default.
+  But if you have installed context_filetype.vim, caw.vim also depends on the
+  filetype of the context of the current cursor location.
+  https://github.com/Shougo/context_filetype.vim
+  So you can comment/uncomment JavaScript in HTML correctly.
+* Well-tested powered by https://github.com/thinca/vim-themis
