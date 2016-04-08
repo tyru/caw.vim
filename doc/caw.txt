@@ -109,8 +109,8 @@ gc					<Plug>(caw:prefix)
 
 NOTE: See |caw-faq-1| for how to change prefix keymapping.
 
-		*<Plug>(caw:tildepos:comment)* *<Plug>(caw:i:comment)*
-(nx) <Plug>(caw:tildepos:comment)
+		*<Plug>(caw:hatpos:comment)* *<Plug>(caw:i:comment)*
+(nx) <Plug>(caw:hatpos:comment)
 
 	NOTE: An old keymapping was |<Plug>(caw:i:comment)|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -121,8 +121,8 @@ NOTE: See |caw-faq-1| for how to change prefix keymapping.
 	NOTE: An old keymapping was |<Plug>(caw:a:comment)|.
 	See |caw-faq-3| why I renamed the keymapping.
 
-		*<Plug>(caw:tildepos:toggle)* *<Plug>(caw:i:toggle)*
-(nx) <Plug>(caw:tildepos:toggle)
+		*<Plug>(caw:hatpos:toggle)* *<Plug>(caw:i:toggle)*
+(nx) <Plug>(caw:hatpos:toggle)
 
 	NOTE: An old keymapping was |<Plug>(caw:i:toggle)|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -134,7 +134,7 @@ NOTE: See |caw-faq-1| for how to change prefix keymapping.
 	See |caw-faq-3| why I renamed the keymapping.
 
 Default mapping		rhs ~
-gci					<Plug>(caw:tildepos:comment)
+gci					<Plug>(caw:hatpos:comment)
 gca					<Plug>(caw:dollarpos:comment)
 
 
@@ -159,11 +159,11 @@ Default mapping		rhs ~
 gcuu				<Plug>(caw:uncomment)
 
 
-(nx) <Plug>(caw:tildepos:uncomment)			*<Plug>(caw:tildepos:uncomment)*
+(nx) <Plug>(caw:hatpos:uncomment)			*<Plug>(caw:hatpos:uncomment)*
 (nx) <Plug>(caw:dollarpos:uncomment)		*<Plug>(caw:dollarpos:uncomment)*
 
 Default mapping		rhs ~
-gcui				<Plug>(caw:tildepos:uncomment)
+gcui				<Plug>(caw:hatpos:uncomment)
 gcua				<Plug>(caw:dollarpos:uncomment)
 
 
@@ -186,8 +186,8 @@ priority	scope ~
 3			tabpage-local variable
 4			global variable
 
-For example, you can define buffer-local variable "b:caw_tildepos_sp"
-for |g:caw_tildepos_sp|. The buffer-local variable is read instead of
+For example, you can define buffer-local variable "b:caw_hatpos_sp"
+for |g:caw_hatpos_sp|. The buffer-local variable is read instead of
 its global variable if it is defined.
 
 
@@ -197,37 +197,37 @@ g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
 	caw does not map default keymappings.
 	See |caw-keymappings| for default keymappings.
 
-						*g:caw_tildepos_sp* *g:caw_i_sp*
-g:caw_tildepos_sp
+						*g:caw_hatpos_sp* *g:caw_i_sp*
+g:caw_hatpos_sp
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:tildepos:comment).
+	Inserted string after comment with <Plug>(caw:hatpos:comment).
 
 	NOTE: An old variable name was |g:caw_i_sp|.
 	See |caw-faq-3| why I renamed the keymapping.
 
-						*g:caw_tildepos_sp_blank* *g:caw_i_sp_blank*
-g:caw_tildepos_sp_blank
+						*g:caw_hatpos_sp_blank* *g:caw_i_sp_blank*
+g:caw_hatpos_sp_blank
 									(Default: "")
-	Inserted string after comment with <Plug>(caw:tildepos:comment).
+	Inserted string after comment with <Plug>(caw:hatpos:comment).
 	but applied only if a current line is blank line.
 
 	NOTE: An old variable name was |g:caw_i_sp_blank|.
 	See |caw-faq-3| why I renamed the keymapping.
 
-						*g:caw_tildepos_startinsert_at_blank_line*
+						*g:caw_hatpos_startinsert_at_blank_line*
 						*g:caw_i_startinsert_at_blank_line*
-g:caw_tildepos_startinsert_at_blank_line
+g:caw_hatpos_startinsert_at_blank_line
 									(Default: 1)
 	If this variable is true,
 	if current line is blank line,
-	enter |Insert-mode| after <Plug>(caw:tildepos:comment).
+	enter |Insert-mode| after <Plug>(caw:hatpos:comment).
 
 	NOTE: An old variable name was |g:caw_i_startinsert_at_blank_line|.
 	See |caw-faq-3| why I renamed the keymapping.
 
-						*g:caw_tildepos_skip_blank_line*
+						*g:caw_hatpos_skip_blank_line*
 						*g:caw_i_skip_blank_line*
-g:caw_tildepos_skip_blank_line
+g:caw_hatpos_skip_blank_line
 									(Default: 0)
 
 	TODO
@@ -235,11 +235,11 @@ g:caw_tildepos_skip_blank_line
 	NOTE: An old variable name was |g:caw_i_skip_blank_line|.
 	See |caw-faq-3| why I renamed the keymapping.
 
-						*g:caw_tildepos_align* *g:caw_i_align*
-g:caw_tildepos_align
+						*g:caw_hatpos_align* *g:caw_i_align*
+g:caw_hatpos_align
 									(Default: 1)
 	If this variable is true,
-	Align all <Plug>(caw:tildepos:comment) comments' cols.
+	Align all <Plug>(caw:hatpos:comment) comments' cols.
 
 	TODO: example
 
@@ -395,22 +395,25 @@ A. Because old keymappings and variables' names are hard to understand.
    I changed old names like the followings:
 
 	Old		New ~
-	i		tildepos
-	I		zeropos
-	a		dollarpos
+	i,tildepos		hatpos
+	I				zeropos
+	a				dollarpos
 
 	e.g.:
-	* |<Plug>(caw:i:toggle)| was changed to |<Plug>(caw:tildepos:toggle)|.
+	* |<Plug>(caw:i:toggle)| and |<Plug>(caw:tildepos:toggle)| were changed
+	  to |<Plug>(caw:hatpos:toggle)|.
 	* |g:caw_I_sp_blank| was changed to |g:caw_zeropos_sp_blank|.
 
-	tildepos
+	hatpos
 		The keymappings do actions for the position where ^ command moves to.
 	zeropos
 		The keymappings do actions for the position where 0 command moves to.
 	dollarpos
 		The keymappings do actions for the position where $ command moves to.
 
-	See https://github.com/tyru/caw.vim/pull/35 for the details of the changes.
+	See the following pull requests for the details of the changes.
+	https://github.com/tyru/caw.vim/pull/35
+	https://github.com/tyru/caw.vim/pull/48
 
 }}}
 ==============================================================================
