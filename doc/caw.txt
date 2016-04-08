@@ -1,4 +1,4 @@
-*caw.txt* *caw*
+*caw.txt* *caw* Comment plugin: Operator/Dot-repeatable/300+ filetypes
 
 Author:
   tyru <tyru.exe@gmail.com>
@@ -21,6 +21,7 @@ NEW BSD LICENSE {{{
 CONTENTS								*caw-contents*
 
 Introduction					|caw-introduction|
+Features						|caw-features|
 Supported filetypes				|caw-supported-filetypes|
 Interface						|caw-interface|
   Keymappings					|caw-keymappings|
@@ -48,55 +49,79 @@ Interface						|caw-interface|
     Box							|caw-variables-box|
     Others						|caw-variables-others|
 FAQ								|caw-faq|
+TODO & Bugs						|caw-todo-and-bugs|
 Changelog						|caw-changelog|
 
 
 ==============================================================================
 INTRODUCTION							*caw-introduction* {{{
 
-gcI
-  before:
-      "   testtesttest"
-  after:
-      "#    testtesttest"
+The below are the examples in "filetype=c".
+caw.vim supports 300+ filetypes (see |caw-supported-filetypes|).
 
-gci
+Type "gci" (toggle: "gcc", uncomment: "gcui")
   before:
       "   <- inserted here"
   after:
       "   # <- inserted here"
 
-gca
+Type "gcI" (uncomment: "gcuI")
   before:
-      "aaaaaaa"
+      "   inserted the first column"
   after:
-      "aaaaaaa    # "
+      "#    inserted the first column"
 
-gcw
+Type "gca" (uncomment: "gcua")
   before:
-      "aaaaaaa"
+      "inserted after this"
   after:
-      "/* aaaaaaa */"
+      "inserted after this    # "
 
-gco
+Type "gcw" (uncomment: "gcuw")
+  before:
+      "  wrap!"
+  after:
+      "  /* wrap! */"
+
+Type "gcb"
+  before:
+      "  box!"
+  after:
+      "  /********/"
+      "  /* box! */"
+      "  /********/"
+
+Type "gco"
   before:
       "   func1();"
   after:
-      Type "gco", and "func2();"
       "   func1()"
-      "   // func2();"
+      "   // "  (now cursor is at the end and entered insert-mode)
 
-gcO
+Type "gcO"
   before:
       "   func1();"
   after:
-      you type 'gcO', and 'call func1()'
-      "   // call func1()"
+      "   // "  (now cursor is at the end and entered insert-mode)
       "   func1();"
 
-The comment behaviour only depends on 'filetype', but if you have
-context_filetype.vim installed, caw.vim also depends on the filetype of the
-context of the current cursor location.
+}}}
+==============================================================================
+FEATURES						*caw-features* {{{
+
+* Supports 300+ filetypes (see |caw-supported-filetypes|).
+  * But caw.vim does not slow down your Vim startup because each comment
+    string are defined at ftplugin files (after/ftplugin/<filetype>/caw.vim).
+* Supports operator mappings (|caw-keymappings-operator|)
+* Supports also non-operator mappings (|caw-keymappings-non-operator|)
+* Dot-repeatable if you installed repeat.vim
+  https://github.com/kana/vim-repeat
+* The comment behavior only depends on 'filetype' by default.
+  But if you have installed context_filetype.vim, caw.vim also depends on the
+  filetype of the context of the current cursor location.
+  https://github.com/Shougo/context_filetype.vim
+  So you can comment/uncomment JavaScript in HTML correctly.
+* Well-tested powered by https://github.com/thinca/vim-themis
 
 }}}
 ==============================================================================
@@ -108,7 +133,7 @@ http://www.vim.org/scripts/script.php?script_id=1218
 https://github.com/scrooloose/nerdcommenter
 
 And more filetypes have been added by caw.vim users (Thanks!).
-See <repos>/after/ftplugin/* for current supported filetypes.
+See "after/ftplugin/*" in this repository for current supported filetypes.
 
 }}}
 ==============================================================================
@@ -588,12 +613,19 @@ A. Because old keymappings and variables' names are hard to understand.
 
 }}}
 ==============================================================================
+TODO & BUGS								*caw-todo-and-bugs* {{{
+
+https://github.com/tyru/caw.vim/issues
+
+}}}
+==============================================================================
 CHANGELOG								*caw-changelog* {{{
 
 1.0.0:
 - Initial upload.
 
-See below for the more previous releases (CommentAnyWay.vim).
+See previous plugin CommentAnyWay.vim for the more old changelog
+(please don't use it! very buggy...).
 http://www.vim.org/scripts/script.php?script_id=2554
 
 }}}
