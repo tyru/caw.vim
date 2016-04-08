@@ -2,7 +2,7 @@
 
 Author:
   tyru <tyru.exe@gmail.com>
-Version: 1.x.x
+Version: 1.0.0
 License:
 NEW BSD LICENSE {{{
   Copyright (c) 2009, tyru
@@ -113,21 +113,25 @@ NOTE: See |caw-faq-1| for how to change prefix keymapping.
 (nx) <Plug>(caw:tildepos:comment)
 
 	NOTE: An old keymapping was |<Plug>(caw:i:comment)|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 		*<Plug>(caw:dollarpos:comment)* *<Plug>(caw:a:comment)*
 (nx) <Plug>(caw:dollarpos:comment)
 
 	NOTE: An old keymapping was |<Plug>(caw:a:comment)|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 		*<Plug>(caw:tildepos:toggle)* *<Plug>(caw:i:toggle)*
 (nx) <Plug>(caw:tildepos:toggle)
 
 	NOTE: An old keymapping was |<Plug>(caw:i:toggle)|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 		*<Plug>(caw:dollarpos:toggle)* *<Plug>(caw:a:toggle)*
 (nx) <Plug>(caw:dollarpos:toggle)
 
 	NOTE: An old keymapping was |<Plug>(caw:a:toggle)|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 Default mapping		rhs ~
 gci					<Plug>(caw:tildepos:comment)
@@ -149,12 +153,6 @@ gco					<Plug>(caw:jump:comment-next)
 gcO					<Plug>(caw:jump:comment-prev)
 
 
-(nx) <Plug>(caw:input:comment)			*<Plug>(caw:input:comment)*
-
-Default mapping		rhs ~
-gcv					<Plug>(caw:input:comment)
-
-
 (nx) <Plug>(caw:uncomment)				*<Plug>(caw:uncomment)*
 
 Default mapping		rhs ~
@@ -162,7 +160,7 @@ gcuu				<Plug>(caw:uncomment)
 
 
 (nx) <Plug>(caw:tildepos:uncomment)			*<Plug>(caw:tildepos:uncomment)*
-(nx) <Plug>(caw:dollarpos:uncomment)			*<Plug>(caw:dollarpos:uncomment)*
+(nx) <Plug>(caw:dollarpos:uncomment)		*<Plug>(caw:dollarpos:uncomment)*
 
 Default mapping		rhs ~
 gcui				<Plug>(caw:tildepos:uncomment)
@@ -174,16 +172,24 @@ gcua				<Plug>(caw:dollarpos:uncomment)
 Default mapping		rhs ~
 gcuw				<Plug>(caw:wrap:uncomment)
 
-
-(nx) <Plug>(caw:input:uncomment)		*<Plug>(caw:input:uncomment)*
-
-Default mapping		rhs ~
-gcuv				<Plug>(caw:input:uncomment)
-
-
 }}}
 ------------------------------------------------------------------------------
 VARIABLES								*caw-variables* {{{
+
+								*caw-variables-scopes*
+NOTE: You can define the following variables in every scope
+for each variable below.
+
+priority	scope ~
+1			buffer-local variable
+2			window-local variable
+3			tabpage-local variable
+4			global variable
+
+For example, you can define buffer-local variable "b:caw_tildepos_sp"
+for |g:caw_tildepos_sp|. The buffer-local variable is read instead of
+its global variable if it is defined.
+
 
 g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
 									(Default: 0)
@@ -197,6 +203,7 @@ g:caw_tildepos_sp
 	Inserted string after comment with <Plug>(caw:tildepos:comment).
 
 	NOTE: An old variable name was |g:caw_i_sp|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_tildepos_sp_blank* *g:caw_i_sp_blank*
 g:caw_tildepos_sp_blank
@@ -205,6 +212,7 @@ g:caw_tildepos_sp_blank
 	but applied only if a current line is blank line.
 
 	NOTE: An old variable name was |g:caw_i_sp_blank|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_tildepos_startinsert_at_blank_line*
 						*g:caw_i_startinsert_at_blank_line*
@@ -215,6 +223,7 @@ g:caw_tildepos_startinsert_at_blank_line
 	enter |Insert-mode| after <Plug>(caw:tildepos:comment).
 
 	NOTE: An old variable name was |g:caw_i_startinsert_at_blank_line|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_tildepos_skip_blank_line*
 						*g:caw_i_skip_blank_line*
@@ -224,6 +233,7 @@ g:caw_tildepos_skip_blank_line
 	TODO
 
 	NOTE: An old variable name was |g:caw_i_skip_blank_line|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_tildepos_align* *g:caw_i_align*
 g:caw_tildepos_align
@@ -234,6 +244,7 @@ g:caw_tildepos_align
 	TODO: example
 
 	NOTE: An old variable name was |g:caw_i_align|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_zeropos_startinsert_at_blank_line*
 						*g:caw_I_startinsert_at_blank_line*
@@ -244,6 +255,7 @@ g:caw_zeropos_startinsert_at_blank_line
 	enter |Insert-mode| after <Plug>(caw:zeropos:comment).
 
 	NOTE: An old variable name was |g:caw_I_startinsert_at_blank_line|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_zeropos_sp* *g:caw_I_sp*
 g:caw_zeropos_sp
@@ -251,6 +263,7 @@ g:caw_zeropos_sp
 	Inserted string after comment with <Plug>(caw:zeropos:comment).
 
 	NOTE: An old variable name was |g:caw_I_sp|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_zeropos_sp_blank* *g:caw_I_sp_blank*
 g:caw_zeropos_sp_blank
@@ -259,6 +272,7 @@ g:caw_zeropos_sp_blank
 	but applied only if a current line is blank line.
 
 	NOTE: An old variable name was |g:caw_I_sp_blank|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_dollarpos_sp_left* *g:caw_a_sp_left*
 g:caw_dollarpos_sp_left
@@ -266,6 +280,7 @@ g:caw_dollarpos_sp_left
 	Inserted string before comment with <Plug>(caw:dollarpos:comment).
 
 	NOTE: An old variable name was |g:caw_a_sp_left|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_dollarpos_sp_right* *g:caw_a_sp_right*
 g:caw_dollarpos_sp_right
@@ -273,6 +288,7 @@ g:caw_dollarpos_sp_right
 	Inserted string after comment with <Plug>(caw:dollarpos:comment).
 
 	NOTE: An old variable name was |g:caw_a_sp_right|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 						*g:caw_dollarpos_startinsert* *g:caw_a_startinsert*
 g:caw_dollarpos_startinsert
@@ -281,6 +297,7 @@ g:caw_dollarpos_startinsert
 	enter |Insert-mode| after <Plug>(caw:dollarpos:comment).
 
 	NOTE: An old variable name was |g:caw_a_startinsert|.
+	See |caw-faq-3| why I renamed the keymapping.
 
 g:caw_wrap_sp_left						*g:caw_wrap_sp_left*
 									(Default: " ")
@@ -310,13 +327,28 @@ g:caw_find_another_action				*g:caw_find_another_action*
 									(Default: 1)
 
 
+Comment String							*caw-variables-comments*
+--------------
 
-TODO
----------
+Below variables are normally defined in "after/ftplugin/**/*.vim".
+However, you can define them everywhere, like .vimrc.
+If you define them in .vimrc, please note that you must define
+in |:autocmd| command like: >
+	autocmd FileType sh let b:caw_oneline_comment = ':'
+<
+b:caw_oneline_comment				*b:caw_oneline_comment*
+	Oneline comment string.
+	Example: in filetype=c, the value is "//".
 
-caw_default_oneline_comment				*caw_default_oneline_comment*
+b:caw_wrap_oneline_comment				*b:caw_wrap_oneline_comment*
+	Wrap-oneline comment string.
+	Example: in filetype=c, the value is ["/*", "*/"].
 
-
+b:caw_wrap_multiline_comment				*b:caw_wrap_multiline_comment*
+	Wrap-multiline comment string.
+	Example: in filetype=c, the value is: >
+	{'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'}
+<
 }}}
 }}}
 ==============================================================================
@@ -332,10 +364,34 @@ A. You can change prefix mapping
 					*caw-faq-2*
 Q. How to support a new filetype?
 A. Place "after/ftplugin/{filetype}/caw.vim" in your 'runtimepath'.
-   See the template example for "macros/after-ftplugin-template.vim".
+   See |caw-variables-comments| and the template example at
+   "macros/after-ftplugin-template.vim".
 
    We will support generating above ftplugin file from template file
    in the feature (TODO).
+
+					*caw-faq-3*
+Q. Why you renamed keymappings and variables?
+A. Because old keymappings and variables' names are hard to understand.
+   I changed old names like the followings:
+
+	Old		New ~
+	i		tildepos
+	I		zeropos
+	a		dollarpos
+
+	e.g.:
+	* |<Plug>(caw:i:toggle)| was changed to |<Plug>(caw:tildepos:toggle)|.
+	* |g:caw_I_sp_blank| was changed to |g:caw_zeropos_sp_blank|.
+
+	tildepos
+		The keymappings do actions for the position where ^ command moves to.
+	zeropos
+		The keymappings do actions for the position where 0 command moves to.
+	dollarpos
+		The keymappings do actions for the position where $ command moves to.
+
+	See https://github.com/tyru/caw.vim/pull/35 for the details of the changes.
 
 }}}
 ==============================================================================
@@ -343,8 +399,9 @@ CHANGELOG								*caw-changelog* {{{
 
 1.0.0:
 - Initial upload.
-1.0.1:
-- Fix bug that CommentAnyWay.Base.GetIndent() can't get proper indent
+
+See below for the more previous releases (CommentAnyWay.vim).
+http://www.vim.org/scripts/script.php?script_id=2554
 
 }}}
 ==============================================================================
