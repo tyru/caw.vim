@@ -25,11 +25,12 @@ Features						|caw-features|
 Supported filetypes				|caw-supported-filetypes|
 Interface						|caw-interface|
   Keymappings					|caw-keymappings|
+    Default mappings			|caw-keymappings-default|
     Prefix mapping				|caw-keymappings-prefix|
     Operator mappings			|caw-keymappings-operator|
-      Hatpos operator				|caw-hatpos-operator|
+      Hatpos operator			|caw-hatpos-operator|
       Zeropos operator			|caw-zeropos-operator|
-      Dollarpos operator			|caw-dollarpos-operator|
+      Dollarpos operator		|caw-dollarpos-operator|
       Wrap operator				|caw-wrap-operator|
       Box operator				|caw-box-operator|
     Non-operator mappings		|caw-keymappings-non-operator|
@@ -144,13 +145,47 @@ KEYMAPPINGS								*caw-keymappings* {{{
 See |caw-introduction| for how below keymappings work.
 
 
+Default mapping				*caw-keymappings-default* {{{
+---------------
+
+If |g:caw_operator_keymappings| is 0 (default):
+
+lhs		rhs ~
+gc		|<Plug>(caw:prefix)|
+gcc		|<Plug>(caw:hatpos:toggle)|
+gci		|<Plug>(caw:hatpos:comment)|
+gcui	|<Plug>(caw:hatpos:uncomment)|
+gcI		|<Plug>(caw:zeropos:comment)|
+gcuI	|<Plug>(caw:zeropos:uncomment)|
+gca		|<Plug>(caw:dollarpos:comment)|
+gcua	|<Plug>(caw:dollarpos:uncomment)|
+gcw		|<Plug>(caw:wrap:comment)|
+gcuw	|<Plug>(caw:wrap:uncomment)|
+gcb		|<Plug>(caw:box:comment)|
+gco		|<Plug>(caw:jump:comment-next)|
+gcO		|<Plug>(caw:jump:comment-prev)|
+
+If |g:caw_operator_keymappings| is non-zero:
+
+lhs		rhs ~
+gc		|<Plug>(caw:prefix)|
+gcc		|<Plug>(operator-caw-hatpos-toggle)|
+gci		|<Plug>(operator-caw-hatpos-comment)|
+gcui	|<Plug>(operator-caw-hatpos-uncomment)|
+gcI		|<Plug>(operator-caw-zeropos-comment)|
+gcuI	|<Plug>(operator-caw-zeropos-uncomment)|
+gca		|<Plug>(operator-caw-dollarpos-comment)|
+gcua	|<Plug>(operator-caw-dollarpos-uncomment)|
+gcw		|<Plug>(operator-caw-wrap-comment)|
+gcuw	|<Plug>(operator-caw-wrap-uncomment)|
+gcb		|<Plug>(operator-caw-box-comment)|
+
+}}}
+
 Prefix mapping					*caw-keymappings-prefix* {{{
 --------------
 
 (nx) <Plug>(caw:prefix)					*<Plug>(caw:prefix)*
-
-Default mapping		rhs ~
-gc					<Plug>(caw:prefix)
 
 NOTE: See |caw-faq-1| for how to change prefix keymapping.
 
@@ -236,11 +271,6 @@ Hatpos action							*caw-hatpos-action* {{{
 	* *<Plug>(caw:i:toggle)*
 	See |caw-faq-3| why I renamed the keymapping.
 
-Default mapping		rhs ~
-gci					<Plug>(caw:hatpos:comment)
-gcui				<Plug>(caw:hatpos:uncomment)
-gcc					<Plug>(caw:hatpos:toggle)
-
 }}}
 
 Zeropos action							*caw-zeropos-action* {{{
@@ -257,10 +287,6 @@ Zeropos action							*caw-zeropos-action* {{{
 	* *<Plug>(caw:I:uncomment)*
 	* *<Plug>(caw:I:toggle)*
 	See |caw-faq-3| why I renamed the keymapping.
-
-Default mapping		rhs ~
-gcI					<Plug>(caw:zeropos:comment)
-gcuI				<Plug>(caw:zeropos:uncomment)
 
 }}}
 
@@ -279,10 +305,6 @@ Dollarpos action						*caw-dollarpos-action* {{{
 	* *<Plug>(caw:a:toggle)*
 	See |caw-faq-3| why I renamed the keymapping.
 
-Default mapping		rhs ~
-gca					<Plug>(caw:dollarpos:comment)
-gcua				<Plug>(caw:dollarpos:uncomment)
-
 }}}
 
 Wrap action								*caw-wrap-action* {{{
@@ -294,10 +316,6 @@ Wrap action								*caw-wrap-action* {{{
 
 	TODO
 
-Default mapping		rhs ~
-gcw					<Plug>(caw:wrap:comment)
-gcuw				<Plug>(caw:wrap:uncomment)
-
 }}}
 
 Box action								*caw-box-action* {{{
@@ -306,9 +324,6 @@ Box action								*caw-box-action* {{{
 (nx) *<Plug>(caw:box:comment)*
 
 	TODO
-
-Default mapping		rhs ~
-gcb					<Plug>(caw:box:comment)
 
 }}}
 
@@ -319,10 +334,6 @@ Jump action								*caw-jump-action* {{{
 (n) *<Plug>(caw:jump:comment-prev)*
 
 	TODO
-
-Default mapping		rhs ~
-gco					<Plug>(caw:jump:comment-next)
-gcO					<Plug>(caw:jump:comment-prev)
 
 }}}
 
@@ -538,6 +549,11 @@ g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
 	If this variable is true,
 	caw does not map default keymappings.
 	See |caw-keymappings| for default keymappings.
+
+g:caw_operator_keymappings				*g:caw_operator_keymappings*
+									(Default: 0)
+	If this variable is true,
+	caw's default keymappings become operator keymappings.
 
 g:caw_find_another_action				*g:caw_find_another_action*
 									(Default: 1)
