@@ -362,13 +362,32 @@ A. You can change prefix mapping
 	xmap <Leader>c <Plug>(caw:prefix)
 <
 					*caw-faq-2*
-Q. How to support a new filetype?
-A. Place "after/ftplugin/{filetype}/caw.vim" in your 'runtimepath'.
-   See |caw-variables-comments| and the template example at
-   "macros/after-ftplugin-template.vim".
+Q. How do I support a new filetype?
+A. You have two options.
 
-   We will support generating above ftplugin file from template file
-   in the feature (TODO).
+1. Set caw variables on |FileType| event
+
+   caw supports comment settings by variables.
+   See |caw-variables-comments| for the examples.
+
+   * Oneline comment:        |b:caw_oneline_comment|
+   * Wrap oneline comment:   |b:caw_wrap_oneline_comment|
+   * Wrap multiline comment: |b:caw_wrap_multiline_comment|
+
+2. Set 'commentstring' on |FileType| event
+
+   If current filetype is not supported by default ftplugin files of caw
+   (after/ftplugin/<filetype>/caw.vim in this repository),
+   caw detects oneline / wrap oneline comment string by 'commentstring'.
+
+   I implemented this for fallback purpose because it may not be accurate,
+   and wrap multiline comment can't be detected by this method.
+
+   It seems tpope/vim-commentary also supports this type of settings.
+
+If you found missing comment filetypes in default,
+I will be glad if you report it :)
+https://github.com/tyru/caw.vim/issues/new
 
 					*caw-faq-3*
 Q. Why you renamed keymappings and variables?
