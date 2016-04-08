@@ -218,16 +218,6 @@ if !g:caw_no_default_keymappings
 endif
 " }}}
 
-" input {{{
-call s:plug.map('input', 'comment')
-call s:plug.map('input', 'uncomment')
-
-if !g:caw_no_default_keymappings
-    call s:plug.map_user('v', 'input:comment')
-    call s:plug.map_user('uv', 'input:uncomment')
-endif
-" }}}
-
 " }}}
 
 unlet s:plug
