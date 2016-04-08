@@ -7,6 +7,8 @@ set cpo&vim
 " }}}
 
 
+let s:installed_repeat_vim = (globpath(&rtp, 'autoload/repeat.vim') !=# '')
+
 "caw#keymapping_stub(): All keymappings are bound to this function. {{{
 " Call actions' methods until it succeeded
 " (currently seeing b:changedtick but it is bad idea)
@@ -76,6 +78,11 @@ function! caw#keymapping_stub(mode, action, method) abort
         " Free context.
         unlockvar! s:context
         let s:context = {}
+        " repeat.vim support
+        if s:installed_repeat_vim
+            let lastmap = printf("\<Plug>(caw:%s:%s)", a:action, a:method)
+            call repeat#set(lastmap)
+        endif
     endtry
 endfunction
 
