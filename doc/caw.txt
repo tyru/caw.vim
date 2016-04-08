@@ -153,12 +153,6 @@ gco					<Plug>(caw:jump:comment-next)
 gcO					<Plug>(caw:jump:comment-prev)
 
 
-(nx) <Plug>(caw:input:comment)			*<Plug>(caw:input:comment)*
-
-Default mapping		rhs ~
-gcv					<Plug>(caw:input:comment)
-
-
 (nx) <Plug>(caw:uncomment)				*<Plug>(caw:uncomment)*
 
 Default mapping		rhs ~
@@ -177,12 +171,6 @@ gcua				<Plug>(caw:dollarpos:uncomment)
 
 Default mapping		rhs ~
 gcuw				<Plug>(caw:wrap:uncomment)
-
-
-(nx) <Plug>(caw:input:uncomment)		*<Plug>(caw:input:uncomment)*
-
-Default mapping		rhs ~
-gcuv				<Plug>(caw:input:uncomment)
 
 }}}
 ------------------------------------------------------------------------------
