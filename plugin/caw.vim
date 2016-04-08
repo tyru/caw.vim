@@ -23,7 +23,10 @@ let s:plug.deprecated = {
 \}
 
 " Global variables {{{
+
 let g:caw_no_default_keymappings = get(g:, 'caw_no_default_keymappings', 0)
+let g:caw_operator_keymappings = get(g:, 'caw_operator_keymappings', 0)
+
 " If any of old variables exists, show deprecation message
 " and set the value to a new variable.
 function! s:def_deprecated(name, value) abort
@@ -142,9 +145,15 @@ function! s:plug.map_plug(action, method, modes) abort
     endfor
 endfunction
 
-function! s:plug.map_user(lhs, rhs) abort
+function! s:plug.map_user(lhs, action, method) abort
+    if g:caw_operator_keymappings && a:action ==# 'jump'
+        " jump action does not support operator
+        return
+    endif
     let lhs = '<Plug>(caw:prefix)' . a:lhs
-    let rhs = printf('<Plug>(caw:%s)', a:rhs)
+    let rhs = g:caw_operator_keymappings ?
+    \           printf('<Plug>(operator-caw-%s-%s)', a:action, a:method) :
+    \           printf('<Plug>(caw:%s:%s)', a:action, a:method)
     for mode in ['n', 'x']
         if !hasmapto(rhs, mode)
             silent! execute
@@ -161,9 +170,9 @@ call s:plug.map('hatpos', 'uncomment', 'nx')
 call s:plug.map('hatpos', 'toggle', 'nx')
 
 if !g:caw_no_default_keymappings
-    call s:plug.map_user('i', 'hatpos:comment')
-    call s:plug.map_user('ui', 'hatpos:uncomment')
-    call s:plug.map_user('c', 'hatpos:toggle')
+    call s:plug.map_user('i', 'hatpos', 'comment')
+    call s:plug.map_user('ui', 'hatpos', 'uncomment')
+    call s:plug.map_user('c', 'hatpos', 'toggle')
 endif
 " }}}
 
@@ -173,8 +182,8 @@ call s:plug.map('zeropos', 'uncomment', 'nx')
 call s:plug.map('zeropos', 'toggle', 'nx')
 
 if !g:caw_no_default_keymappings
-    call s:plug.map_user('I', 'zeropos:comment')
-    call s:plug.map_user('uI', 'zeropos:uncomment')
+    call s:plug.map_user('I', 'zeropos', 'comment')
+    call s:plug.map_user('uI', 'zeropos', 'uncomment')
 endif
 " }}}
 
@@ -184,8 +193,8 @@ call s:plug.map('dollarpos', 'uncomment')
 call s:plug.map('dollarpos', 'toggle')
 
 if !g:caw_no_default_keymappings
-    call s:plug.map_user('a', 'dollarpos:comment')
-    call s:plug.map_user('ua', 'dollarpos:uncomment')
+    call s:plug.map_user('a', 'dollarpos', 'comment')
+    call s:plug.map_user('ua', 'dollarpos', 'uncomment')
 endif
 " }}}
 
@@ -195,8 +204,8 @@ call s:plug.map('wrap', 'uncomment')
 call s:plug.map('wrap', 'toggle')
 
 if !g:caw_no_default_keymappings
-    call s:plug.map_user('w', 'wrap:comment')
-    call s:plug.map_user('uw', 'wrap:uncomment')
+    call s:plug.map_user('w', 'wrap', 'comment')
+    call s:plug.map_user('uw', 'wrap', 'uncomment')
 endif
 " }}}
 
@@ -204,7 +213,7 @@ endif
 call s:plug.map('box', 'comment')
 
 if !g:caw_no_default_keymappings
-    call s:plug.map_user('b', 'box:comment')
+    call s:plug.map_user('b', 'box', 'comment')
 endif
 " }}}
 
@@ -213,8 +222,8 @@ call s:plug.map('jump', 'comment-next', 'n')
 call s:plug.map('jump', 'comment-prev', 'n')
 
 if !g:caw_no_default_keymappings
-    call s:plug.map_user('o', 'jump:comment-next')
-    call s:plug.map_user('O', 'jump:comment-prev')
+    call s:plug.map_user('o', 'jump', 'comment-next')
+    call s:plug.map_user('O', 'jump', 'comment-prev')
 endif
 " }}}
 
