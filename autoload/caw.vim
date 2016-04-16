@@ -81,8 +81,12 @@ function! caw#keymapping_stub(mode, action, method) abort
         " repeat.vim support
         if s:installed_repeat_vim
             let lines = context.lastline - context.firstline
-            let lastmap = (lines ? printf('V%dj', lines) : '')
-                        \ . printf("\<Plug>(caw:%s:%s)", a:action, a:method)
+            execute 'nnoremap <Plug>(caw:__op_select__)'
+            \       (lines > 0 ? "V" . lines . "j" : "<Nop>")
+            let lastmap = printf(
+            \   "\<Plug>(caw:__op_select__)\<Plug>(caw:%s:%s)",
+            \   a:action, a:method
+            \)
             call repeat#set(lastmap)
         endif
     endtry
