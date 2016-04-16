@@ -8,6 +8,9 @@ set cpo&vim
 
 
 let s:installed_repeat_vim = (globpath(&rtp, 'autoload/repeat.vim') !=# '')
+let s:op_args = ''
+let s:op_doing = 0
+
 
 "caw#keymapping_stub(): All keymappings are bound to this function. {{{
 " Call actions' methods until it succeeded
@@ -79,7 +82,7 @@ function! caw#keymapping_stub(mode, action, method) abort
         unlockvar! s:context
         let s:context = {}
         " repeat.vim support
-        if s:installed_repeat_vim
+        if s:installed_repeat_vim && !s:op_doing
             let lines = context.lastline - context.firstline
             execute 'nnoremap <Plug>(caw:__op_select__)'
             \       (lines > 0 ? "V" . lines . "j" : "<Nop>")
@@ -103,18 +106,21 @@ function! caw#keymapping_stub_deprecated(mode, action, method, old_action) abort
 endfunction
 
 
-let s:op_args = ''
-
 function! caw#__operator_init__(action, method) abort
     let s:op_args = a:action . ':' . a:method
 endfunction
 
 function! caw#__do_operator__(motion_wise) abort
-    if a:motion_wise == 'char'
-        execute "normal `[v`]\<Plug>(caw:" . s:op_args . ")"
-    else
-        execute "normal `[V`]\<Plug>(caw:" . s:op_args . ")"
-    endif
+    let s:op_doing = 1
+    try
+        if a:motion_wise == 'char'
+            execute "normal `[v`]\<Plug>(caw:" . s:op_args . ")"
+        else
+            execute "normal `[V`]\<Plug>(caw:" . s:op_args . ")"
+        endif
+    finally
+        let s:op_doing = 0
+    endtry
 endfunction
 
 " }}}
