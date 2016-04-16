@@ -116,6 +116,8 @@ FEATURES						*caw-features* {{{
 * Supports operator mappings (|caw-keymappings-operator|).
   * If |g:caw_operator_keymappings| is non-zero, all default keymappings map
     to operator mappings.
+  * If you need operator-user.vim to use operator mappings.
+    https://github.com/kana/vim-operator-user
 * Supports also non-operator mappings (|caw-keymappings-non-operator|).
 * Dot-repeatable if you installed repeat.vim
   https://github.com/kana/vim-repeat
@@ -150,7 +152,7 @@ See |caw-introduction| for how below keymappings work.
 Default mapping				*caw-keymappings-default* {{{
 ---------------
 
-If |g:caw_operator_keymappings| is 0 (default):
+If |g:caw_operator_keymappings| is zero (default):
 
 lhs		rhs ~
 gc		|<Plug>(caw:prefix)|
@@ -556,6 +558,10 @@ g:caw_operator_keymappings				*g:caw_operator_keymappings*
 									(Default: 0)
 	If this variable is non-zero,
 	caw's default keymappings become operator keymappings.
+
+	NOTE: If you haven't installed kana/vim-operator-user,
+	this variable is forcibly set to zero.
+	https://github.com/kana/vim-operator-user
 
 g:caw_find_another_action				*g:caw_find_another_action*
 									(Default: 1)

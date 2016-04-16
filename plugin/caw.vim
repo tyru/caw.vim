@@ -26,6 +26,12 @@ let s:plug.deprecated = {
 
 let g:caw_no_default_keymappings = get(g:, 'caw_no_default_keymappings', 0)
 let g:caw_operator_keymappings = get(g:, 'caw_operator_keymappings', 0)
+if globpath(&rtp, 'autoload/operator/user.vim') !=# ''
+    let s:operator_user_installed = 1
+else
+    let s:operator_user_installed = 0
+    let g:caw_operator_keymappings = 0
+endif
 
 " If any of old variables exists, show deprecation message
 " and set the value to a new variable.
@@ -100,8 +106,6 @@ function! s:plug.define_prefix(lhs) abort
 endfunction
 call s:plug.define_prefix('gc')
 
-let s:operator_user_installed =
-\   (globpath(&rtp, 'autoload/operator/user.vim') !=# '')
 function! s:plug.map(action, method, ...) abort
     let modes = get(a:000, 0, 'nx')
     call s:plug.map_plug(a:action, a:method, modes)
