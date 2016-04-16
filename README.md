@@ -15,12 +15,12 @@
   * If `|g:caw_operator_keymappings|` is non-zero, all default keymappings map
     to operator mappings.
 * Supports also non-operator mappings (`|caw-keymappings-non-operator|`).
-* Dot-repeatable if you installed [repeat.vim](https://github.com/kana/vim-repeat)
+* Dot-repeatable if you installed [kana/vim-repeat](https://github.com/kana/vim-repeat)
 * The comment behavior only depends on 'filetype' by default.
-  But if you have installed [context\_filetype.vim](https://github.com/Shougo/context_filetype.vim), caw.vim also depends on the
+  But if you have installed [Shougo/context\_filetype.vim](https://github.com/Shougo/context_filetype.vim), caw.vim also depends on the
   filetype of the context of the current cursor location.
   So you can comment/uncomment JavaScript in HTML correctly.
-* Well-tested powered by [themis.vim](https://github.com/thinca/vim-themis)
+* Well-tested powered by [thinca/vim-themis](https://github.com/thinca/vim-themis)
 
 
 # Hot it works
