@@ -6,7 +6,24 @@
 | AppVeyor | [![AppVeyor](https://ci.appveyor.com/api/projects/status/9ewm3btund11qrlp/branch/master?svg=true)](https://ci.appveyor.com/project/tyru/caw.vim/branch/master) |
 
 
-# Introduction
+# Features
+
+* Supports 300+ filetypes (see `|caw-supported-filetypes|`).
+  * But caw.vim does not slow down your Vim startup because each comment
+    string are defined at ftplugin files (after/ftplugin/<filetype>/caw.vim).
+* Supports operator mappings (`|caw-keymappings-operator|`).
+  * If `|g:caw_operator_keymappings|` is non-zero, all default keymappings map
+    to operator mappings.
+* Supports also non-operator mappings (`|caw-keymappings-non-operator|`).
+* Dot-repeatable if you installed [repeat.vim](https://github.com/kana/vim-repeat)
+* The comment behavior only depends on 'filetype' by default.
+  But if you have installed [context\_filetype.vim](https://github.com/Shougo/context_filetype.vim), caw.vim also depends on the
+  filetype of the context of the current cursor location.
+  So you can comment/uncomment JavaScript in HTML correctly.
+* Well-tested powered by [themis.vim](https://github.com/thinca/vim-themis)
+
+
+# Hot it works
 
 The below are the examples in "filetype=c".
 caw.vim supports 300+ filetypes (see |caw-supported-filetypes|).
@@ -58,19 +75,3 @@ Type "gcO"
       "   // "  (now cursor is at the end and entered insert-mode)
       "   func1();"
 ```
-
-# Features
-
-* Supports 300+ filetypes (see `|caw-supported-filetypes|`).
-  * But caw.vim does not slow down your Vim startup because each comment
-    string are defined at ftplugin files (after/ftplugin/<filetype>/caw.vim).
-* Supports operator mappings (`|caw-keymappings-operator|`).
-  * If `|g:caw_operator_keymappings|` is non-zero, all default keymappings map
-    to operator mappings.
-* Supports also non-operator mappings (`|caw-keymappings-non-operator|`).
-* Dot-repeatable if you installed [repeat.vim](https://github.com/kana/vim-repeat)
-* The comment behavior only depends on 'filetype' by default.
-  But if you have installed [context\_filetype.vim](https://github.com/Shougo/context_filetype.vim), caw.vim also depends on the
-  filetype of the context of the current cursor location.
-  So you can comment/uncomment JavaScript in HTML correctly.
-* Well-tested powered by [themis.vim](https://github.com/thinca/vim-themis)
