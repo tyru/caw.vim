@@ -119,6 +119,13 @@ function! s:plug.map_operator(action, method) abort
     let excmd = printf('call caw#__operator_init__(%s, %s)',
     \                   string(a:action), string(a:method))
     call operator#user#define(name, 'caw#__do_operator__', excmd)
+    " For forward compatibility, do not let users map keymappings directly
+    " which operator-user provides.
+    for mode in ['n', 'x', 'o']
+        execute mode . 'map'
+        \   printf('<Plug>(caw:%s:%s:operator)', a:action, a:method)
+        \   printf('<Plug>(operator-caw-%s-%s)', a:action, a:method)
+    endfor
 endfunction
 
 function! s:plug.map_plug(action, method, modes) abort
@@ -156,7 +163,7 @@ function! s:plug.map_user(lhs, action, method) abort
     endif
     let lhs = '<Plug>(caw:prefix)' . a:lhs
     let rhs = g:caw_operator_keymappings ?
-    \           printf('<Plug>(operator-caw-%s-%s)', a:action, a:method) :
+    \           printf('<Plug>(caw:%s:%s:operator)', a:action, a:method) :
     \           printf('<Plug>(caw:%s:%s)', a:action, a:method)
     for mode in ['n', 'x']
         if !hasmapto(rhs, mode)

@@ -173,16 +173,16 @@ If |g:caw_operator_keymappings| is non-zero:
 
 lhs		rhs ~
 gc		|<Plug>(caw:prefix)|
-gcc		|<Plug>(operator-caw-hatpos-toggle)|
-gci		|<Plug>(operator-caw-hatpos-comment)|
-gcui	|<Plug>(operator-caw-hatpos-uncomment)|
-gcI		|<Plug>(operator-caw-zeropos-comment)|
-gcuI	|<Plug>(operator-caw-zeropos-uncomment)|
-gca		|<Plug>(operator-caw-dollarpos-comment)|
-gcua	|<Plug>(operator-caw-dollarpos-uncomment)|
-gcw		|<Plug>(operator-caw-wrap-comment)|
-gcuw	|<Plug>(operator-caw-wrap-uncomment)|
-gcb		|<Plug>(operator-caw-box-comment)|
+gcc		|<Plug>(caw:hatpos:toggle:operator)|
+gci		|<Plug>(caw:hatpos:comment:operator)|
+gcui	|<Plug>(caw:hatpos:uncomment:operator)|
+gcI		|<Plug>(caw:zeropos:comment:operator)|
+gcuI	|<Plug>(caw:zeropos:uncomment:operator)|
+gca		|<Plug>(caw:dollarpos:comment:operator)|
+gcua	|<Plug>(caw:dollarpos:uncomment:operator)|
+gcw		|<Plug>(caw:wrap:comment:operator)|
+gcuw	|<Plug>(caw:wrap:uncomment:operator)|
+gcb		|<Plug>(caw:box:comment:operator)|
 
 }}}
 
@@ -198,15 +198,15 @@ NOTE: See |caw-faq-1| for how to change prefix keymapping.
 Operator mappings					*caw-keymappings-operator* {{{
 -----------------
 
-Format is "<Plug>(operator-caw-{action}-{method})".
+Format is "<Plug>(caw:{action}:{method}:operator)".
 
 
 Hatpos operator							*caw-hatpos-operator* {{{
 ---------------
 
-(nx) *<Plug>(operator-caw-hatpos-comment)*
-(nx) *<Plug>(operator-caw-hatpos-uncomment)*
-(nx) *<Plug>(operator-caw-hatpos-toggle)*
+(nx) *<Plug>(caw:hatpos:comment:operator)*
+(nx) *<Plug>(caw:hatpos:uncomment:operator)*
+(nx) *<Plug>(caw:hatpos:toggle:operator)*
 
 	TODO
 
@@ -215,9 +215,9 @@ Hatpos operator							*caw-hatpos-operator* {{{
 Zeropos operator							*caw-zeropos-operator* {{{
 ----------------
 
-(nx) *<Plug>(operator-caw-zeropos-comment)*
-(nx) *<Plug>(operator-caw-zeropos-uncomment)*
-(nx) *<Plug>(operator-caw-zeropos-toggle)*
+(nx) *<Plug>(caw:zeropos:comment:operator)*
+(nx) *<Plug>(caw:zeropos:uncomment:operator)*
+(nx) *<Plug>(caw:zeropos:toggle:operator)*
 
 	TODO
 
@@ -226,9 +226,9 @@ Zeropos operator							*caw-zeropos-operator* {{{
 Dollarpos operator						*caw-dollarpos-operator* {{{
 ------------------
 
-(nx) *<Plug>(operator-caw-dollarpos-comment)*
-(nx) *<Plug>(operator-caw-dollarpos-uncomment)*
-(nx) *<Plug>(operator-caw-dollarpos-toggle)*
+(nx) *<Plug>(caw:dollarpos:comment:operator)*
+(nx) *<Plug>(caw:dollarpos:uncomment:operator)*
+(nx) *<Plug>(caw:dollarpos:toggle:operator)*
 
 	TODO
 
@@ -237,9 +237,9 @@ Dollarpos operator						*caw-dollarpos-operator* {{{
 Wrap operator								*caw-wrap-operator* {{{
 -------------
 
-(nx) *<Plug>(operator-caw-wrap-comment)*
-(nx) *<Plug>(operator-caw-wrap-uncomment)*
-(nx) *<Plug>(operator-caw-wrap-toggle)*
+(nx) *<Plug>(caw:wrap:comment:operator)*
+(nx) *<Plug>(caw:wrap:uncomment:operator)*
+(nx) *<Plug>(caw:wrap:toggle:operator)*
 
 	TODO
 
@@ -248,7 +248,7 @@ Wrap operator								*caw-wrap-operator* {{{
 Box operator								*caw-box-operator* {{{
 ------------
 
-(nx) *<Plug>(operator-caw-box-comment)*
+(nx) *<Plug>(caw:box:comment:operator)*
 
 }}}
 
