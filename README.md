@@ -10,7 +10,7 @@
 
 * Supports 300+ filetypes (see `|caw-supported-filetypes|`).
   * But caw.vim does not slow down your Vim startup because each comment
-    string are defined at ftplugin files (after/ftplugin/<filetype>/caw.vim).
+    string are defined at ftplugin files (`after/ftplugin/<filetype>/caw.vim`).
 * Supports operator mappings (`|caw-keymappings-operator|`).
   * If `|g:caw_operator_keymappings|` is non-zero, all default keymappings map
     to operator mappings.
