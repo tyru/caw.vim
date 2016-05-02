@@ -16,25 +16,20 @@ let s:togglable = {}
 
 
 function! s:togglable.toggle() abort
-    let all_comment = self.has_all_comment()
-    let mixed = !all_comment && self.has_comment()
     if caw#context().mode ==# 'n'
-        if all_comment
-            " The line is commented out.
+        if self.has_all_comment()
+            " The line has a comment string.
             call self.uncomment()
         else
-            " The line is not commented out.
+            " The line doesn't have a comment string.
             call self.comment()
         endif
     else
-        if mixed
-            " Some lines are commented out.
-            call self.comment()
-        elseif all_comment
-            " All lines are commented out.
+        if self.has_all_comment()
+            " All lines have comment strings.
             call self.uncomment()
         else
-            " All lines are not commented out.
+            " Some lines have comment strings, or no lines have comment strings.
             call self.comment()
         endif
     endif
