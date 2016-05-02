@@ -11,11 +11,11 @@
 * Supports 300+ filetypes (see `|caw-supported-filetypes|`).
   * But caw.vim does not slow down your Vim startup because each comment
     string are defined at ftplugin files (`after/ftplugin/<filetype>/caw.vim`).
-* Supports operator mappings (`|caw-keymappings-operator|`).
+* Supports operator keymappings (`|caw-keymappings-operator|`).
   * If `|g:caw_operator_keymappings|` is non-zero, all default keymappings map
-    to operator mappings.
-  * If you need [kana/vim-operator-user](https://github.com/kana/vim-operator-user) to use operator mappings.
-* Supports also non-operator mappings (`|caw-keymappings-non-operator|`).
+    to operator keymappings.
+  * If you need [kana/vim-operator-user](https://github.com/kana/vim-operator-user) to use operator keymappings.
+* Supports also non-operator keymappings (`|caw-keymappings-non-operator|`).
 * Dot-repeatable if you installed [kana/vim-repeat](https://github.com/kana/vim-repeat)
 * The comment behavior only depends on 'filetype' by default.
   But if you have installed [Shougo/context\_filetype.vim](https://github.com/Shougo/context_filetype.vim), caw.vim also depends on the

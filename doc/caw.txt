@@ -25,21 +25,21 @@ Features						|caw-features|
 Supported filetypes				|caw-supported-filetypes|
 Interface						|caw-interface|
   Keymappings					|caw-keymappings|
-    Default mappings			|caw-keymappings-default|
-    Prefix mapping				|caw-keymappings-prefix|
-    Operator mappings			|caw-keymappings-operator|
-      Hatpos operator			|caw-hatpos-operator|
-      Zeropos operator			|caw-zeropos-operator|
-      Dollarpos operator		|caw-dollarpos-operator|
-      Wrap operator				|caw-wrap-operator|
-      Box operator				|caw-box-operator|
-    Non-operator mappings		|caw-keymappings-non-operator|
+    Default keymappings			|caw-keymappings-default|
+    Prefix keymapping			|caw-keymappings-prefix|
+    Non-operator keymappings	|caw-keymappings-non-operator|
       Hatpos action				|caw-hatpos-action|
       Zeropos action			|caw-zeropos-action|
       Dollarpos action			|caw-dollarpos-action|
       Wrap action				|caw-wrap-action|
       Box action				|caw-box-action|
       Jump action				|caw-jump-action|
+    Operator keymappings		|caw-keymappings-operator|
+      Hatpos operator			|caw-hatpos-operator|
+      Zeropos operator			|caw-zeropos-operator|
+      Dollarpos operator		|caw-dollarpos-operator|
+      Wrap operator				|caw-wrap-operator|
+      Box operator				|caw-box-operator|
   Variables						|caw-variables|
     Scopes						|caw-variables-scopes|
     Comment String				|caw-variables-comments|
@@ -61,64 +61,64 @@ The below are the examples in "filetype=c".
 caw.vim supports 300+ filetypes (see |caw-supported-filetypes|).
 
 Type "gci" (toggle: "gcc", uncomment: "gcui")
-  before:
-      "   <- inserted here"
-  after:
-      "   # <- inserted here"
+	before:
+		"   <- inserted here"
+	after:
+		"   # <- inserted here"
 
 Type "gcI" (uncomment: "gcuI")
-  before:
-      "   inserted the first column"
-  after:
-      "#    inserted the first column"
+	before:
+		"   inserted the first column"
+	after:
+		"#    inserted the first column"
 
 Type "gca" (uncomment: "gcua")
-  before:
-      "inserted after this"
-  after:
-      "inserted after this    # "
+	before:
+		"inserted after this"
+	after:
+		"inserted after this    # "
 
 Type "gcw" (uncomment: "gcuw")
-  before:
-      "  wrap!"
-  after:
-      "  /* wrap! */"
+	before:
+		"  wrap!"
+	after:
+		"  /* wrap! */"
 
 Type "gcb"
-  before:
-      "  box!"
-  after:
-      "  /********/"
-      "  /* box! */"
-      "  /********/"
+	before:
+		"  box!"
+	after:
+		"  /********/"
+		"  /* box! */"
+		"  /********/"
 
 Type "gco"
-  before:
-      "   func1();"
-  after:
-      "   func1()"
-      "   // "  (now cursor is at the end and entered insert-mode)
+	before:
+		"   func1();"
+	after:
+		"   func1()"
+		"   // "  (now cursor is at the end and entered insert-mode)
 
 Type "gcO"
-  before:
-      "   func1();"
-  after:
-      "   // "  (now cursor is at the end and entered insert-mode)
-      "   func1();"
+	before:
+		"   func1();"
+	after:
+		"   // "  (now cursor is at the end and entered insert-mode)
+		"   func1();"
 
 }}}
 ==============================================================================
-FEATURES						*caw-features* {{{
+FEATURES								*caw-features* {{{
 
 * Supports 300+ filetypes (see |caw-supported-filetypes|).
   * But caw.vim does not slow down your Vim startup because each comment
     string are defined at ftplugin files (after/ftplugin/<filetype>/caw.vim).
-* Supports operator mappings (|caw-keymappings-operator|).
+* Supports operator keymappings (|caw-keymappings-operator|).
   * If |g:caw_operator_keymappings| is non-zero, all default keymappings map
-    to operator mappings.
-  * If you need operator-user.vim to use operator mappings.
+    to operator keymappings.
+  * If you need operator-user.vim to use operator keymappings.
     https://github.com/kana/vim-operator-user
-* Supports also non-operator mappings (|caw-keymappings-non-operator|).
+* Supports also non-operator keymappings (|caw-keymappings-non-operator|).
 * Dot-repeatable if you installed repeat.vim
   https://github.com/kana/vim-repeat
 * The comment behavior only depends on 'filetype' by default.
@@ -149,7 +149,7 @@ KEYMAPPINGS								*caw-keymappings* {{{
 See |caw-introduction| for how below keymappings work.
 
 
-Default mapping				*caw-keymappings-default* {{{
+Default keymapping						*caw-keymappings-default* {{{
 ---------------
 
 If |g:caw_operator_keymappings| is zero (default):
@@ -186,78 +186,36 @@ gcb		|<Plug>(caw:box:comment:operator)|
 
 }}}
 
-Prefix mapping					*caw-keymappings-prefix* {{{
+Prefix keymapping						*caw-keymappings-prefix* {{{
 --------------
 
-(nx) <Plug>(caw:prefix)					*<Plug>(caw:prefix)*
+(nx) *<Plug>(caw:prefix)*
 
 NOTE: See |caw-faq-1| for how to change prefix keymapping.
 
 }}}
 
-Operator mappings					*caw-keymappings-operator* {{{
------------------
-
-Format is "<Plug>(caw:{action}:{method}:operator)".
-
-
-Hatpos operator							*caw-hatpos-operator* {{{
----------------
-
-(nx) *<Plug>(caw:hatpos:comment:operator)*
-(nx) *<Plug>(caw:hatpos:uncomment:operator)*
-(nx) *<Plug>(caw:hatpos:toggle:operator)*
-
-	TODO
-
-}}}
-
-Zeropos operator							*caw-zeropos-operator* {{{
-----------------
-
-(nx) *<Plug>(caw:zeropos:comment:operator)*
-(nx) *<Plug>(caw:zeropos:uncomment:operator)*
-(nx) *<Plug>(caw:zeropos:toggle:operator)*
-
-	TODO
-
-}}}
-
-Dollarpos operator						*caw-dollarpos-operator* {{{
-------------------
-
-(nx) *<Plug>(caw:dollarpos:comment:operator)*
-(nx) *<Plug>(caw:dollarpos:uncomment:operator)*
-(nx) *<Plug>(caw:dollarpos:toggle:operator)*
-
-	TODO
-
-}}}
-
-Wrap operator								*caw-wrap-operator* {{{
--------------
-
-(nx) *<Plug>(caw:wrap:comment:operator)*
-(nx) *<Plug>(caw:wrap:uncomment:operator)*
-(nx) *<Plug>(caw:wrap:toggle:operator)*
-
-	TODO
-
-}}}
-
-Box operator								*caw-box-operator* {{{
-------------
-
-(nx) *<Plug>(caw:box:comment:operator)*
-
-}}}
-
-}}}
-
-Non-operator mappings				*caw-keymappings-non-operator* {{{
+Non-operator keymappings				*caw-keymappings-non-operator* {{{
 ---------------------
 
-Format is "<Plug>(caw:{action}:{method})".
+The keymapping format is "<Plug>(caw:{action}:{method})".
+
+Most non-operator keymappings have common behaviors described in this section.
+If you want to check specified keymapping is applied to this behavior,
+please check each keymapping's section.
+
+Comment method keymappings (<Plug>(caw:{action}:comment)) change current line
+in normal-mode. In visual-mode, those change selected lines.
+
+Uncomment method keymappings (<Plug>(caw:{action}:uncomment)) remove comment strings
+(in above example, "#").
+
+In normal-mode, toggle method keymappings (<Plug>(caw:{action}:toggle)) execute
+comment method keymappings if current line has a comment string. Otherwise,
+those execute uncomment method keymappings.
+
+In visual-mode, toggle method keymappings execute uncomment method keymappings
+if all lines have comment strings. Otherwise, those execute comment method keymappings.
 
 
 Hatpos action							*caw-hatpos-action* {{{
@@ -267,12 +225,17 @@ Hatpos action							*caw-hatpos-action* {{{
 (nx) *<Plug>(caw:hatpos:uncomment)*
 (nx) *<Plug>(caw:hatpos:toggle)*
 
-	TODO
-
+	See |caw-keymappings-non-operator| for the details.
+>
+	before:
+		"   <- inserted here"
+	after:
+		"   # <- inserted here"
+<
 	NOTE: An old keymappings were
 	* *<Plug>(caw:i:comment)*
 	* *<Plug>(caw:i:uncomment)*
-	* *<Plug>(caw:i:toggle)*
+	* *<Plug>(caw:i:toggle)* , *<Plug>(caw:tildepos:toggle)*
 	See |caw-faq-3| why I renamed the keymapping.
 
 }}}
@@ -284,8 +247,13 @@ Zeropos action							*caw-zeropos-action* {{{
 (nx) *<Plug>(caw:zeropos:uncomment)*
 (nx) *<Plug>(caw:zeropos:toggle)*
 
-	TODO
-
+	See |caw-keymappings-non-operator| for the details.
+>
+	before:
+		"   inserted the first column"
+	after:
+		"#    inserted the first column"
+<
 	NOTE: An old keymappings were
 	* *<Plug>(caw:I:comment)*
 	* *<Plug>(caw:I:uncomment)*
@@ -301,8 +269,13 @@ Dollarpos action						*caw-dollarpos-action* {{{
 (nx) *<Plug>(caw:dollarpos:uncomment)*
 (nx) *<Plug>(caw:dollarpos:toggle)*
 
-	TODO
-
+	See |caw-keymappings-non-operator| for the details.
+>
+	before:
+		"inserted after this"
+	after:
+		"inserted after this    # "
+<
 	NOTE: An old keymappings were
 	* *<Plug>(caw:a:comment)*
 	* *<Plug>(caw:a:uncomment)*
@@ -318,26 +291,121 @@ Wrap action								*caw-wrap-action* {{{
 (nx) *<Plug>(caw:wrap:uncomment)*
 (nx) *<Plug>(caw:wrap:toggle)*
 
-	TODO
-
+	See |caw-keymappings-non-operator| for the details.
+>
+	before:
+		"  wrap!"
+	after:
+		"  /* wrap! */"
+<
 }}}
 
 Box action								*caw-box-action* {{{
 ----------
 
 (nx) *<Plug>(caw:box:comment)*
-
-	TODO
-
+>
+	before:
+		"  box!"
+	after:
+		"  /********/"
+		"  /* box! */"
+		"  /********/"
+<
 }}}
 
 Jump action								*caw-jump-action* {{{
 -----------
 
 (n) *<Plug>(caw:jump:comment-next)*
+>
+	before:
+		"   func1();"
+	after:
+		"   func1()"
+		"   // "  (now cursor is at the end and entered insert-mode)
+<
 (n) *<Plug>(caw:jump:comment-prev)*
+>
+	before:
+		"   func1();"
+	after:
+		"   // "  (now cursor is at the end and entered insert-mode)
+		"   func1();"
+<
+}}}
 
-	TODO
+}}}
+
+Operator keymappings					*caw-keymappings-operator* {{{
+-----------------
+
+The keymapping format is "<Plug>(caw:{action}:{method}:operator)".
+
+
+Hatpos operator							*caw-hatpos-operator* {{{
+---------------
+
+(nx) *<Plug>(caw:hatpos:comment:operator)*
+(nx) *<Plug>(caw:hatpos:uncomment:operator)*
+(nx) *<Plug>(caw:hatpos:toggle:operator)*
+
+	This is operator version of
+	* |<Plug>(caw:hatpos:comment)|
+	* |<Plug>(caw:hatpos:uncomment)|
+	* |<Plug>(caw:hatpos:toggle)|
+
+}}}
+
+Zeropos operator						*caw-zeropos-operator* {{{
+----------------
+
+(nx) *<Plug>(caw:zeropos:comment:operator)*
+(nx) *<Plug>(caw:zeropos:uncomment:operator)*
+(nx) *<Plug>(caw:zeropos:toggle:operator)*
+
+	This is operator version of
+	* |<Plug>(caw:zeropos:comment)|
+	* |<Plug>(caw:zeropos:uncomment)|
+	* |<Plug>(caw:zeropos:toggle)|
+
+}}}
+
+Dollarpos operator						*caw-dollarpos-operator* {{{
+------------------
+
+(nx) *<Plug>(caw:dollarpos:comment:operator)*
+(nx) *<Plug>(caw:dollarpos:uncomment:operator)*
+(nx) *<Plug>(caw:dollarpos:toggle:operator)*
+
+	This is operator version of
+	* |<Plug>(caw:dollarpos:comment)|
+	* |<Plug>(caw:dollarpos:uncomment)|
+	* |<Plug>(caw:dollarpos:toggle)|
+
+}}}
+
+Wrap operator							*caw-wrap-operator* {{{
+-------------
+
+(nx) *<Plug>(caw:wrap:comment:operator)*
+(nx) *<Plug>(caw:wrap:uncomment:operator)*
+(nx) *<Plug>(caw:wrap:toggle:operator)*
+
+	This is operator version of
+	* |<Plug>(caw:wrap:comment)|
+	* |<Plug>(caw:wrap:uncomment)|
+	* |<Plug>(caw:wrap:toggle)|
+
+}}}
+
+Box operator							*caw-box-operator* {{{
+------------
+
+(nx) *<Plug>(caw:box:comment:operator)*
+
+	This is operator version of
+	* |<Plug>(caw:box:comment)|
 
 }}}
 
@@ -347,7 +415,7 @@ Jump action								*caw-jump-action* {{{
 ------------------------------------------------------------------------------
 VARIABLES								*caw-variables* {{{
 
-Scopes								*caw-variables-scopes* {{{
+Scopes									*caw-variables-scopes* {{{
 ------
 
 NOTE: You can define the following variables in every scope
@@ -365,7 +433,7 @@ its global variable if it is defined.
 
 }}}
 
-Comment String						*caw-variables-comments* {{{
+Comment String							*caw-variables-comments* {{{
 --------------
 
 Below variables are normally defined in "after/ftplugin/**/*.vim".
@@ -389,13 +457,13 @@ b:caw_wrap_multiline_comment				*b:caw_wrap_multiline_comment*
 <
 }}}
 
-Hatpos							*caw-variables-hatpos* {{{
+Hatpos									*caw-variables-hatpos* {{{
 ------
 
 						*g:caw_hatpos_sp* *g:caw_i_sp*
 g:caw_hatpos_sp
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:hatpos:comment).
+	Inserted string after comment with |<Plug>(caw:hatpos:comment)|.
 
 	NOTE: An old variable name was |g:caw_i_sp|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -403,7 +471,7 @@ g:caw_hatpos_sp
 						*g:caw_hatpos_sp_blank* *g:caw_i_sp_blank*
 g:caw_hatpos_sp_blank
 									(Default: "")
-	Inserted string after comment with <Plug>(caw:hatpos:comment).
+	Inserted string after comment with |<Plug>(caw:hatpos:comment)|.
 	but applied only if a current line is blank line.
 
 	NOTE: An old variable name was |g:caw_i_sp_blank|.
@@ -415,7 +483,7 @@ g:caw_hatpos_startinsert_at_blank_line
 									(Default: 1)
 	If this variable is non-zero,
 	if current line is blank line,
-	enter |Insert-mode| after <Plug>(caw:hatpos:comment).
+	enter |Insert-mode| after |<Plug>(caw:hatpos:comment)|.
 
 	NOTE: An old variable name was |g:caw_i_startinsert_at_blank_line|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -425,7 +493,8 @@ g:caw_hatpos_startinsert_at_blank_line
 g:caw_hatpos_skip_blank_line
 									(Default: 0)
 
-	TODO
+	if this variable is non-zero,
+	caw does not comment out a blank line. otherwise it does.
 
 	NOTE: An old variable name was |g:caw_i_skip_blank_line|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -434,16 +503,28 @@ g:caw_hatpos_skip_blank_line
 g:caw_hatpos_align
 									(Default: 1)
 	If this variable is non-zero,
-	Align all <Plug>(caw:hatpos:comment) comments' cols.
+	Align all |<Plug>(caw:hatpos:comment)| comments' cols.
 
-	TODO: example
-
+	For example, if this variable is non-zero and
+	select the following lines: >
+	if 1
+		echo 'hi'
+	endif
+<	and execute |<Plug>(caw:hatpos:comment)| changes the above lines to: >
+	" if 1
+	" 	echo 'hi'
+	" endif
+<	but if this variable is zero: >
+	" if 1
+		" echo 'hi'
+	" endif
+<
 	NOTE: An old variable name was |g:caw_i_align|.
 	See |caw-faq-3| why I renamed the keymapping.
 
 }}}
 
-Zeropos							*caw-variables-zeropos* {{{
+Zeropos									*caw-variables-zeropos* {{{
 -------
 
 						*g:caw_zeropos_startinsert_at_blank_line*
@@ -452,7 +533,7 @@ g:caw_zeropos_startinsert_at_blank_line
 									(Default: 1)
 	If this variable is non-zero,
 	if current line is blank line,
-	enter |Insert-mode| after <Plug>(caw:zeropos:comment).
+	enter |Insert-mode| after |<Plug>(caw:zeropos:comment)|.
 
 	NOTE: An old variable name was |g:caw_I_startinsert_at_blank_line|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -460,7 +541,7 @@ g:caw_zeropos_startinsert_at_blank_line
 						*g:caw_zeropos_sp* *g:caw_I_sp*
 g:caw_zeropos_sp
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:zeropos:comment).
+	Inserted string after comment with |<Plug>(caw:zeropos:comment)|.
 
 	NOTE: An old variable name was |g:caw_I_sp|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -468,7 +549,7 @@ g:caw_zeropos_sp
 						*g:caw_zeropos_sp_blank* *g:caw_I_sp_blank*
 g:caw_zeropos_sp_blank
 									(Default: "")
-	Inserted string after comment with <Plug>(caw:zeropos:comment).
+	Inserted string after comment with |<Plug>(caw:zeropos:comment)|.
 	but applied only if a current line is blank line.
 
 	NOTE: An old variable name was |g:caw_I_sp_blank|.
@@ -476,13 +557,13 @@ g:caw_zeropos_sp_blank
 
 }}}
 
-Dollarpos							*caw-variables-dollarpos* {{{
+Dollarpos								*caw-variables-dollarpos* {{{
 ---------
 
 						*g:caw_dollarpos_sp_left* *g:caw_a_sp_left*
 g:caw_dollarpos_sp_left
 									(Default: "    ")
-	Inserted string before comment with <Plug>(caw:dollarpos:comment).
+	Inserted string before comment with |<Plug>(caw:dollarpos:comment)|.
 
 	NOTE: An old variable name was |g:caw_a_sp_left|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -490,7 +571,7 @@ g:caw_dollarpos_sp_left
 						*g:caw_dollarpos_sp_right* *g:caw_a_sp_right*
 g:caw_dollarpos_sp_right
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:dollarpos:comment).
+	Inserted string after comment with |<Plug>(caw:dollarpos:comment)|.
 
 	NOTE: An old variable name was |g:caw_a_sp_right|.
 	See |caw-faq-3| why I renamed the keymapping.
@@ -499,43 +580,46 @@ g:caw_dollarpos_sp_right
 g:caw_dollarpos_startinsert
 									(Default: 1)
 	If this variable is non-zero,
-	enter |Insert-mode| after <Plug>(caw:dollarpos:comment).
+	enter |Insert-mode| after |<Plug>(caw:dollarpos:comment)|.
 
 	NOTE: An old variable name was |g:caw_a_startinsert|.
 	See |caw-faq-3| why I renamed the keymapping.
 
 }}}
 
-Wrap							*caw-variables-wrap* {{{
+Wrap									*caw-variables-wrap* {{{
 -----
 
 g:caw_wrap_sp_left						*g:caw_wrap_sp_left*
 									(Default: " ")
-	Inserted string before comment with <Plug>(caw:wrap:comment).
+	Inserted string before comment with |<Plug>(caw:wrap:comment)|.
 
 g:caw_wrap_sp_right						*g:caw_wrap_sp_right*
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:wrap:comment).
+	Inserted string after comment with |<Plug>(caw:wrap:comment)|.
 
 g:caw_wrap_skip_blank_line						*g:caw_wrap_skip_blank_line*
 									(Default: 1)
+
+	if this variable is non-zero,
+	caw does not comment out a blank line. otherwise it does.
 
 g:caw_wrap_align						*g:caw_wrap_align*
 									(Default: 1)
 
 }}}
 
-Jump								*caw-variables-jump* {{{
+Jump									*caw-variables-jump* {{{
 -----
 
 g:caw_jump_sp							*g:caw_jump_sp*
 									(Default: " ")
-	Inserted string after comment with <Plug>(caw:jump:comment-next)
-	and <Plug>(caw:jump:comment-prev).
+	Inserted string after comment with |<Plug>(caw:jump:comment-next)|
+	and |<Plug>(caw:jump:comment-prev)|.
 
 }}}
 
-Box								*caw-variables-box* {{{
+Box										*caw-variables-box* {{{
 -----
 
 g:caw_box_sp_left						*g:caw_box_sp_left*
@@ -545,7 +629,7 @@ g:caw_box_sp_right						*g:caw_box_sp_right*
 
 }}}
 
-Others							*caw-variables-others* {{{
+Others									*caw-variables-others* {{{
 ------
 
 g:caw_no_default_keymappings			*g:caw_no_default_keymappings*
@@ -572,11 +656,11 @@ g:caw_find_another_action				*g:caw_find_another_action*
 
 }}}
 ==============================================================================
-FAQ								*caw-faq* {{{
+FAQ										*caw-faq* {{{
 
 					*caw-faq-1*
-Q. How can I change the prefix mapping?
-A. You can change prefix mapping
+Q. How can I change the prefix keymapping?
+A. You can change prefix keymapping
    by writing the following settings in your .vimrc: >
 	nmap <Leader>c <Plug>(caw:prefix)
 	xmap <Leader>c <Plug>(caw:prefix)
