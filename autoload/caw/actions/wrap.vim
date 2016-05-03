@@ -79,11 +79,12 @@ function! s:wrap.comment_visual() abort
         \       caw#context().lastline)
     endif
 
+    let skip_blank_line = caw#get_var('caw_wrap_skip_blank_line')
     for lnum in range(
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if caw#get_var('caw_wrap_skip_blank_line') && caw#getline(lnum) =~ '^\s*$'
+        if skip_blank_line && caw#getline(lnum) =~ '^\s*$'
             continue    " Skip blank line.
         endif
         if exists('left_col') && exists('right_col')
