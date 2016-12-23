@@ -1,10 +1,26 @@
+language: generic
+sudo: false
+git:
+  depth: 10
+
+matrix:
+  include:
+    - os: linux
+      env: VIM_VERSION=v7.4
+    - os: linux
+      env: VIM_VERSION=v8.0.0000
+    - os: linux
+      env: VIM_VERSION=master
+    - os: osx
+
 before_script:
-  - git clone https://github.com/syngan/vim-vimlint /tmp/vim-vimlint
-  - git clone https://github.com/ynkdir/vim-vimlparser /tmp/vim-vimlparser
-  - git clone https://github.com/kannokanno/vmock /tmp/vmock
-  - git clone https://github.com/thinca/vim-themis --branch v1.5.1 --single-branch --depth 1 /tmp/vim-themis
+  - git clone --depth 1 --single-branch https://github.com/syngan/vim-vimlint /tmp/vim-vimlint
+  - git clone --depth 1 --single-branch https://github.com/ynkdir/vim-vimlparser /tmp/vim-vimlparser
+  - git clone --depth 1 --single-branch https://github.com/kannokanno/vmock /tmp/vmock
+  - git clone --depth 1 --single-branch --branch v1.5.2.1 https://github.com/thinca/vim-themis /tmp/vim-themis
 
 script:
+  - uname -a
   - which -a vim
   - vim --cmd version --cmd quit
   - vim --cmd "try | helptags doc/ | catch | cquit | endtry" --cmd quit

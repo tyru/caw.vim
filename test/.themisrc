@@ -1,0 +1,4 @@
+let s:is_win = has('win16') || has('win32') || has('win64') || has('win95')
+let $BUNDLE_DIR = expand(s:is_win ? '$HOME/vimfiles' : '$HOME/.vim') . '/bundle'
+call themis#option('recursive', 1)
+call themis#option('runtimepath', [expand('$BUNDLE_DIR/vmock')])
