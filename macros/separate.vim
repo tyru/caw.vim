@@ -403,6 +403,16 @@ endfunction
 let s:root_dir = expand('<sfile>:h:h')
 
 function! s:run() abort
+    let swapfile = &swapfile
+    set noswapfile
+    try
+        call s:write_all()
+    finally
+        let &swapfile = swapfile
+    endtry
+endfunction
+
+function! s:write_all() abort
     let oneline = s:oneline()
     let wrap_oneline = s:wrap_oneline()
     let wrap_multiline = s:wrap_multiline()
