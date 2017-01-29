@@ -14,6 +14,7 @@ function! s:oneline() abort
     \   'apache': '#',
     \   'apachestyle': '#',
     \   'applescript': '--',
+    \   'arduino': '//',
     \   'asciidoc': '//',
     \   'asm': ';',
     \   'asm68k': ';',
@@ -251,6 +252,7 @@ function! s:oneline() abort
     \   'squid': '#',
     \   'st': '"',
     \   'stp': '--',
+    \   'swig': '//',
     \   'systemverilog': '//',
     \   'tads': '//',
     \   'tags': ';',
@@ -302,6 +304,7 @@ function! s:wrap_oneline() abort
     \   'actionscript': ['/*', '*/'],
     \   'ahk': ['/*', '*/'],
     \   'applescript': ['(*', '*)'],
+    \   'arduino': ['/*', '*/'],
     \   'c': ['/*', '*/'],
     \   'cg': ['/*', '*/'],
     \   'ch': ['/*', '*/'],
@@ -371,6 +374,7 @@ function! s:wrap_oneline() abort
     \   'smarty': ['{*', '*}'],
     \   'smil': ['<!', '>'],
     \   'sml': ['(*', '*)'],
+    \   'swig': ['/*', '*/'],
     \   'systemverilog': ['/*', '*/'],
     \   'tads': ['/*', '*/'],
     \   'tsalt': ['/*', '*/'],
@@ -385,10 +389,12 @@ endfunction
 
 function! s:wrap_multiline() abort
     return {
-    \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
-    \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
+    \   'arduino': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
     \   'c': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
     \   'cpp': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
+    \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
+    \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
+    \   'swig': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
     \}
 endfunction
 
