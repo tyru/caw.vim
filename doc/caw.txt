@@ -1,4 +1,4 @@
-*caw.txt* *caw* Comment plugin: Operator/Dot-repeatable/300+ filetypes
+*caw.txt* Comment plugin: Operator/Dot-repeatable/300+ filetypes
 
 Author:
   tyru <tyru.exe@gmail.com>
