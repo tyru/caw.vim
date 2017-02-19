@@ -204,6 +204,7 @@ function! s:oneline() abort
   \   'ps1': '#',
   \   'psf': '#',
   \   'ptcap': '#',
+  \   'pug': '//-',
   \   'python': '#',
   \   'r': '#',
   \   'radiance': '#',
