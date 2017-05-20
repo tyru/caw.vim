@@ -8,14 +8,14 @@
 
 # Features
 
-* Supports 300+ filetypes (see `|caw-supported-filetypes|`).
+* Supports 300+ filetypes (`:help caw-supported-filetypes`).
   * But caw.vim does not slow down your Vim startup because each comment
     string are defined at ftplugin files (`after/ftplugin/<filetype>/caw.vim`).
-* Supports operator keymappings (`|caw-keymappings-operator|`).
-  * If `|g:caw_operator_keymappings|` is non-zero, all default keymappings map
+* Supports operator keymappings (`:help caw-keymappings-operator`).
+  * If `g:caw_operator_keymappings` is non-zero, all default keymappings map
     to operator keymappings.
   * If you need [kana/vim-operator-user](https://github.com/kana/vim-operator-user) to use operator keymappings.
-* Supports also non-operator keymappings (`|caw-keymappings-non-operator|`).
+* Supports also non-operator keymappings (`:help caw-keymappings-non-operator`).
 * Dot-repeatable if you installed [kana/vim-repeat](https://github.com/kana/vim-repeat)
 * The comment behavior only depends on 'filetype' by default.
   But if you have installed [Shougo/context\_filetype.vim](https://github.com/Shougo/context_filetype.vim), caw.vim also depends on the
@@ -27,7 +27,7 @@
 # Hot it works
 
 The below are the examples in "filetype=c".
-caw.vim supports 300+ filetypes (see |caw-supported-filetypes|).
+caw.vim supports 300+ filetypes (`:help caw-supported-filetypes`).
 
 ```
 Type "gci" (toggle: "gcc", uncomment: "gcui")
