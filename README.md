@@ -24,7 +24,7 @@
 * Well-tested powered by [thinca/vim-themis](https://github.com/thinca/vim-themis)
 
 
-# Hot it works
+# How it works
 
 The below are the examples in "filetype=c".
 caw.vim supports 300+ filetypes (`:help caw-supported-filetypes`).
