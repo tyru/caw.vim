@@ -1,3 +1,5 @@
+" Run this script to generate after/ftplugin/*:
+"   vim -u NONE -i NONE -N -S macros/separate.vim -c quit
 
 function! s:oneline() abort
   return {
@@ -266,6 +268,7 @@ function! s:oneline() abort
   \   'tidy': '#',
   \   'tli': '#',
   \   'tmux': '#',
+  \   'toml': '#',
   \   'trasys': '$',
   \   'tsalt': '//',
   \   'tsscl': '#',
