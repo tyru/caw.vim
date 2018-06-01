@@ -77,6 +77,7 @@ function! s:oneline() abort
   \   'ebuild': '#',
   \   'ecd': '#',
   \   'eclass': '#',
+  \   'egison': ';',
   \   'eiffel': '--',
   \   'elf': "'",
   \   'elm': "--",
