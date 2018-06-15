@@ -1,6 +1,7 @@
 " Run this script to generate after/ftplugin/*:
-"   vim -u NONE -i NONE -N -S macros/separate.vim -c quit
+"   vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit
 
+" Please add oneline comments here
 function! s:oneline() abort
   return {
   \   'aap': '#',
@@ -303,6 +304,7 @@ function! s:oneline() abort
   \}
 endfunction
 
+" Please wrap oneline comments here
 function! s:wrap_oneline() abort
   return {
   \   'aap': ['/*', '*/'],
@@ -392,6 +394,7 @@ function! s:wrap_oneline() abort
   \}
 endfunction
 
+" Please wrap multiline comments here
 function! s:wrap_multiline() abort
   return {
   \   'arduino': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
@@ -417,12 +420,23 @@ function! s:run() abort
   endtry
 endfunction
 
+function! s:sort_unique(list) abort
+  let result = []
+  let set = {}
+  for el in sort(copy(a:list))
+    if !has_key(set, el)
+      let result += [el]
+    endif
+  endfor
+  return result
+endfunction
+
 function! s:write_all() abort
   let oneline = s:oneline()
   let wrap_oneline = s:wrap_oneline()
   let wrap_multiline = s:wrap_multiline()
-  let all_keys = uniq(sort(
-  \   keys(oneline) + keys(wrap_oneline) + keys(wrap_multiline))
+  let all_keys = s:sort_unique(
+  \   keys(oneline) + keys(wrap_oneline) + keys(wrap_multiline)
   \)
   for filetype in all_keys
     " Create /after/ftplugin/{filetype}/caw.vim
@@ -459,4 +473,3 @@ function! s:write_all() abort
 endfunction
 
 call s:run()
-" quit
