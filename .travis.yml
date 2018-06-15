@@ -24,5 +24,10 @@ script:
   - which -a vim
   - vim --cmd version --cmd quit
   - vim --cmd "try | helptags doc/ | catch | cquit | endtry" --cmd quit
+  - git clean -f
   - sh /tmp/vim-vimlint/bin/vimlint.sh -l /tmp/vim-vimlint -p /tmp/vim-vimlparser -e EVL103=1 -e EVL102.l:_=1 -c func_abort=1 autoload plugin macros after
   - /tmp/vim-themis/bin/themis -r --runtimepath /tmp/vmock --reporter dot
+  # check if both macros/generate-ftplugins.vim and after/ftplugin/ are updated
+  - rm -rf after/ftplugin/
+  - vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit
+  - bash -c '[[ -z $(git status -s) ]]'
