@@ -667,7 +667,7 @@ A. You can change prefix keymapping
 <
 					*caw-faq-2*
 Q. How do I support a new filetype?
-A. You have two options.
+A. You have several options.
 
 1. Set caw variables on |FileType| event
 
@@ -689,8 +689,12 @@ A. You have two options.
 
    It seems tpope/vim-commentary also supports this type of settings.
 
-If you found missing comment filetypes in default,
-I will be glad if you report it :)
+3. If you are interested in sending pull request :)
+   3.1. Put comment string to macros/generate-ftplugins.vim
+   3.2. Run `vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit`
+   3.3. Commit & Push changes and send pull request to https://github.com/tyru/caw.vim
+
+   Of course, it's welcome to report missing comment filetypes :)
 https://github.com/tyru/caw.vim/issues/new
 
 					*caw-faq-3*
