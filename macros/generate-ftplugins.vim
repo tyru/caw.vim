@@ -1,6 +1,7 @@
 " Run this script to generate after/ftplugin/*:
-"   vim -u NONE -i NONE -N -S macros/separate.vim -c quit
+"   vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit
 
+" Please add oneline comments here
 function! s:oneline() abort
   return {
   \   'aap': '#',
@@ -303,6 +304,7 @@ function! s:oneline() abort
   \}
 endfunction
 
+" Please wrap oneline comments here
 function! s:wrap_oneline() abort
   return {
   \   'aap': ['/*', '*/'],
@@ -392,6 +394,7 @@ function! s:wrap_oneline() abort
   \}
 endfunction
 
+" Please wrap multiline comments here
 function! s:wrap_multiline() abort
   return {
   \   'arduino': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
@@ -459,4 +462,3 @@ function! s:write_all() abort
 endfunction
 
 call s:run()
-" quit
