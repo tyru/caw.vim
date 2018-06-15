@@ -420,12 +420,23 @@ function! s:run() abort
   endtry
 endfunction
 
+function! s:sort_unique(list) abort
+  let result = []
+  let set = {}
+  for el in sort(copy(a:list))
+    if !has_key(set, el)
+      let result += [el]
+    endif
+  endfor
+  return result
+endfunction
+
 function! s:write_all() abort
   let oneline = s:oneline()
   let wrap_oneline = s:wrap_oneline()
   let wrap_multiline = s:wrap_multiline()
-  let all_keys = uniq(sort(
-  \   keys(oneline) + keys(wrap_oneline) + keys(wrap_multiline))
+  let all_keys = s:sort_unique(
+  \   keys(oneline) + keys(wrap_oneline) + keys(wrap_multiline)
   \)
   for filetype in all_keys
     " Create /after/ftplugin/{filetype}/caw.vim
