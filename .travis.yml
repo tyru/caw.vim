@@ -19,6 +19,11 @@ before_script:
   - git clone --depth 1 --single-branch https://github.com/kannokanno/vmock /tmp/vmock
   - git clone --depth 1 --single-branch --branch v1.5.2.1 https://github.com/thinca/vim-themis /tmp/vim-themis
 
+
+install:
+  - bash scripts/install-vim.sh
+  - export PATH=$HOME/vim/bin:$PATH
+
 script:
   - uname -a
   - which -a vim
@@ -28,6 +33,7 @@ script:
   - sh /tmp/vim-vimlint/bin/vimlint.sh -l /tmp/vim-vimlint -p /tmp/vim-vimlparser -e EVL103=1 -e EVL102.l:_=1 -c func_abort=1 autoload plugin macros after
   - /tmp/vim-themis/bin/themis -r --runtimepath /tmp/vmock --reporter dot
   # check if both macros/generate-ftplugins.vim and after/ftplugin/ are updated
+  - git clean -f
   - rm -rf after/ftplugin/
   - vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit
   - bash -c '[[ -z $(git status -s) ]]'
