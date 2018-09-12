@@ -4,7 +4,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let b:caw_oneline_comment = '"'
-function! s:linecont_sp(lnum)
+function! s:linecont_sp(lnum) abort
   return getline(a:lnum) =~# '^\s*\\' ? "" : " "
 endfunction
 let b:caw_hatpos_sp = function("s:linecont_sp")

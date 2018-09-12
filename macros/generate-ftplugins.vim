@@ -409,7 +409,7 @@ endfunction
 function! s:additional_vars() abort
   return {
   \ 'vim': join([
-  \   'function! s:linecont_sp(lnum)',
+  \   'function! s:linecont_sp(lnum) abort',
   \   '  return getline(a:lnum) =~# ''^\s*\\'' ? "" : " "',
   \   'endfunction',
   \   'let b:caw_hatpos_sp = function("s:linecont_sp")',
