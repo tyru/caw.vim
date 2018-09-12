@@ -408,10 +408,13 @@ endfunction
 
 function! s:additional_vars() abort
   return {
-  \ 'vim': [
-  \   ['b:caw_hatpos_sp', '{lnum -> getline(lnum) =~# ''^\s*\\'' ? "" : " "}'],
-  \   ['b:caw_zeropos_sp', 'b:caw_hatpos_sp'],
-  \ ],
+  \ 'vim': join([
+  \   'function! s:linecont_sp(lnum)',
+  \   '  return getline(a:lnum) =~# ''^\s*\\'' ? "" : " "',
+  \   'endfunction',
+  \   'let b:caw_hatpos_sp = function("s:linecont_sp")',
+  \   'let b:caw_zeropos_sp = b:caw_hatpos_sp',
+  \ ], "\n"),
   \}
 endfunction
 
@@ -479,11 +482,7 @@ function! s:write_all() abort
 
     " More additional variables
     if has_key(additional_vars, filetype)
-      let additionals = []
-      for [k, v] in get(additional_vars, filetype)
-        let additionals += [printf('let %s = %s', k, v)]
-      endfor
-      %s@<ADDITIONAL_VARS>@\=join(additionals, "\n")@
+      %s@<ADDITIONAL_VARS>@\=additional_vars[filetype]@
     else
       g/<ADDITIONAL_VARS>/d
     endif
