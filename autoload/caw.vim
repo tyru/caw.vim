@@ -166,6 +166,9 @@ endfunction
 function! caw#get_var(varname, ...) abort
     for ns in [b:, w:, t:, g:]
         if has_key(ns, a:varname)
+            if a:0 > 1 && type(ns[a:varname]) is# type(function('function'))
+                return call(ns[a:varname], a:2)
+            endif
             return ns[a:varname]
         endif
     endfor
