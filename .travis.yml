@@ -21,7 +21,7 @@ before_script:
 
 
 install:
-  - bash scripts/install-vim.sh
+  - bash macros/install-vim.sh
   - export PATH=$HOME/vim/bin:$PATH
 
 script:
@@ -35,5 +35,5 @@ script:
   # check if both macros/generate-ftplugins.vim and after/ftplugin/ are updated
   - git clean -f
   - rm -rf after/ftplugin/
-  - vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit
+  - bash macros/generate-ftplugins.sh
   - bash -c '[[ -z $(git status -s) ]]'
