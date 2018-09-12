@@ -21,7 +21,7 @@ before_script:
 
 
 install:
-  - bash scripts/install-vim.sh
+  - bash macros/install-vim.sh
   - export PATH=$HOME/vim/bin:$PATH
 
 script:
