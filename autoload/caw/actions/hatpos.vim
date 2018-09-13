@@ -30,9 +30,9 @@ function! s:hatpos.comment_normal(lnum, ...) abort
     let startinsert = get(a:000, 0, caw#get_var('caw_hatpos_startinsert_at_blank_line'))
     let min_indent_num = get(a:000, 1, -1)
     let line = caw#getline(a:lnum)
-    let caw_hatpos_sp = line =~# '^\s*$' ?
+    let sp = line =~# '^\s*$' ?
     \               caw#get_var('caw_hatpos_sp_blank') :
-    \               caw#get_var('caw_hatpos_sp')
+    \               caw#get_var('caw_hatpos_sp', '', [a:lnum])
 
     let cmt = self.comment_database.get_comment()
     call caw#assert(!empty(cmt), "`cmt` must not be empty.")
@@ -45,16 +45,16 @@ function! s:hatpos.comment_normal(lnum, ...) abort
         call caw#assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
         let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
         let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-        call caw#setline(a:lnum, before . cmt . caw_hatpos_sp . after)
+        call caw#setline(a:lnum, before . cmt . sp . after)
     elseif line =~# '^\s*$'
-        execute 'normal! '.a:lnum.'G"_cc' . cmt . caw_hatpos_sp
+        execute 'normal! '.a:lnum.'G"_cc' . cmt . sp
         if startinsert && caw#context().mode ==# 'n'
             call caw#startinsert('A')
         endif
     else
         let indent = caw#get_inserted_indent(a:lnum)
         let line = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
-        call caw#setline(a:lnum, indent . cmt . caw_hatpos_sp . line)
+        call caw#setline(a:lnum, indent . cmt . sp . line)
     endif
 endfunction
 
@@ -100,9 +100,9 @@ function! s:hatpos.uncomment_normal(lnum) abort
         if stridx(line, cmt) == 0
             " Remove comment.
             let line = line[strlen(cmt) :]
-            " 'caw_hatpos_sp'
-            if stridx(line, caw#get_var('caw_hatpos_sp')) ==# 0
-                let line = line[strlen(caw#get_var('caw_hatpos_sp')) :]
+            let sp = caw#get_var('caw_hatpos_sp', '', [a:lnum])
+            if stridx(line, sp) ==# 0
+                let line = line[strlen(sp) :]
             endif
             call caw#setline(a:lnum, indent . line)
         endif

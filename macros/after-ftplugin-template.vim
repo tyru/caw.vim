@@ -6,6 +6,7 @@ set cpo&vim
 <ONELINE>
 <WRAP_ONELINE>
 <WRAP_MULTILINE>
+<ADDITIONAL_VARS>
 
 if !exists("b:did_caw_ftplugin")
     if exists('b:undo_ftplugin')

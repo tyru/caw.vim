@@ -406,6 +406,17 @@ function! s:wrap_multiline() abort
   \}
 endfunction
 
+function! s:additional_vars() abort
+  return {
+  \ 'vim': join([
+  \   'function! s:linecont_sp(lnum) abort',
+  \   '  return getline(a:lnum) =~# ''^\s*\\'' ? "" : " "',
+  \   'endfunction',
+  \   'let b:caw_hatpos_sp = function("s:linecont_sp")',
+  \   'let b:caw_zeropos_sp = b:caw_hatpos_sp',
+  \ ], "\n"),
+  \}
+endfunction
 
 
 let s:root_dir = expand('<sfile>:h:h')
@@ -435,6 +446,7 @@ function! s:write_all() abort
   let oneline = s:oneline()
   let wrap_oneline = s:wrap_oneline()
   let wrap_multiline = s:wrap_multiline()
+  let additional_vars = s:additional_vars()
   let all_keys = s:sort_unique(
   \   keys(oneline) + keys(wrap_oneline) + keys(wrap_multiline)
   \)
@@ -466,6 +478,13 @@ function! s:write_all() abort
       %s@<WRAP_MULTILINE>@\='let b:caw_wrap_multiline_comment = '.string(wrap_multiline[filetype])@
     else
       g/<WRAP_MULTILINE>/d
+    endif
+
+    " More additional variables
+    if has_key(additional_vars, filetype)
+      %s@<ADDITIONAL_VARS>@\=additional_vars[filetype]@
+    else
+      g/<ADDITIONAL_VARS>/d
     endif
 
     write
