@@ -8,6 +8,7 @@ set cpo&vim
 
 
 let s:installed_repeat_vim = (globpath(&rtp, 'autoload/repeat.vim') !=# '')
+let s:installed_context_filetype = (globpath(&rtp, 'autoload/context_filetype.vim') !=# '')
 let s:op_args = ''
 let s:op_doing = 0
 
@@ -33,7 +34,7 @@ function! caw#keymapping_stub(mode, action, method) abort
 
     " Context filetype support.
     " https://github.com/Shougo/context_filetype.vim
-    if exists('*context_filetype#get_filetype')
+    if s:installed_context_filetype
         let conft = context_filetype#get_filetype()
         if conft !=# &l:filetype
             let old_filetype = &l:filetype
