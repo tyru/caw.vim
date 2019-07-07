@@ -260,6 +260,7 @@ function! s:oneline() abort
   \   'st': '"',
   \   'stp': '--',
   \   'swig': '//',
+  \   'systemd': '#',
   \   'systemverilog': '//',
   \   'tads': '//',
   \   'tags': ';',
