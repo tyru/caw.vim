@@ -12,6 +12,13 @@ matrix:
     - os: linux
       env: VIM_VERSION=master
     - os: osx
+      cache:
+        directories:
+          - $HOME/Library/Caches/Homebrew/
+          - /usr/local/Homebrew/Library/Homebrew/vendor/
+          - /usr/local/Homebrew/Library/Taps/
+      before_cache:
+        - brew cleanup
 
 before_script:
   - git clone --depth 1 --single-branch https://github.com/syngan/vim-vimlint /tmp/vim-vimlint
@@ -19,6 +26,11 @@ before_script:
   - git clone --depth 1 --single-branch https://github.com/kannokanno/vmock /tmp/vmock
   - git clone --depth 1 --single-branch --branch v1.5.2.1 https://github.com/thinca/vim-themis /tmp/vim-themis
 
+addons:
+  homebrew:
+    packages:
+      - macvim
+    update: true
 
 install:
   - bash macros/install-vim.sh
