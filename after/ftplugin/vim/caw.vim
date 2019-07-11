@@ -10,7 +10,7 @@ endfunction
 let b:caw_hatpos_sp = function("s:linecont_sp")
 let b:caw_zeropos_sp = b:caw_hatpos_sp
 
-if !exists("b:did_caw_ftplugin")
+if !exists('b:did_caw_ftplugin')
     if exists('b:undo_ftplugin')
         let b:undo_ftplugin .= ' | '
     else
