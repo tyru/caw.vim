@@ -35,6 +35,7 @@ addons:
 install:
   - bash macros/install-vim.sh
   - export PATH=$HOME/vim/bin:$PATH
+  - pip install --user --upgrade vim-vint pathlib enum34 typing
 
 script:
   - uname -a
@@ -42,7 +43,8 @@ script:
   - vim --cmd version --cmd quit
   - vim --cmd "try | helptags doc/ | catch | cquit | endtry" --cmd quit
   - git clean -f
-  - sh /tmp/vim-vimlint/bin/vimlint.sh -l /tmp/vim-vimlint -p /tmp/vim-vimlparser -e EVL103=1 -e EVL102.l:_=1 -c func_abort=1 autoload plugin macros after
+  - python --version
+  - vint autoload plugin macros after
   - /tmp/vim-themis/bin/themis -r --runtimepath /tmp/vmock --reporter dot
   # check if both macros/generate-ftplugins.vim and after/ftplugin/ are updated
   - git clean -f
