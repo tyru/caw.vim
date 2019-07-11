@@ -8,7 +8,7 @@ set cpo&vim
 <WRAP_MULTILINE>
 <ADDITIONAL_VARS>
 
-if !exists("b:did_caw_ftplugin")
+if !exists('b:did_caw_ftplugin')
     if exists('b:undo_ftplugin')
         let b:undo_ftplugin .= ' | '
     else

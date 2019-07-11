@@ -35,7 +35,7 @@ function! s:hatpos.comment_normal(lnum, ...) abort
     \               caw#get_var('caw_hatpos_sp', '', [a:lnum])
 
     let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), "`cmt` must not be empty.")
+    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
 
     if min_indent_num >= 0
         if min_indent_num > strlen(line)
@@ -72,7 +72,7 @@ function! s:hatpos.comment_visual() abort
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if skip_blank_line && caw#getline(lnum) =~ '^\s*$'
+        if skip_blank_line && caw#getline(lnum) =~# '^\s*$'
             continue    " Skip blank line.
         endif
         if exists('min_indent_num')
@@ -92,7 +92,7 @@ endfunction
 
 function! s:hatpos.uncomment_normal(lnum) abort
     let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), "`cmt` must not be empty.")
+    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
 
     if self.has_comment_normal(a:lnum)
         let indent = caw#get_inserted_indent(a:lnum)

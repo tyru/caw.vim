@@ -29,7 +29,7 @@ function! s:dollarpos.comment_normal(lnum, ...) abort
     let startinsert = a:0 ? a:1 : caw#get_var('caw_dollarpos_startinsert') && caw#context().mode ==# 'n'
 
     let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), "`cmt` must not be empty.")
+    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
 
     call caw#setline(
     \   a:lnum,
@@ -81,7 +81,7 @@ endfunction
 
 function! s:dollarpos.uncomment_normal(lnum) abort
     let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), "`cmt` must not be empty.")
+    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
 
     if self.has_comment_normal(a:lnum)
         let col = s:get_comment_col(a:lnum)
@@ -92,7 +92,7 @@ function! s:dollarpos.uncomment_normal(lnum) abort
 
         let line = caw#getline(a:lnum)
         let [l, r] = [line[idx : idx + strlen(cmt) - 1], cmt]
-        call caw#assert(l ==# r, "s:caw.a.uncomment_normal(): ".string(l).' ==# '.string(r))
+        call caw#assert(l ==# r, 's:caw.a.uncomment_normal(): '.string(l).' ==# '.string(r))
 
         let before = line[0 : idx - 1]
         " 'caw_dollarpos_sp_left'

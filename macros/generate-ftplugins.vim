@@ -81,7 +81,7 @@ function! s:oneline() abort
   \   'egison': ';',
   \   'eiffel': '--',
   \   'elf': "'",
-  \   'elm': "--",
+  \   'elm': '--',
   \   'elmfilt': '#',
   \   'erlang': '%',
   \   'expect': '#',
@@ -419,9 +419,9 @@ function! s:additional_vars() abort
   return {
   \ 'vim': join([
   \   'function! s:linecont_sp(lnum) abort',
-  \   '  return getline(a:lnum) =~# ''^\s*\\'' ? "" : " "',
+  \   '  return getline(a:lnum) =~# ''^\s*\\'' ? '''' : '' ''',
   \   'endfunction',
-  \   'let b:caw_hatpos_sp = function("s:linecont_sp")',
+  \   'let b:caw_hatpos_sp = function(''s:linecont_sp'')',
   \   'let b:caw_zeropos_sp = b:caw_hatpos_sp',
   \ ], "\n"),
   \}
@@ -468,6 +468,9 @@ function! s:write_all() abort
     silent read macros/after-ftplugin-template.vim
     silent 1delete _
 
+    " vint: -ProhibitCommandRelyOnUser
+    " vint: -ProhibitCommandWithUnintendedSideEffect
+
     " b:caw_oneline_comment
     if has_key(oneline, filetype)
       %s@<ONELINE>@\='let b:caw_oneline_comment = '.string(oneline[filetype])@
@@ -495,6 +498,9 @@ function! s:write_all() abort
     else
       g/<ADDITIONAL_VARS>/d
     endif
+
+    " vint: +ProhibitCommandRelyOnUser
+    " vint: +ProhibitCommandWithUnintendedSideEffect
 
     write
   endfor

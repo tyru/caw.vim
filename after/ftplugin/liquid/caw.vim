@@ -5,7 +5,7 @@ set cpo&vim
 
 let b:caw_wrap_oneline_comment = ['{%', '%}']
 
-if !exists("b:did_caw_ftplugin")
+if !exists('b:did_caw_ftplugin')
     if exists('b:undo_ftplugin')
         let b:undo_ftplugin .= ' | '
     else

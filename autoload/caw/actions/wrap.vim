@@ -29,7 +29,7 @@ function! s:wrap.comment_normal(lnum, ...) abort
     let right_col = get(a:000, 1, -1)
 
     let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), "`cmt` must not be empty.")
+    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
     if caw#context().mode ==# 'n'
     \   && caw#get_var('caw_wrap_skip_blank_line')
     \   && caw#getline(a:lnum) =~# '^\s*$'
@@ -41,17 +41,17 @@ function! s:wrap.comment_normal(lnum, ...) abort
     if left_col > 0 && right_col > 0
         let line = caw#wrap_comment_align(
         \   line,
-        \   left_cmt . caw#get_var("caw_wrap_sp_left"),
-        \   caw#get_var("caw_wrap_sp_right") . right_cmt,
+        \   left_cmt . caw#get_var('caw_wrap_sp_left'),
+        \   caw#get_var('caw_wrap_sp_right') . right_cmt,
         \   left_col,
         \   right_col)
         call caw#setline(a:lnum, line)
     else
         let line = substitute(line, '^\s\+', '', '')
-        if left_cmt != ''
+        if left_cmt !=# ''
             let line = left_cmt . caw#get_var('caw_wrap_sp_left') . line
         endif
-        if right_cmt != ''
+        if right_cmt !=# ''
             let line = line . caw#get_var('caw_wrap_sp_right') . right_cmt
         endif
         let line = caw#get_inserted_indent(a:lnum) . line
@@ -65,7 +65,7 @@ function! s:wrap.comment_visual() abort
     \   'V': 'linewise',
     \   "\<C-v>": 'blockwise',
     \}, caw#context().visualmode, '')
-    if wiseness != ''
+    if wiseness !=# ''
     \   && has_key(self, 'comment_visual_' . wiseness)
         call call(self['comment_visual_' . wiseness], [], self)
         return
@@ -84,7 +84,7 @@ function! s:wrap.comment_visual() abort
     \   caw#context().firstline,
     \   caw#context().lastline
     \)
-        if skip_blank_line && caw#getline(lnum) =~ '^\s*$'
+        if skip_blank_line && caw#getline(lnum) =~# '^\s*$'
             continue    " Skip blank line.
         endif
         if exists('left_col') && exists('right_col')
@@ -125,7 +125,7 @@ endfunction
 
 function! s:wrap.comment_visual_characterwise() abort
     let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), "`cmt` must not be empty.")
+    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
     call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction
 
@@ -140,8 +140,8 @@ function! s:wrap.has_comment_normal(lnum) abort
     " line begins with left, ends with right.
     let [left, right] = cmt
     return
-    \   (left == '' || line[: strlen(left) - 1] ==# left)
-    \   && (right == '' || line[strlen(line) - strlen(right) :] ==# right)
+    \   (left ==# '' || line[: strlen(left) - 1] ==# left)
+    \   && (right ==# '' || line[strlen(line) - strlen(right) :] ==# right)
 endfunction
 
 function! s:wrap.uncomment_normal(lnum) abort
@@ -150,10 +150,10 @@ function! s:wrap.uncomment_normal(lnum) abort
         let [left, right] = cmt
         let line = caw#trim_whitespaces(caw#getline(a:lnum))
 
-        if left != '' && line[: strlen(left) - 1] ==# left
+        if left !=# '' && line[: strlen(left) - 1] ==# left
             let line = line[strlen(left) :]
         endif
-        if right != '' && line[strlen(line) - strlen(right) :] ==# right
+        if right !=# '' && line[strlen(line) - strlen(right) :] ==# right
             let line = line[: -strlen(right) - 1]
         endif
 

@@ -40,8 +40,8 @@ function! s:box.comment() abort
     let width = right_col - left_col
     call caw#assert(width > 0, 'width > 0')
 
-    let sp_left = caw#get_var("caw_box_sp_left")
-    let sp_right = caw#get_var("caw_box_sp_right")
+    let sp_left = caw#get_var('caw_box_sp_left')
+    let sp_right = caw#get_var('caw_box_sp_right')
     call map(lines, 'caw#wrap_comment_align(v:val, cmt.left . sp_left, sp_right . cmt.right, left_col, right_col)')
     " Pad/Remove left/right whitespaces.
     let tops_and_bottoms = caw#make_indent_str(left_col-1)
