@@ -86,7 +86,7 @@ function! caw#keymapping_stub(mode, action, method) abort
         if s:installed_repeat_vim && !s:op_doing
             let lines = context.lastline - context.firstline
             execute 'nnoremap <Plug>(caw:__op_select__)'
-            \       (lines > 0 ? "V" . lines . "j" : "<Nop>")
+            \       (lines > 0 ? 'V' . lines . 'j' : '<Nop>')
             let lastmap = printf(
             \   "\<Plug>(caw:__op_select__)\<Plug>(caw:%s:%s)",
             \   a:action, a:method
@@ -114,10 +114,10 @@ endfunction
 function! caw#__do_operator__(motion_wise) abort
     let s:op_doing = 1
     try
-        if a:motion_wise == 'char'
-            execute "normal `[v`]\<Plug>(caw:" . s:op_args . ")"
+        if a:motion_wise ==# 'char'
+            execute "normal `[v`]\<Plug>(caw:" . s:op_args . ')'
         else
-            execute "normal `[V`]\<Plug>(caw:" . s:op_args . ")"
+            execute "normal `[V`]\<Plug>(caw:" . s:op_args . ')'
         endif
     finally
         let s:op_doing = 0
@@ -146,7 +146,7 @@ endfunction
 
 " Utilities: Misc. functions. {{{
 
-function s:SID() abort
+function! s:SID() abort
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
 let s:SNR_PREFIX = '<SNR>' . s:SID() . '_'
@@ -176,8 +176,8 @@ function! caw#get_var(varname, ...) abort
     if a:0
         return a:1
     else
-        call caw#assert(0, "caw#get_var(" . string(a:varname) . "):"
-        \                . " this must be reached!")
+        call caw#assert(0, 'caw#get_var(' . string(a:varname) . '):'
+        \                . ' this must be reached!')
     endif
 endfunction
 
@@ -205,7 +205,7 @@ endfunction
 function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum) abort
     let min_indent_num = 1/0
     for lnum in range(a:from_lnum, a:to_lnum)
-        if a:skip_blank_line && caw#getline(lnum) =~ '^\s*$'
+        if a:skip_blank_line && caw#getline(lnum) =~# '^\s*$'
             continue    " Skip blank line.
         endif
         let n = s:get_inserted_indent_num(lnum)
@@ -220,7 +220,7 @@ function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum) abo
     let left  = 1/0
     let right = 1
     for line in caw#getline(a:from_lnum, a:to_lnum)
-        if a:skip_blank_line && line =~ '^\s*$'
+        if a:skip_blank_line && line =~# '^\s*$'
             continue    " Skip blank line.
         endif
         let l  = strlen(matchstr(line, '^\s*')) + 1
