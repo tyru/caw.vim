@@ -493,8 +493,8 @@ g:caw_hatpos_startinsert_at_blank_line
 g:caw_hatpos_skip_blank_line
 									(Default: 0)
 
-	if this variable is non-zero,
-	caw does not comment out a blank line. otherwise it does.
+	If this variable is non-zero,
+	caw does not comment out a blank line. Otherwise it does.
 
 	NOTE: An old variable name was |g:caw_i_skip_blank_line|.
 	See |caw-faq-3| why I renamed the keymapping.
