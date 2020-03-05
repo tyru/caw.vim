@@ -11,6 +11,7 @@ let s:togglable = {}
 " Derived object must implement those.
 "
 " s:togglable.toggle requires:
+" - Derived.has_all_comment()
 " - Derived.uncomment()
 " - Derived.comment()
 

@@ -15,6 +15,7 @@ function! caw#actions#dollarpos#new() abort
     let obj.has_comment = comment_detectable.has_comment
     let obj.has_comment_visual = comment_detectable.has_comment_visual
     let obj.has_all_comment = comment_detectable.has_all_comment
+    let obj.search_synstack = comment_detectable.search_synstack
     let obj.toggle = togglable.toggle
     " Import comment database.
     let obj.comment_database = caw#new('comments.oneline')
@@ -43,40 +44,12 @@ function! s:dollarpos.comment_normal(lnum, ...) abort
     endif
 endfunction
 
-" TODO: Move this to comments.traits.comment_detectable ?
-function! s:get_comment_col(lnum) abort
+function! s:dollarpos.has_comment_normal(lnum) abort
     let cmt = caw#new('comments.oneline').get_comment()
     if empty(cmt)
-        return -1
+        return 0
     endif
-
-    let line = caw#getline(a:lnum)
-    let cols = []
-    let idx  = -1
-    while 1
-        let idx = stridx(line, cmt, (idx ==# -1 ? 0 : idx + 1))
-        if idx == -1
-            break
-        endif
-        call add(cols, idx + 1)
-    endwhile
-
-    if empty(cols)
-        return -1
-    endif
-
-    for col in cols
-        for id in caw#synstack(a:lnum, col)
-            if caw#synIDattr(synIDtrans(id), 'name') ==# 'Comment'
-                return col
-            endif
-        endfor
-    endfor
-    return -1
-endfunction
-
-function! s:dollarpos.has_comment_normal(lnum) abort
-    return s:get_comment_col(a:lnum) > 0
+    return self.search_synstack(a:lnum, cmt, '^Comment$') > 0
 endfunction
 
 function! s:dollarpos.uncomment_normal(lnum) abort

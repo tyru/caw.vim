@@ -48,3 +48,29 @@ function! s:comment_detectable.has_all_comment() abort
     endfor
     return 1
 endfunction
+
+function! s:comment_detectable.search_synstack(lnum, cmt, pattern) abort
+    let line = caw#getline(a:lnum)
+    let cols = []
+    let idx  = -1
+    while 1
+        let idx = stridx(line, a:cmt, (idx ==# -1 ? 0 : idx + 1))
+        if idx == -1
+            break
+        endif
+        call add(cols, idx + 1)
+    endwhile
+
+    if empty(cols)
+        return -1
+    endif
+
+    for col in cols
+        for id in caw#synstack(a:lnum, col)
+            if caw#synIDattr(synIDtrans(id), 'name') =~# a:pattern
+                return col
+            endif
+        endfor
+    endfor
+    return -1
+endfunction
