@@ -28,6 +28,7 @@ function! caw#keymapping_stub(mode, action, method) abort
         let context.firstline = line("'<")
         let context.lastline  = line("'>")
     endif
+    let context.col = col('.')
     unlockvar! s:context
     let s:context = context
     lockvar! s:context

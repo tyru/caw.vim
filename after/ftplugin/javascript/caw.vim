@@ -4,7 +4,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let b:caw_oneline_comment = '//'
-let b:caw_wrap_oneline_comment = ['/*', '*/']
+let b:caw_wrap_oneline_comment = function('caw#ft#jsx#wrap_comment')
 
 if !exists('b:did_caw_ftplugin')
     if exists('b:undo_ftplugin')
