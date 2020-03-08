@@ -6,16 +6,28 @@ endfunction
 
 
 let s:oneline = {}
+let s:METHODS = ['get_comment_vars', 'get_comment_detect']
+lockvar! s:METHODS
 
 function! s:oneline.get_comment() abort
-    for method in ['get_comment_vars', 'get_comment_detect']
+    for method in s:METHODS
         let r = self[method]()
         if !empty(r)
             return r
         endif
-        unlet r
     endfor
     return ''
+endfunction
+
+function! s:oneline.get_comments() abort
+    let comments = []
+    for method in s:METHODS
+        let r = self[method]()
+        if !empty(r)
+            let comments += [r]
+        endif
+    endfor
+    return comments
 endfunction
 
 function! s:oneline.get_comment_vars() abort
