@@ -7,8 +7,8 @@ set cpo&vim
 " }}}
 
 
-let s:installed_repeat_vim = (globpath(&rtp, 'autoload/repeat.vim') !=# '')
-let s:installed_context_filetype = (globpath(&rtp, 'autoload/context_filetype.vim') !=# '')
+let s:installed_repeat_vim = (globpath(&runtimepath, 'autoload/repeat.vim') !=# '')
+let s:installed_context_filetype = (globpath(&runtimepath, 'autoload/context_filetype.vim') !=# '')
 let s:op_args = ''
 let s:op_doing = 0
 
