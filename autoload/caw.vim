@@ -158,6 +158,25 @@ function! s:local_func(name) abort
 endfunction
 
 
+if s:installed_context_filetype
+    function! caw#get_related_filetypes(ft) abort
+        let filetypes = get(context_filetype#filetypes(), a:ft, [])
+        call map(filetypes, 'v:val.filetype')
+        let dup = {}
+        let related = []
+        for ft in filetypes
+            if !has_key(dup, ft)
+                let related += [ft]
+                let dup[ft] = 1
+            endif
+        endfor
+        return related
+    endfunction
+else
+    function! caw#get_related_filetypes(ft) abort
+        return []
+    endfunction
+endif
 
 function! caw#assert(cond, msg) abort
     if !a:cond

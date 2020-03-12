@@ -14,7 +14,7 @@ function! s:base._get_comment_vars(varname) abort
     if current isnot# NONE
         let comments += [current]
     endif
-    let filetypes = caw#get_var('caw_related_filetypes', [])
+    let filetypes = caw#get_related_filetypes(&filetype)
     for ft in filetypes
         call s:load_ftplugin(ft)
         let cmt = caw#get_var(a:varname, NONE, [line('.')])
