@@ -1,7 +1,8 @@
 scriptencoding utf-8
 
 function! caw#comments#oneline#new() abort
-    return deepcopy(s:oneline)
+    let obj = caw#comments#base#new()
+    return extend(obj, deepcopy(s:oneline))
 endfunction
 
 
@@ -12,22 +13,19 @@ lockvar! s:METHODS
 function! s:oneline.get_comments() abort
     let comments = []
     for method in s:METHODS
-        let r = self[method]()
-        if !empty(r)
-            let comments += [r]
-        endif
+        let comments += self[method]()
     endfor
     return comments
 endfunction
 
 function! s:oneline.get_comment_vars() abort
-    return caw#get_var('caw_oneline_comment', '')
+    return self._get_comment_vars('caw_oneline_comment')
 endfunction
 
 function! s:oneline.get_comment_detect() abort
     let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
     if !empty(m) && m[1] !=# '' && m[2] ==# ''
-        return m[1]
+        return [m[1]]
     endif
-    return ''
+    return []
 endfunction

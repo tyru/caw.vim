@@ -1,7 +1,8 @@
 scriptencoding utf-8
 
 function! caw#comments#wrap_multiline#new() abort
-    return deepcopy(s:wrap_multiline)
+    let obj = caw#comments#base#new()
+    return extend(obj, deepcopy(s:wrap_multiline))
 endfunction
 
 
@@ -12,14 +13,11 @@ lockvar! s:METHODS
 function! s:wrap_multiline.get_comments() abort
     let comments = []
     for method in s:METHODS
-        let r = self[method]()
-        if !empty(r)
-            let comments += [r]
-        endif
+        let comments += self[method]()
     endfor
     return comments
 endfunction
 
 function! s:wrap_multiline.get_comment_vars() abort
-    return caw#get_var('caw_wrap_multiline_comment', '')
+    return self._get_comment_vars('caw_wrap_multiline_comment')
 endfunction
