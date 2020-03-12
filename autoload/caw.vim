@@ -61,7 +61,7 @@ function! caw#keymapping_stub(mode, action, method) abort
         for act in actions
             let old_changedtick = b:changedtick
             if has_key(act, 'comment_database')
-            \   && empty(act.comment_database.get_comment())
+            \   && empty(act.comment_database.get_comments())
                 continue
             endif
 

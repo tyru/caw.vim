@@ -9,16 +9,6 @@ let s:wrap_oneline = {}
 let s:METHODS = ['get_comment_vars', 'get_comment_detect']
 lockvar! s:METHODS
 
-function! s:wrap_oneline.get_comment() abort
-    for method in s:METHODS
-        let r = self[method]()
-        if !empty(r)
-            return r
-        endif
-    endfor
-    return []
-endfunction
-
 function! s:wrap_oneline.get_comments() abort
     let comments = []
     for method in s:METHODS

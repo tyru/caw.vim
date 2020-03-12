@@ -29,8 +29,9 @@ let s:dollarpos = {'fallback_types': ['wrap']}
 function! s:dollarpos.comment_normal(lnum, ...) abort
     let startinsert = a:0 ? a:1 : caw#get_var('caw_dollarpos_startinsert') && caw#context().mode ==# 'n'
 
-    let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
+    let comments = self.comment_database.get_comments()
+    call caw#assert(!empty(comments), '`comments` must not be empty.')
+    let cmt = comments[0]
 
     call caw#setline(
     \   a:lnum,
@@ -45,24 +46,21 @@ function! s:dollarpos.comment_normal(lnum, ...) abort
 endfunction
 
 function! s:dollarpos.has_comment_normal(lnum) abort
-    let cmt = caw#new('comments.oneline').get_comment()
-    if empty(cmt)
-        return 0
-    endif
-    return self.search_synstack(a:lnum, cmt, '^Comment$') > 0
+    for cmt in self.comment_database.get_comments()
+        if self.search_synstack(a:lnum, cmt, '^Comment$') > 0
+            return 1
+        endif
+    endfor
+    return 0
 endfunction
 
 function! s:dollarpos.uncomment_normal(lnum) abort
-    let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
-
-    if self.has_comment_normal(a:lnum)
-        let col = s:get_comment_col(a:lnum)
+    for cmt in self.comment_database.get_comments()
+        let col = self.search_synstack(a:lnum, cmt, '^Comment$')
         if col <= 0
-            return
+            continue
         endif
         let idx = col - 1
-
         let line = caw#getline(a:lnum)
         let [l, r] = [line[idx : idx + strlen(cmt) - 1], cmt]
         call caw#assert(l ==# r, 's:caw.a.uncomment_normal(): '.string(l).' ==# '.string(r))
@@ -72,5 +70,6 @@ function! s:dollarpos.uncomment_normal(lnum) abort
         let before = substitute(before, '\s\+$', '', '')
 
         call caw#setline(a:lnum, before)
-    endif
+        break
+    endfor
 endfunction
