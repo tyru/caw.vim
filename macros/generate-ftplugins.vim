@@ -426,6 +426,12 @@ function! s:additional_vars() abort
   \   'let b:caw_hatpos_sp = function(''s:linecont_sp'')',
   \   'let b:caw_zeropos_sp = b:caw_hatpos_sp',
   \ ], "\n"),
+  \ 'javascript': [
+  \   'let b:caw_related_filetypes = [''jsx'']',
+  \ ],
+  \ 'typescript': [
+  \   'let b:caw_related_filetypes = [''tsx'']',
+  \ ],
   \}
 endfunction
 
