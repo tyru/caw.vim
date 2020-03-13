@@ -5,7 +5,12 @@ let s:assert = themis#helper('assert')
 
 function! s:suite.get_comments() abort
     let wrap_oneline = caw#new('comments.wrap_oneline')
-    call s:test_get_comment(wrap_oneline, ['L', 'R'], '/*%s*/', [['/*', '*/'], ['L', 'R']], 'get_comments')
+    call s:test_get_comment(wrap_oneline, ['L', 'R'], '/*%s*/', [['L', 'R'], ['/*', '*/']], 'get_comments')
+endfunction
+
+function! s:suite.sorted_comments_by_length_desc() abort
+    let wrap_oneline = caw#new('comments.wrap_oneline')
+    call s:test_get_comment(wrap_oneline, ['L', 'R'], '/*%s*/', [['/*', '*/'], ['L', 'R']], 'sorted_comments_by_length_desc')
 endfunction
 
 function! s:suite.get_comment_vars() abort

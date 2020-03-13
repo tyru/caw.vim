@@ -10,6 +10,13 @@ function! s:suite.get_comments() abort
     call s:test_get_comment(wrap_multiline, value, [expected], 'get_comments')
 endfunction
 
+function! s:suite.sorted_comments_by_length_desc() abort
+    let wrap_multiline = caw#new('comments.wrap_multiline')
+    let value = {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'}
+    let expected = copy(value)
+    call s:test_get_comment(wrap_multiline, value, [expected], 'sorted_comments_by_length_desc')
+endfunction
+
 function! s:suite.get_comment_vars() abort
     let wrap_multiline = caw#new('comments.wrap_multiline')
     let value = {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'}
