@@ -20,7 +20,6 @@ function! caw#keymapping_stub(mode, action, method) abort
     " Set up context.
     let context = {}
     let context.mode = a:mode
-    let context.visualmode = visualmode()
     if a:mode ==# 'n'
         let context.firstline = line('.')
         let context.lastline  = line('.')
