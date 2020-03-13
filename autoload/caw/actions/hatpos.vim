@@ -106,7 +106,12 @@ function! s:hatpos.uncomment_normal(lnum) abort
                 if stridx(line, sp) ==# 0
                     let line = line[strlen(sp) :]
                 endif
-                call caw#setline(a:lnum, indent . line)
+                if caw#trim_whitespaces(line) ==# ''
+                    let line = ''
+                else
+                    let line = indent . line
+                endif
+                call caw#setline(a:lnum, line)
                 break
             endif
         endif
