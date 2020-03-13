@@ -158,7 +158,7 @@ function! s:local_func(name) abort
 endfunction
 
 
-if s:installed_context_filetype
+if s:installed_context_filetype && exists('*context_filetype#filetypes')
     function! caw#get_related_filetypes(ft) abort
         let filetypes = get(context_filetype#filetypes(), a:ft, [])
         call map(filetypes, 'v:val.filetype')
