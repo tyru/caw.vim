@@ -11,14 +11,14 @@ function! s:base._get_comment_vars(varname) abort
     let NONE = []
     let comments = []
     let current = caw#get_var(a:varname, NONE, [line('.')])
-    if current isnot# NONE
+    if current isnot# NONE && !empty(current)
         let comments += [current]
     endif
     let filetypes = caw#get_related_filetypes(&filetype)
     for ft in filetypes
         call s:load_ftplugin(ft)
         let cmt = caw#get_var(a:varname, NONE, [line('.')])
-        if cmt isnot# NONE
+        if cmt isnot# NONE && !empty(current)
             let comments += [cmt]
         endif
     endfor
