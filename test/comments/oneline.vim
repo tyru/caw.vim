@@ -3,34 +3,34 @@ scriptencoding utf-8
 let s:suite = themis#suite('comments.oneline')
 let s:assert = themis#helper('assert')
 
-function! s:suite.get_comment() abort
+function! s:suite.get_comments() abort
     let oneline = caw#new('comments.oneline')
-    call s:test_get_comment(oneline, 'COMMENT1', 'COMMENT1', 'get_comment')
+    call s:test_get_comment(oneline, 'COMMENT1', ['COMMENT1'], 'get_comments')
 endfunction
 
 function! s:suite.get_comment_vars() abort
     let oneline = caw#new('comments.oneline')
-    call s:test_get_comment(oneline, 'COMMENT2', 'COMMENT2', 'get_comment_vars')
+    call s:test_get_comment(oneline, 'COMMENT2', ['COMMENT2'], 'get_comment_vars')
 endfunction
 
 function! s:suite.get_comment_vars_empty() abort
     let oneline = caw#new('comments.oneline')
-    call s:test_get_comment(oneline, '', '', 'get_comment_vars')
+    call s:test_get_comment(oneline, '', [], 'get_comment_vars')
 endfunction
 
 function! s:suite.get_comment_detect() abort
     let oneline = caw#new('comments.oneline')
-    call s:test_get_comment_detect(oneline, '//%s', '//')
+    call s:test_get_comment_detect(oneline, '//%s', ['//'])
 endfunction
 
 function! s:suite.get_comment_detect_spaces() abort
     let oneline = caw#new('comments.oneline')
-    call s:test_get_comment_detect(oneline, '// %s', '//')
+    call s:test_get_comment_detect(oneline, '// %s', ['//'])
 endfunction
 
 function! s:suite.get_comment_detect_empty() abort
     let oneline = caw#new('comments.oneline')
-    call s:test_get_comment_detect(oneline, '', '')
+    call s:test_get_comment_detect(oneline, '', [])
 endfunction
 
 
