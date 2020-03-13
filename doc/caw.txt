@@ -106,6 +106,21 @@ Type "gcO"
 		"   // "  (now cursor is at the end and entered insert-mode)
 		"   func1();"
 
+You can use [count] for caw mappings to operate on below lines.
+Type "3gci"
+	before:
+		"   n1 = 1"
+		"   n2 = 2"
+		"   n3 = 3"
+		"   n4 = 4"
+		"   n5 = 5"
+	after:
+		"   // n1 = 1"
+		"   // n2 = 2"
+		"   // n3 = 3"
+		"   n4 = 4"
+		"   n5 = 5"
+
 }}}
 ==============================================================================
 FEATURES								*caw-features* {{{
