@@ -215,6 +215,25 @@ function! caw#make_indent_str(indent_byte_num) abort
 endfunction
 
 
+if exists('*uniq')
+    function! caw#uniq(list) abort
+        return uniq(a:list)
+    endfunction
+else
+    function! caw#uniq(list) abort
+        if len(a:list) <=# 1
+            return a:list
+        endif
+        let results = [a:list[0]]
+        for l:V in a:list[1:]
+            if string(results[-1]) !=# string(l:V)
+                let results += [l:V]
+            endif
+        endfor
+        return results
+    endfunction
+endif
+
 function! caw#trim_whitespaces(str) abort
     let str = a:str
     let str = substitute(str, '^\s\+', '', '')

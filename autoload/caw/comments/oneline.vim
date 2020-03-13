@@ -19,6 +19,14 @@ function! s:oneline.get_comments() abort
     return comments
 endfunction
 
+function! s:oneline.sorted_comments_by_length_desc() abort
+    return self._sorted_comments_by_length_desc(function('s:by_length_desc'))
+endfunction
+
+function! s:by_length_desc(c1, c2) abort
+    return strlen(a:c2) - strlen(a:c1)
+endfunction
+
 function! s:oneline.get_comment_vars() abort
     return self._get_comment_vars('caw_oneline_comment')
 endfunction

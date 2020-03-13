@@ -7,6 +7,11 @@ endfunction
 
 let s:base = {}
 
+function! s:base._sorted_comments_by_length_desc(by_length) abort
+    let comments = self.get_comments()
+    return caw#uniq(sort(comments, a:by_length))
+endfunction
+
 function! s:base._get_comment_vars(varname) abort
     let NONE = []
     let comments = []

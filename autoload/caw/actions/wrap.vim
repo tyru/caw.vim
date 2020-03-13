@@ -146,9 +146,9 @@ function! s:wrap.has_comment_normal(lnum) abort
 endfunction
 
 function! s:wrap.uncomment_normal(lnum) abort
-    let comments = self.comment_database.get_comments()
+    let comments = self.comment_database.sorted_comments_by_length_desc()
     if empty(comments) || !self.has_comment_normal(a:lnum)
-      return
+        return
     endif
     let line_without_indent = caw#trim_whitespaces(caw#getline(a:lnum))
     for [left, right] in comments

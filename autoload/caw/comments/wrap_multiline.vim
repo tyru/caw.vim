@@ -19,6 +19,20 @@ function! s:wrap_multiline.get_comments() abort
     return comments
 endfunction
 
+function! s:wrap_multiline.sorted_comments_by_length_desc() abort
+    return self._sorted_comments_by_length_desc(function('s:by_length_desc'))
+endfunction
+
+function! s:by_length_desc(c1, c2) abort
+    let [l1, r1] = [a:c1.left, a:c1.right]
+    let [l2, r2] = [a:c2.left, a:c2.right]
+    let d = strlen(l2) - strlen(l1)
+    if d !=# 0
+        return d
+    endif
+    return strlen(r2) - strlen(r1)
+endfunction
+
 function! s:wrap_multiline.get_comment_vars() abort
     return self._get_comment_vars('caw_wrap_multiline_comment')
 endfunction
