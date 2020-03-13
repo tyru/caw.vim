@@ -16,8 +16,25 @@ function! s:wrap_oneline.get_comments() abort
     for method in s:METHODS
         let comments += self[method]()
     endfor
-    return uniq(sort(comments, function('s:by_length')))
+    return s:uniq(sort(comments, function('s:by_length')))
 endfunction
+
+if exists('*uniq')
+    let s:uniq = function('uniq')
+else
+    function! s:uniq(list) abort
+        let results = []
+        let dup = {}
+        for l:V in a:list
+            let id = string(l:V)
+            if !has_key(dup, id)
+                let results += [l:V]
+                let dup[id] = 1
+            endif
+        endfor
+        return results
+    endfunction
+endif
 
 function! s:by_length(c1, c2) abort
     let [l1, r1] = a:c1
