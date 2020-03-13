@@ -7,6 +7,7 @@ endfunction
 
 
 let s:wrap_multiline = {}
+unlet! s:METHODS
 let s:METHODS = ['get_comment_vars']
 lockvar! s:METHODS
 

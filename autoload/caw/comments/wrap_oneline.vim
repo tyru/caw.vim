@@ -7,6 +7,7 @@ endfunction
 
 
 let s:wrap_oneline = {}
+unlet! s:METHODS
 let s:METHODS = ['get_comment_vars', 'get_comment_detect']
 lockvar! s:METHODS
 
