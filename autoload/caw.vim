@@ -223,8 +223,8 @@ function! caw#get_both_sides_space_cols(skip_blank_line, from_lnum, to_lnum) abo
         if a:skip_blank_line && line =~# '^\s*$'
             continue    " Skip blank line.
         endif
-        let l  = strlen(matchstr(line, '^\s*')) + 1
-        let r = strlen(line) - strlen(matchstr(line, '\s*$')) + 1
+        let l = strlen(matchstr(line, '^\s*')) + 1
+        let r = strlen(line) + 1
         if l < left
             let left = l
         endif
