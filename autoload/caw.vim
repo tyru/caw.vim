@@ -43,8 +43,7 @@ function! caw#keymapping_stub(mode, action, method) abort
     if s:installed_context_filetype
         let conft = context_filetype#get_filetype()
         if conft !=# &l:filetype
-            let old_filetype = &l:filetype
-            let &l:filetype = conft
+            call caw#load_ftplugin(conft)
         endif
     endif
 
@@ -82,8 +81,8 @@ function! caw#keymapping_stub(mode, action, method) abort
         echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
         echohl None
     finally
-        if exists('old_filetype')
-            let &l:filetype = old_filetype
+        if s:installed_context_filetype && context_filetype#get_filetype() !=# &l:filetype
+            call caw#load_ftplugin(&l:filetype)
         endif
         " Free context.
         unlockvar! s:context
@@ -299,6 +298,14 @@ function! caw#wrap_comment_align(line, left_cmt, right_cmt, left_col, right_col)
     endif
     " Restore indent.
     return indent . l
+endfunction
+
+function! caw#load_ftplugin(ft) abort
+    if exists('b:undo_ftplugin')
+        execute b:undo_ftplugin
+    endif
+    unlet! b:did_caw_ftplugin
+    execute 'runtime! after/ftplugin/' . a:ft . '/caw.vim'
 endfunction
 
 
