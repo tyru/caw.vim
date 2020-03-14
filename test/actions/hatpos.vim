@@ -5,6 +5,7 @@ let s:assert = themis#helper('assert')
 
 let s:NORMAL_MODE_CONTEXT = {
 \   'mode': 'n',
+\   'visualmode': '',
 \   'firstline': 1,
 \   'lastline': 1
 \}

@@ -65,7 +65,7 @@ function! s:wrap.comment_visual() abort
     \   'v': 'characterwise',
     \   'V': 'linewise',
     \   "\<C-v>": 'blockwise',
-    \}, caw#context().mode, '')
+    \}, caw#context().visualmode, '')
     if wiseness !=# ''
     \   && has_key(self, 'comment_visual_' . wiseness)
         call call(self['comment_visual_' . wiseness], [], self)
@@ -97,8 +97,10 @@ function! s:wrap.comment_visual() abort
     endfor
 endfunction
 
-function! s:comment_visual_characterwise_comment_out(text, comment_database) abort
-    let comments = a:comment_database.get_comments()
+let s:op_self = {}
+
+function! s:comment_visual_characterwise_comment_out(text) abort
+    let comments = s:op_self.comment_database.get_comments()
     if empty(comments)
         return a:text
     endif
@@ -110,7 +112,7 @@ function! s:comment_visual_characterwise_comment_out(text, comment_database) abo
     \   . right
 endfunction
 
-function! s:operate_on_word(funcname, args) abort
+function! s:operate_on_word(funcname) abort
     normal! gv
 
     let reg_z_save     = getreg('z', 1)
@@ -119,15 +121,16 @@ function! s:operate_on_word(funcname, args) abort
     try
         " Filter selected range with `{a:funcname}(selected_text)`.
         let cut_with_reg_z = '"zc'
-        execute printf("normal! %s\<C-r>\<C-o>=call(%s, [@z] + %s)\<CR>",
-        \       cut_with_reg_z, string(a:funcname), string(a:args))
+        execute printf("normal! %s\<C-r>\<C-o>=%s(@z)\<CR>",
+        \       cut_with_reg_z, a:funcname)
     finally
         call setreg('z', reg_z_save, regtype_z_save)
     endtry
 endfunction
 
 function! s:wrap.comment_visual_characterwise() abort
-    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out', [self.comment_database])
+    let s:op_self = self
+    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction
 
 function! s:wrap.has_comment_normal(lnum) abort
@@ -138,8 +141,9 @@ function! s:wrap.has_comment_normal(lnum) abort
     " line begins with left, ends with right.
     let line = caw#trim_whitespaces(caw#getline(a:lnum))
     for [left, right] in comments
-        if (left ==# '' || line[: strlen(left) - 1] ==# left)
-        \ && (right ==# '' || line[strlen(line) - strlen(right) :] ==# right)
+        let lidx = left  ==# '' ? -1  : stridx(line, left)
+        let ridx = right ==# '' ? 1/0 : stridx(line, right)
+        if lidx < ridx
             return 1
         endif
     endfor
@@ -154,22 +158,25 @@ function! s:wrap.uncomment_normal(lnum) abort
     let line_without_indent = caw#trim_whitespaces(caw#getline(a:lnum))
     for [left, right] in comments
         let line = line_without_indent
+        let lidx = left  ==# '' ? -1  : stridx(line, left)
+        let ridx = right ==# '' ? 1/0 : stridx(line, right)
+        if lidx >= ridx
+            continue
+        endif
         let fixed = 0
-        if left !=# '' && line[: strlen(left) - 1] ==# left
-            let line = line[strlen(left) :]
+        if lidx !=# -1
+            let sp_len = strlen(caw#get_var('caw_wrap_sp_left'))
+            let line = substitute(line, '\V' . left . '\v\s{0,' . sp_len . '}', '', '')
             let fixed = 1
         endif
-        if right !=# '' && line[strlen(line) - strlen(right) :] ==# right
-            let line = line[: -strlen(right) - 1]
+        if ridx !=# -1 && ridx !=# 1/0
+            let sp_len = strlen(caw#get_var('caw_wrap_sp_right'))
+            let line = substitute(line, '\v\s{0,' . sp_len . '}\V' . right, '', '')
+            let line = substitute(line, '\s\+$', '', '')
             let fixed = 1
         endif
         if fixed
             let indent = caw#get_inserted_indent(a:lnum)
-            let line = substitute(line, '\s\+$', '', '')
-            let sp_left = caw#get_var('caw_wrap_sp_left')
-            if stridx(line, sp_left) ==# 0
-                let line = line[strlen(sp_left) :]
-            endif
             call caw#setline(a:lnum, indent . line)
             break
         endif
