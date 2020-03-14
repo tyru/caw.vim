@@ -72,7 +72,8 @@ function! s:wrap.comment_visual() abort
         return
     endif
 
-    if caw#get_var('caw_wrap_align')
+    let align = caw#get_var('caw_wrap_align')
+    if align
         let [left_col, right_col] =
         \   caw#get_both_sides_space_cols(
         \       caw#get_var('caw_wrap_skip_blank_line'),
@@ -88,7 +89,7 @@ function! s:wrap.comment_visual() abort
         if skip_blank_line && caw#getline(lnum) =~# '^\s*$'
             continue    " Skip blank line.
         endif
-        if exists('left_col') && exists('right_col')
+        if align
             call self.comment_normal(lnum, left_col, right_col)
         else
             call self.comment_normal(lnum)
@@ -162,9 +163,13 @@ function! s:wrap.uncomment_normal(lnum) abort
             let line = line[: -strlen(right) - 1]
             let fixed = 1
         endif
-        let indent = caw#get_inserted_indent(a:lnum)
-        let line = caw#trim_whitespaces(line)
         if fixed
+            let indent = caw#get_inserted_indent(a:lnum)
+            let line = substitute(line, '\s\+$', '', '')
+            let sp_left = caw#get_var('caw_wrap_sp_left')
+            if stridx(line, sp_left) ==# 0
+                let line = line[strlen(sp_left) :]
+            endif
             call caw#setline(a:lnum, indent . line)
             break
         endif
