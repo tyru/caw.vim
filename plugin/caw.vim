@@ -136,7 +136,9 @@ function! s:plug.map_plug(action, method, modes) abort
         \   '<silent>'
         \   lhs
         \   printf(
-        \       ':<C-u>call caw#keymapping_stub(%s, %s, %s)<CR>',
+        \       mode ==# 'x' ?
+        \         '<Esc>:<C-u>call caw#keymapping_stub(%s, %s, %s)<CR>' :
+        \         ':<C-u>call caw#keymapping_stub(%s, %s, %s)<CR>',
         \       string(mode),
         \       string(a:action),
         \       string(a:method))

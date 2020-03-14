@@ -16,8 +16,11 @@ function! s:zeropos.comment_normal(lnum, ...) abort
     \               caw#get_var('caw_zeropos_sp_blank') :
     \               caw#get_var('caw_zeropos_sp', '', [a:lnum])
 
-    let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
+    let comments = self.comment_database.get_comments()
+    if empty(comments)
+        return
+    endif
+    let cmt = comments[0]
 
     if line =~# '^\s*$'
         if caw#get_var('caw_zeropos_skip_blank_line')
