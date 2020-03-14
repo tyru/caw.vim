@@ -65,7 +65,7 @@ function! s:wrap.comment_visual() abort
     \   'v': 'characterwise',
     \   'V': 'linewise',
     \   "\<C-v>": 'blockwise',
-    \}, caw#context().visualmode, '')
+    \}, caw#context().mode, '')
     if wiseness !=# ''
     \   && has_key(self, 'comment_visual_' . wiseness)
         call call(self['comment_visual_' . wiseness], [], self)
