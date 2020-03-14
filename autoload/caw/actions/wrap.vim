@@ -138,8 +138,9 @@ function! s:wrap.has_comment_normal(lnum) abort
     " line begins with left, ends with right.
     let line = caw#trim_whitespaces(caw#getline(a:lnum))
     for [left, right] in comments
-        if (left ==# '' || line[: strlen(left) - 1] ==# left)
-        \ && (right ==# '' || line[strlen(line) - strlen(right) :] ==# right)
+        let lidx = left  ==# '' ? -1  : stridx(line, left)
+        let ridx = right ==# '' ? 1/0 : stridx(line, right)
+        if lidx < ridx
             return 1
         endif
     endfor
@@ -154,22 +155,25 @@ function! s:wrap.uncomment_normal(lnum) abort
     let line_without_indent = caw#trim_whitespaces(caw#getline(a:lnum))
     for [left, right] in comments
         let line = line_without_indent
+        let lidx = left  ==# '' ? -1  : stridx(line, left)
+        let ridx = right ==# '' ? 1/0 : stridx(line, right)
+        if lidx >= ridx
+            continue
+        endif
         let fixed = 0
-        if left !=# '' && line[: strlen(left) - 1] ==# left
-            let line = line[strlen(left) :]
+        if lidx !=# -1
+            let sp_len = strlen(caw#get_var('caw_wrap_sp_left'))
+            let line = substitute(line, '\V' . left . '\v\s{0,' . sp_len . '}', '', '')
             let fixed = 1
         endif
-        if right !=# '' && line[strlen(line) - strlen(right) :] ==# right
-            let line = line[: -strlen(right) - 1]
+        if ridx !=# -1 && ridx !=# 1/0
+            let sp_len = strlen(caw#get_var('caw_wrap_sp_right'))
+            let line = substitute(line, '\v\s{0,' . sp_len . '}\V' . right, '', '')
+            let line = substitute(line, '\s\+$', '', '')
             let fixed = 1
         endif
         if fixed
             let indent = caw#get_inserted_indent(a:lnum)
-            let line = substitute(line, '\s\+$', '', '')
-            let sp_left = caw#get_var('caw_wrap_sp_left')
-            if stridx(line, sp_left) ==# 0
-                let line = line[strlen(sp_left) :]
-            endif
             call caw#setline(a:lnum, indent . line)
             break
         endif
