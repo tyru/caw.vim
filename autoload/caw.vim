@@ -7,8 +7,8 @@ set cpo&vim
 " }}}
 
 
-let s:installed_repeat_vim = (globpath(&rtp, 'autoload/repeat.vim') !=# '')
-let s:installed_context_filetype = (globpath(&rtp, 'autoload/context_filetype.vim') !=# '')
+let s:installed_repeat_vim = (globpath(&runtimepath, 'autoload/repeat.vim') !=# '')
+let s:installed_context_filetype = (globpath(&runtimepath, 'autoload/context_filetype.vim') !=# '')
 let s:op_args = ''
 let s:op_doing = 0
 
@@ -20,14 +20,20 @@ function! caw#keymapping_stub(mode, action, method) abort
     " Set up context.
     let context = {}
     let context.mode = a:mode
-    let context.visualmode = visualmode()
     if a:mode ==# 'n'
-        let context.firstline = line('.')
-        let context.lastline  = line('.')
+        if v:count ==# 0
+            let context.firstline = line('.')
+            let context.lastline  = line('.')
+        else
+            let context.firstline = line('.')
+            let context.lastline  = line('.') + v:count - 1
+            let context.mode = 'V'
+        endif
     else
         let context.firstline = line("'<")
         let context.lastline  = line("'>")
     endif
+    let context.col = col('.')
     unlockvar! s:context
     let s:context = context
     lockvar! s:context
@@ -60,7 +66,7 @@ function! caw#keymapping_stub(mode, action, method) abort
         for act in actions
             let old_changedtick = b:changedtick
             if has_key(act, 'comment_database')
-            \   && empty(act.comment_database.get_comment())
+            \   && empty(act.comment_database.get_comments())
                 continue
             endif
 
@@ -157,6 +163,25 @@ function! s:local_func(name) abort
 endfunction
 
 
+if s:installed_context_filetype && exists('*context_filetype#filetypes')
+    function! caw#get_related_filetypes(ft) abort
+        let filetypes = get(context_filetype#filetypes(), a:ft, [])
+        call map(filetypes, 'v:val.filetype')
+        let dup = {}
+        let related = []
+        for ft in filetypes
+            if !has_key(dup, ft)
+                let related += [ft]
+                let dup[ft] = 1
+            endif
+        endfor
+        return related
+    endfunction
+else
+    function! caw#get_related_filetypes(ft) abort
+        return []
+    endfunction
+endif
 
 function! caw#assert(cond, msg) abort
     if !a:cond
@@ -194,6 +219,25 @@ function! caw#make_indent_str(indent_byte_num) abort
     return repeat((&expandtab ? ' ' : "\t"), a:indent_byte_num)
 endfunction
 
+
+if exists('*uniq')
+    function! caw#uniq(list) abort
+        return uniq(a:list)
+    endfunction
+else
+    function! caw#uniq(list) abort
+        if len(a:list) <=# 1
+            return a:list
+        endif
+        let results = [a:list[0]]
+        for l:V in a:list[1:]
+            if string(results[-1]) !=# string(l:V)
+                let results += [l:V]
+            endif
+        endfor
+        return results
+    endfunction
+endif
 
 function! caw#trim_whitespaces(str) abort
     let str = a:str

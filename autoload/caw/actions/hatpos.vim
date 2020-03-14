@@ -34,8 +34,9 @@ function! s:hatpos.comment_normal(lnum, ...) abort
     \               caw#get_var('caw_hatpos_sp_blank') :
     \               caw#get_var('caw_hatpos_sp', '', [a:lnum])
 
-    let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
+    let comments = self.comment_database.get_comments()
+    call caw#assert(!empty(comments), '`comments` must not be empty.')
+    let cmt = comments[0]
 
     if min_indent_num >= 0
         if min_indent_num > strlen(line)
@@ -84,27 +85,35 @@ function! s:hatpos.comment_visual() abort
 endfunction
 
 function! s:hatpos.has_comment_normal(lnum) abort
-    let cmt = caw#new('comments.oneline').get_comment()
-    if empty(cmt) | return 0 | endif
     let line_without_indent = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
-    return stridx(line_without_indent, cmt) == 0
+    for cmt in self.comment_database.get_comments()
+        if stridx(line_without_indent, cmt) ==# 0
+            return 1
+        endif
+    endfor
+    return 0
 endfunction
 
 function! s:hatpos.uncomment_normal(lnum) abort
-    let cmt = self.comment_database.get_comment()
-    call caw#assert(!empty(cmt), '`cmt` must not be empty.')
-
-    if self.has_comment_normal(a:lnum)
-        let indent = caw#get_inserted_indent(a:lnum)
-        let line   = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
-        if stridx(line, cmt) == 0
-            " Remove comment.
-            let line = line[strlen(cmt) :]
-            let sp = caw#get_var('caw_hatpos_sp', '', [a:lnum])
-            if stridx(line, sp) ==# 0
-                let line = line[strlen(sp) :]
+    let line_without_indent = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
+    for cmt in self.comment_database.get_comments()
+        if stridx(line_without_indent, cmt) ==# 0
+            let indent = caw#get_inserted_indent(a:lnum)
+            if stridx(line_without_indent, cmt) ==# 0
+                " Remove comment.
+                let line = line_without_indent[strlen(cmt) :]
+                let sp = caw#get_var('caw_hatpos_sp', '', [a:lnum])
+                if stridx(line, sp) ==# 0
+                    let line = line[strlen(sp) :]
+                endif
+                if caw#trim_whitespaces(line) ==# ''
+                    let line = ''
+                else
+                    let line = indent . line
+                endif
+                call caw#setline(a:lnum, line)
+                break
             endif
-            call caw#setline(a:lnum, indent . line)
         endif
-    endif
+    endfor
 endfunction

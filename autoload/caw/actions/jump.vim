@@ -1,27 +1,30 @@
 scriptencoding utf-8
 
 function! caw#actions#jump#new() abort
-    return deepcopy(s:jump)
+    let obj = deepcopy(s:jump)
+    let obj.comment_database = caw#new('comments.oneline')
+    return obj
 endfunction
 
 
 let s:jump = {}
 
 function! s:jump.comment_next() abort
-    return call('s:caw_jump_comment', [1], self)
+    return self.comment_jump(1)
 endfunction
 let s:jump['comment-next'] = s:jump.comment_next
 
 function! s:jump.comment_prev() abort
-    return call('s:caw_jump_comment', [0], self)
+    return self.comment_jump(0)
 endfunction
 let s:jump['comment-prev'] = s:jump.comment_prev
 
-function! s:caw_jump_comment(next) abort
-    let cmt = caw#new('comments.oneline').get_comment()
-    if empty(cmt)
+function! s:jump.comment_jump(next) abort
+    let comments = self.comment_database.get_comments()
+    if empty(comments)
         return
     endif
+    let cmt = comments[0]
 
     " Begin a new line and insert
     " the online comment leader with whitespaces.

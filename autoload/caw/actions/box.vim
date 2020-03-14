@@ -16,14 +16,11 @@ function! s:box.comment() abort
     " Get current filetype comments.
     " Use oneline comment for top/bottom comments.
     " Use wrap comment for left/right comments if possible.
-    let cmt = self.comment_database.get_comment()
-    if empty(cmt)
-    \  || empty(cmt.left)
-    \  || empty(cmt.right)
-    \  || empty(cmt.top)
-    \  || empty(cmt.bottom)
+    let comments = self.comment_database.get_comments()
+    if empty(comments)
         return
     endif
+    let cmt = comments[0]
 
     " Determine left/right col to box string.
     let top_lnum    = caw#context().firstline
