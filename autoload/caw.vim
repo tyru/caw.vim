@@ -20,6 +20,7 @@ function! caw#keymapping_stub(mode, action, method) abort
     " Set up context.
     let context = {}
     let context.mode = a:mode
+    let context.visualmode = visualmode()
     if a:mode ==# 'n'
         if v:count ==# 0
             let context.firstline = line('.')
@@ -27,7 +28,8 @@ function! caw#keymapping_stub(mode, action, method) abort
         else
             let context.firstline = line('.')
             let context.lastline  = line('.') + v:count - 1
-            let context.mode = 'V'
+            let context.mode = 'x'
+            let context.visualmode = 'V'
         endif
     else
         let context.firstline = line("'<")

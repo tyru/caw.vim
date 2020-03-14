@@ -65,7 +65,7 @@ function! s:wrap.comment_visual() abort
     \   'v': 'characterwise',
     \   'V': 'linewise',
     \   "\<C-v>": 'blockwise',
-    \}, caw#context().mode, '')
+    \}, caw#context().visualmode, '')
     if wiseness !=# ''
     \   && has_key(self, 'comment_visual_' . wiseness)
         call call(self['comment_visual_' . wiseness], [], self)
@@ -97,8 +97,10 @@ function! s:wrap.comment_visual() abort
     endfor
 endfunction
 
-function! s:comment_visual_characterwise_comment_out(text, comment_database) abort
-    let comments = a:comment_database.get_comments()
+let s:op_self = {}
+
+function! s:comment_visual_characterwise_comment_out(text) abort
+    let comments = s:op_self.comment_database.get_comments()
     if empty(comments)
         return a:text
     endif
@@ -110,7 +112,7 @@ function! s:comment_visual_characterwise_comment_out(text, comment_database) abo
     \   . right
 endfunction
 
-function! s:operate_on_word(funcname, args) abort
+function! s:operate_on_word(funcname) abort
     normal! gv
 
     let reg_z_save     = getreg('z', 1)
@@ -119,15 +121,16 @@ function! s:operate_on_word(funcname, args) abort
     try
         " Filter selected range with `{a:funcname}(selected_text)`.
         let cut_with_reg_z = '"zc'
-        execute printf("normal! %s\<C-r>\<C-o>=call(%s, [@z] + %s)\<CR>",
-        \       cut_with_reg_z, string(a:funcname), string(a:args))
+        execute printf("normal! %s\<C-r>\<C-o>=%s(@z)\<CR>",
+        \       cut_with_reg_z, a:funcname)
     finally
         call setreg('z', reg_z_save, regtype_z_save)
     endtry
 endfunction
 
 function! s:wrap.comment_visual_characterwise() abort
-    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out', [self.comment_database])
+    let s:op_self = self
+    call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction
 
 function! s:wrap.has_comment_normal(lnum) abort
