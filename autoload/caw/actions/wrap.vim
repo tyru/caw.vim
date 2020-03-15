@@ -12,6 +12,8 @@ function! caw#actions#wrap#new() abort
     let obj.uncomment = uncommentable.uncomment
     let obj.uncomment_visual = uncommentable.uncomment_visual
     let obj.has_comment = comment_detectable.has_comment
+    let obj.has_comment_normal = comment_detectable.has_comment_normal
+    let obj.get_commented_col = comment_detectable.get_commented_col
     let obj.has_comment_visual = comment_detectable.has_comment_visual
     let obj.has_all_comment = comment_detectable.has_all_comment
     let obj.search_synstack = comment_detectable.search_synstack
@@ -136,11 +138,6 @@ function! s:wrap.comment_visual_characterwise() abort
     call s:operate_on_word('<SID>comment_visual_characterwise_comment_out')
 endfunction
 
-function! s:wrap.has_comment_normal(lnum) abort
-    let comments = self.comment_database.get_comments()
-    return !empty(self.get_commented_range(a:lnum, comments))
-endfunction
-
 function! s:wrap.get_commented_range(lnum, comments) abort
     for [left, right] in a:comments
         let lcol = self.get_commented_col(a:lnum, left)
@@ -156,23 +153,6 @@ function! s:wrap.get_commented_range(lnum, comments) abort
         endif
     endfor
     return {}
-endfunction
-
-function! s:wrap.get_commented_col(lnum, needle) abort
-    let line = caw#getline(a:lnum)
-    let idx = -1
-    let start = 0
-    while 1
-        let idx = stridx(line, a:needle, start)
-        if idx ==# -1
-            break
-        endif
-        if self.has_syntax('^Comment$', a:lnum, idx + 1)
-            break
-        endif
-        let start = idx + 1
-    endwhile
-    return idx + 1
 endfunction
 
 function! s:wrap.uncomment_normal(lnum) abort

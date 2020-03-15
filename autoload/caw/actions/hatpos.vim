@@ -12,8 +12,12 @@ function! caw#actions#hatpos#new() abort
     let obj.uncomment = uncommentable.uncomment
     let obj.uncomment_visual = uncommentable.uncomment_visual
     let obj.has_comment = comment_detectable.has_comment
+    let obj.has_comment_normal = comment_detectable.has_comment_normal
+    let obj.get_commented_col = comment_detectable.get_commented_col
     let obj.has_comment_visual = comment_detectable.has_comment_visual
     let obj.has_all_comment = comment_detectable.has_all_comment
+    let obj.search_synstack = comment_detectable.search_synstack
+    let obj.has_syntax = comment_detectable.has_syntax
     let obj.toggle = togglable.toggle
     " Import comment database.
     let obj.comment_database = caw#new('comments.oneline')
@@ -84,36 +88,29 @@ function! s:hatpos.comment_visual() abort
     endfor
 endfunction
 
-function! s:hatpos.has_comment_normal(lnum) abort
-    let line_without_indent = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
-    for cmt in self.comment_database.get_comments()
-        if stridx(line_without_indent, cmt) ==# 0
-            return 1
+function! s:hatpos.get_commented_range(lnum, comments) abort
+    for cmt in a:comments
+        let lcol = self.get_commented_col(a:lnum, cmt)
+        if lcol ==# 0
+            continue
         endif
+        return {'start': lcol, 'end': lcol, 'comment': cmt}
     endfor
-    return 0
+    return {}
 endfunction
 
 function! s:hatpos.uncomment_normal(lnum) abort
-    let line_without_indent = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
-    for cmt in self.comment_database.get_comments()
-        if stridx(line_without_indent, cmt) ==# 0
-            let indent = caw#get_inserted_indent(a:lnum)
-            if stridx(line_without_indent, cmt) ==# 0
-                " Remove comment.
-                let line = line_without_indent[strlen(cmt) :]
-                let sp = caw#get_var('caw_hatpos_sp', '', [a:lnum])
-                if stridx(line, sp) ==# 0
-                    let line = line[strlen(sp) :]
-                endif
-                if caw#trim_whitespaces(line) ==# ''
-                    let line = ''
-                else
-                    let line = indent . line
-                endif
-                call caw#setline(a:lnum, line)
-                break
-            endif
-        endif
-    endfor
+    let comments = self.comment_database.sorted_comments_by_length_desc()
+    let range = self.get_commented_range(a:lnum, comments)
+    if empty(range)
+        return
+    endif
+    let line = caw#getline(a:lnum)
+    let left = range.start - 2 < 0 ? '' : line[: range.start - 2]
+    let right = line[range.start - 1 + strlen(range.comment) :]
+    let sp = caw#get_var('caw_hatpos_sp', '', [a:lnum])
+    if sp !=# '' && stridx(right, sp) ==# 0
+        let right = right[strlen(sp) :]
+    endif
+    call caw#setline(a:lnum, left . right)
 endfunction

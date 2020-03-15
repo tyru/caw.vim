@@ -11,8 +11,10 @@ let s:comment_detectable = {}
 " Derived object must implement those.
 "
 " s:comment_detectable.has_comment(),
-" s:comment_detectable.has_comment_visual() require:
-" - Derived.has_comment_normal()
+" s:comment_detectable.has_comment_visual(),
+" s:comment_detectable.has_comment_normal() require:
+" - Derived.comment_database.get_comments()
+" - Derived.get_commented_range()
 
 function! s:comment_detectable.has_comment() abort
     let context = caw#context()
@@ -21,6 +23,28 @@ function! s:comment_detectable.has_comment() abort
     else
         return self.has_comment_visual()
     endif
+endfunction
+
+function! s:comment_detectable.has_comment_normal(lnum) abort
+    let comments = self.comment_database.get_comments()
+    return !empty(self.get_commented_range(a:lnum, comments))
+endfunction
+
+function! s:comment_detectable.get_commented_col(lnum, needle) abort
+    let line = caw#getline(a:lnum)
+    let idx = -1
+    let start = 0
+    while 1
+        let idx = stridx(line, a:needle, start)
+        if idx ==# -1
+            break
+        endif
+        if self.has_syntax('^Comment$', a:lnum, idx + 1)
+            break
+        endif
+        let start = idx + 1
+    endwhile
+    return idx + 1
 endfunction
 
 function! s:comment_detectable.has_comment_visual() abort
