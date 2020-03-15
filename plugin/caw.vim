@@ -7,10 +7,6 @@ if exists('g:loaded_caw') && g:loaded_caw
 endif
 let g:loaded_caw = 1
 " }}}
-" Saving 'cpoptions' {{{
-let s:save_cpo = &cpo
-set cpo&vim
-" }}}
 
 
 let s:plug = {}
@@ -243,8 +239,3 @@ endif
 " }}}
 
 unlet s:plug
-
-
-" Restore 'cpoptions' {{{
-let &cpo = s:save_cpo
-" }}}

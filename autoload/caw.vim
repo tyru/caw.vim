@@ -1,12 +1,6 @@
 " vim:foldmethod=marker:fen:
 scriptencoding utf-8
 
-" Saving 'cpoptions' {{{
-let s:save_cpo = &cpo
-set cpo&vim
-" }}}
-
-
 let s:installed_repeat_vim = (globpath(&runtimepath, 'autoload/repeat.vim') !=# '')
 let s:installed_context_filetype = (globpath(&runtimepath, 'autoload/context_filetype.vim') !=# '')
 let s:op_args = ''
@@ -404,8 +398,4 @@ function! caw#cursor(...) abort
     return call('cursor', a:000)
 endfunction
 
-" }}}
-
-" Restore 'cpoptions' {{{
-let &cpo = s:save_cpo
 " }}}
