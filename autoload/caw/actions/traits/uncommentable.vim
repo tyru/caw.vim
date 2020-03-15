@@ -1,7 +1,7 @@
 scriptencoding utf-8
 
 function! caw#actions#traits#uncommentable#new() abort
-    return deepcopy(s:uncommentable)
+  return deepcopy(s:uncommentable)
 endfunction
 
 
@@ -16,19 +16,19 @@ let s:uncommentable = {}
 
 
 function! s:uncommentable.uncomment() abort
-    let context = caw#context()
-    if context.mode ==# 'n'
-        call self.uncomment_normal(context.firstline)
-    else
-        call self.uncomment_visual()
-    endif
+  let context = caw#context()
+  if context.mode ==# 'n'
+    call self.uncomment_normal(context.firstline)
+  else
+    call self.uncomment_visual()
+  endif
 endfunction
 
 function! s:uncommentable.uncomment_visual() abort
-    for lnum in range(
-    \   caw#context().firstline,
-    \   caw#context().lastline
-    \)
-        call self.uncomment_normal(lnum)
-    endfor
+  for lnum in range(
+  \   caw#context().firstline,
+  \   caw#context().lastline
+  \)
+    call self.uncomment_normal(lnum)
+  endfor
 endfunction
