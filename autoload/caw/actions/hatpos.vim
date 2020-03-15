@@ -6,23 +6,16 @@ function! caw#actions#hatpos#new() abort
   let togglable = caw#new('actions.traits.togglable')
   let comment_detectable = caw#new('actions.traits.comment_detectable')
 
-  let obj = deepcopy(s:hatpos)
+  let obj = {}
   " Implements methods.
-  let obj.comment = commentable.comment
-  let obj.uncomment = uncommentable.uncomment
-  let obj.uncomment_visual = uncommentable.uncomment_visual
-  let obj.has_comment = comment_detectable.has_comment
-  let obj.has_comment_normal = comment_detectable.has_comment_normal
-  let obj.get_commented_col = comment_detectable.get_commented_col
-  let obj.has_comment_visual = comment_detectable.has_comment_visual
-  let obj.has_all_comment = comment_detectable.has_all_comment
-  let obj.search_synstack = comment_detectable.search_synstack
-  let obj.has_syntax = comment_detectable.has_syntax
-  let obj.toggle = togglable.toggle
+  call extend(obj, commentable)
+  call extend(obj, uncommentable)
+  call extend(obj, comment_detectable)
+  call extend(obj, togglable)
   " Import comment database.
   let obj.comment_database = caw#new('comments.oneline')
 
-  return obj
+  return extend(obj, deepcopy(s:hatpos))
 endfunction
 
 
