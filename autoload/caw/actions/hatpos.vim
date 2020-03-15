@@ -39,7 +39,9 @@ function! s:hatpos.comment_normal(lnum, ...) abort
   \               caw#get_var('caw_hatpos_sp', '', [a:lnum])
 
   let comments = self.comment_database.get_comments()
-  call caw#assert(!empty(comments), '`comments` must not be empty.')
+  if empty(comments)
+    return
+  endif
   let cmt = comments[0]
 
   if min_indent_num >= 0
