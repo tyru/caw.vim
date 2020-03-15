@@ -16,6 +16,7 @@ function! caw#actions#dollarpos#new() abort
     let obj.has_comment_visual = comment_detectable.has_comment_visual
     let obj.has_all_comment = comment_detectable.has_all_comment
     let obj.search_synstack = comment_detectable.search_synstack
+    let obj.has_syntax = comment_detectable.has_syntax
     let obj.toggle = togglable.toggle
     " Import comment database.
     let obj.comment_database = caw#new('comments.oneline')

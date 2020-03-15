@@ -14,6 +14,8 @@ function! caw#actions#wrap#new() abort
     let obj.has_comment = comment_detectable.has_comment
     let obj.has_comment_visual = comment_detectable.has_comment_visual
     let obj.has_all_comment = comment_detectable.has_all_comment
+    let obj.search_synstack = comment_detectable.search_synstack
+    let obj.has_syntax = comment_detectable.has_syntax
     let obj.toggle = togglable.toggle
     " Import comment database.
     let obj.comment_database = caw#new('comments.wrap_oneline')
@@ -99,6 +101,7 @@ endfunction
 
 let s:op_self = {}
 
+" vint: next-line -ProhibitUnusedVariable
 function! s:comment_visual_characterwise_comment_out(text) abort
     let comments = s:op_self.comment_database.get_comments()
     if empty(comments)
@@ -135,50 +138,57 @@ endfunction
 
 function! s:wrap.has_comment_normal(lnum) abort
     let comments = self.comment_database.get_comments()
-    if empty(comments)
-        return 0
-    endif
-    " line begins with left, ends with right.
-    let line = caw#trim_whitespaces(caw#getline(a:lnum))
-    for [left, right] in comments
-        let lidx = left  ==# '' ? -1  : stridx(line, left)
-        let ridx = right ==# '' ? 1/0 : stridx(line, right)
-        if lidx < ridx
-            return 1
+    return !empty(self.get_commented_range(a:lnum, comments))
+endfunction
+
+function! s:wrap.get_commented_range(lnum, comments) abort
+    for [left, right] in a:comments
+        let lcol = self.get_commented_col(a:lnum, left)
+        if lcol ==# 0
+            continue
+        endif
+        let rcol = self.get_commented_col(a:lnum, right)
+        if rcol ==# 0
+            continue
+        endif
+        if lcol < rcol
+            return {'start': lcol, 'end': rcol, 'comment': [left, right]}
         endif
     endfor
-    return 0
+    return {}
+endfunction
+
+function! s:wrap.get_commented_col(lnum, needle) abort
+    let line = caw#getline(a:lnum)
+    let idx = -1
+    let start = 0
+    while 1
+        let idx = stridx(line, a:needle, start)
+        if idx ==# -1
+            break
+        endif
+        if self.has_syntax('^Comment$', a:lnum, idx + 1)
+            break
+        endif
+        let start = idx + 1
+    endwhile
+    return idx + 1
 endfunction
 
 function! s:wrap.uncomment_normal(lnum) abort
     let comments = self.comment_database.sorted_comments_by_length_desc()
-    if empty(comments) || !self.has_comment_normal(a:lnum)
+    let range = self.get_commented_range(a:lnum, comments)
+    if empty(range)
         return
     endif
-    let line_without_indent = caw#trim_whitespaces(caw#getline(a:lnum))
-    for [left, right] in comments
-        let line = line_without_indent
-        let lidx = left  ==# '' ? -1  : stridx(line, left)
-        let ridx = right ==# '' ? 1/0 : stridx(line, right)
-        if lidx >= ridx
-            continue
-        endif
-        let fixed = 0
-        if lidx !=# -1
-            let sp_len = strlen(caw#get_var('caw_wrap_sp_left'))
-            let line = substitute(line, '\V' . left . '\v\s{0,' . sp_len . '}', '', '')
-            let fixed = 1
-        endif
-        if ridx !=# -1 && ridx !=# 1/0
-            let sp_len = strlen(caw#get_var('caw_wrap_sp_right'))
-            let line = substitute(line, '\v\s{0,' . sp_len . '}\V' . right, '', '')
-            let line = substitute(line, '\s\+$', '', '')
-            let fixed = 1
-        endif
-        if fixed
-            let indent = caw#get_inserted_indent(a:lnum)
-            call caw#setline(a:lnum, indent . line)
-            break
-        endif
-    endfor
+    let line = caw#getline(a:lnum)
+    let [left, right] = range.comment
+    let sp_len = strlen(caw#get_var('caw_wrap_sp_left'))
+    let line = substitute(line, '\V' . left . '\v\s{0,' . sp_len . '}', '', '')
+    let sp_len = strlen(caw#get_var('caw_wrap_sp_right'))
+    let line = substitute(line, '\v\s{0,' . sp_len . '}\V' . right, '', '')
+    " Trim only right because multiple aligned comment may leave more spaces
+    " than caw_wrap_sp_right
+    let line = caw#trim_right(line)
+    call caw#setline(a:lnum, line)
 endfunction

@@ -247,6 +247,14 @@ function! caw#trim_whitespaces(str) abort
     return str
 endfunction
 
+function! caw#trim_left(str) abort
+    return substitute(a:str, '^\s\+', '', '')
+endfunction
+
+function! caw#trim_right(str) abort
+    return substitute(a:str, '\s\+$', '', '')
+endfunction
+
 function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum) abort
     let min_indent_num = 1/0
     for lnum in range(a:from_lnum, a:to_lnum)

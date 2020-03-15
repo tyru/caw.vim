@@ -49,7 +49,16 @@ function! s:comment_detectable.has_all_comment() abort
     return 1
 endfunction
 
-function! s:comment_detectable.search_synstack(lnum, cmt, pattern) abort
+function! s:comment_detectable.has_syntax(synpat, lnum, col) abort
+    for id in caw#synstack(a:lnum, a:col)
+        if caw#synIDattr(synIDtrans(id), 'name') =~# a:synpat
+            return 1
+        endif
+    endfor
+    return 0
+endfunction
+
+function! s:comment_detectable.search_synstack(lnum, cmt, synpat) abort
     let line = caw#getline(a:lnum)
     let cols = []
     let idx  = -1
@@ -66,11 +75,9 @@ function! s:comment_detectable.search_synstack(lnum, cmt, pattern) abort
     endif
 
     for col in cols
-        for id in caw#synstack(a:lnum, col)
-            if caw#synIDattr(synIDtrans(id), 'name') =~# a:pattern
-                return col
-            endif
-        endfor
+        if self.has_syntax(a:synpat, a:lnum, col)
+            return col
+        endif
     endfor
     return -1
 endfunction
