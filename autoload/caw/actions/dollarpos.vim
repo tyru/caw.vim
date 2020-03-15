@@ -13,6 +13,8 @@ function! caw#actions#dollarpos#new() abort
     let obj.uncomment = uncommentable.uncomment
     let obj.uncomment_visual = uncommentable.uncomment_visual
     let obj.has_comment = comment_detectable.has_comment
+    let obj.has_comment_normal = comment_detectable.has_comment_normal
+    let obj.get_commented_col = comment_detectable.get_commented_col
     let obj.has_comment_visual = comment_detectable.has_comment_visual
     let obj.has_all_comment = comment_detectable.has_all_comment
     let obj.search_synstack = comment_detectable.search_synstack
@@ -31,7 +33,9 @@ function! s:dollarpos.comment_normal(lnum, ...) abort
     let startinsert = a:0 ? a:1 : caw#get_var('caw_dollarpos_startinsert') && caw#context().mode ==# 'n'
 
     let comments = self.comment_database.get_comments()
-    call caw#assert(!empty(comments), '`comments` must not be empty.')
+    if empty(comments)
+      return
+    endif
     let cmt = comments[0]
 
     call caw#setline(
@@ -46,31 +50,25 @@ function! s:dollarpos.comment_normal(lnum, ...) abort
     endif
 endfunction
 
-function! s:dollarpos.has_comment_normal(lnum) abort
-    for cmt in self.comment_database.get_comments()
-        if self.search_synstack(a:lnum, cmt, '^Comment$') > 0
-            return 1
+function! s:dollarpos.get_commented_range(lnum, comments) abort
+    for cmt in a:comments
+        let lcol = self.get_commented_col(a:lnum, cmt)
+        if lcol ==# 0
+            continue
         endif
+        return {'start': lcol, 'end': lcol, 'comment': cmt}
     endfor
-    return 0
+    return {}
 endfunction
 
 function! s:dollarpos.uncomment_normal(lnum) abort
-    for cmt in self.comment_database.get_comments()
-        let col = self.search_synstack(a:lnum, cmt, '^Comment$')
-        if col <= 0
-            continue
-        endif
-        let idx = col - 1
-        let line = caw#getline(a:lnum)
-        let [l, r] = [line[idx : idx + strlen(cmt) - 1], cmt]
-        call caw#assert(l ==# r, 's:caw.a.uncomment_normal(): '.string(l).' ==# '.string(r))
-
-        let before = line[0 : idx - 1]
-        " 'caw_dollarpos_sp_left'
-        let before = substitute(before, '\s\+$', '', '')
-
-        call caw#setline(a:lnum, before)
-        break
-    endfor
+    let comments = self.comment_database.sorted_comments_by_length_desc()
+    let range = self.get_commented_range(a:lnum, comments)
+    if empty(range)
+        return
+    endif
+    let line = caw#getline(a:lnum)
+    let left = range.start - 2 < 0 ? '' : line[: range.start - 2]
+    let left = caw#trim_right(left)
+    call caw#setline(a:lnum, left)
 endfunction
