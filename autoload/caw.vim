@@ -147,17 +147,6 @@ endfunction
 
 " Utilities: Misc. functions. {{{
 
-function! s:SID() abort
-  return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
-endfunction
-let s:SNR_PREFIX = '<SNR>' . s:SID() . '_'
-delfunc s:SID
-
-function! s:local_func(name) abort
-  return function(s:SNR_PREFIX . a:name)
-endfunction
-
-
 if s:installed_context_filetype && exists('*context_filetype#filetypes')
   function! caw#get_related_filetypes(ft) abort
     let filetypes = get(context_filetype#filetypes(), a:ft, [])
@@ -173,6 +162,7 @@ if s:installed_context_filetype && exists('*context_filetype#filetypes')
     return related
   endfunction
 else
+  " vint: next-line -ProhibitUnusedVariable
   function! caw#get_related_filetypes(ft) abort
     return []
   endfunction
@@ -314,6 +304,7 @@ endfunction
 
 
 " '.../autoload/caw'
+" vint: next-line -ProhibitUnusedVariable
 let s:root_dir = expand('<sfile>:h') . '/caw'
 " s:modules[module_name][cache_key]
 " cache_key = string(a:000)
@@ -325,6 +316,7 @@ function! caw#load(name) abort
     return
   endif
   " Load script file.
+  " vint: next-line -ProhibitUnusedVariable
   let file = tr(a:name, '.', '/') . '.vim'
   source `=s:root_dir.'/'.file`
   " Call depends() function.

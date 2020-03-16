@@ -27,7 +27,6 @@ endfunction
 function! s:suite.get_comment_vars_empty() abort
   let wrap_multiline = caw#new('comments.wrap_multiline')
   let value = {}
-  let expected = {}
   call s:test_get_comment(wrap_multiline, value, [], 'get_comment_vars')
 endfunction
 

@@ -22,7 +22,7 @@ let s:plug.deprecated = {
 
 let g:caw_no_default_keymappings = get(g:, 'caw_no_default_keymappings', 0)
 let g:caw_operator_keymappings = get(g:, 'caw_operator_keymappings', 0)
-if globpath(&rtp, 'autoload/operator/user.vim') !=# ''
+if globpath(&runtimepath, 'autoload/operator/user.vim') !=# ''
   let s:operator_user_installed = 1
 else
   let s:operator_user_installed = 0
