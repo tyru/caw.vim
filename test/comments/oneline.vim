@@ -3,6 +3,16 @@ scriptencoding utf-8
 let s:suite = themis#suite('comments.oneline')
 let s:assert = themis#helper('assert')
 
+function! s:suite.can_load_c_ftplugin() abort
+  setlocal filetype=c
+  call s:assert.equals(b:caw_oneline_comment, '//')
+endfunction
+
+function! s:suite.can_load_vim_ftplugin() abort
+  setlocal filetype=vim
+  call s:assert.equals(b:caw_oneline_comment, '"')
+endfunction
+
 function! s:suite.get_comments() abort
   let oneline = caw#new('comments.oneline')
   call s:test_get_comment(oneline, 'COMMENT1', '//%s', ['COMMENT1', '//'], 'get_comments')

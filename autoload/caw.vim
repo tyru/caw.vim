@@ -29,10 +29,7 @@ function! caw#keymapping_stub(mode, action, method) abort
     let context.firstline = line("'<")
     let context.lastline  = line("'>")
   endif
-  let context.col = col('.')
-  unlockvar! s:context
-  let s:context = context
-  lockvar! s:context
+  call caw#set_context(context)
 
   " Context filetype support.
   " https://github.com/Shougo/context_filetype.vim
@@ -81,8 +78,7 @@ function! caw#keymapping_stub(mode, action, method) abort
       call caw#load_ftplugin(&l:filetype)
     endif
     " Free context.
-    unlockvar! s:context
-    let s:context = {}
+    call caw#set_context({})
     " repeat.vim support
     if s:installed_repeat_vim && !s:op_doing
       let lines = context.lastline - context.firstline
@@ -130,14 +126,10 @@ endfunction
 " Context: context while invoking keymapping. {{{
 let s:context = {}
 
-" For test.
-function! caw#__set_context__(context) abort
+function! caw#set_context(context) abort
+  unlockvar! s:context
   let s:context = a:context
-endfunction
-
-" For test.
-function! caw#__clear_context__() abort
-  let s:context = {}
+  lockvar! s:context
 endfunction
 
 function! caw#context() abort
