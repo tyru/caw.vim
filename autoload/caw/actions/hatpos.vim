@@ -84,8 +84,9 @@ function! s:hatpos.comment_visual() abort
 endfunction
 
 function! s:hatpos.get_commented_range(lnum, comments) abort
+  let ignore_syngroup = caw#get_var('caw_zeropos_ignore_syngroup', 0)
   for cmt in a:comments
-    let lcol = self.get_commented_col(a:lnum, cmt)
+    let lcol = self.get_commented_col(a:lnum, cmt, ignore_syngroup)
     if lcol ==# 0
       continue
     endif

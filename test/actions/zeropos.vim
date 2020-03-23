@@ -62,6 +62,7 @@ function! s:suite.comment_normal() abort
   \ '  }'
   \])
   call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:zeropos.comment()
@@ -84,6 +85,7 @@ function! s:suite.comment_visual_oneline() abort
   \])
   call caw#set_context(extend(deepcopy(s:VISUAL_MODE_CONTEXT),
   \ {'visualmode': 'V', 'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:zeropos.comment()
@@ -163,6 +165,7 @@ function! s:suite.comment_vim() abort
   \ '  \}'
   \])
   call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:zeropos.comment()
@@ -170,7 +173,7 @@ function! s:suite.comment_vim() abort
   " assert
   call s:assert.equals(getline(1, '$'), [
   \ 'let dict = {',
-  \ '"   \ ''key'': ''value'',',
+  \ '"  \ ''key'': ''value'',',
   \ '  \}'
   \])
 endfunction
@@ -197,6 +200,7 @@ function! s:suite.uncomment_vim() abort
   \ '  \}'
   \])
   call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:zeropos.uncomment()
@@ -218,6 +222,7 @@ function! s:suite.uncomment_vim_hatpos() abort
   \ '  \}'
   \])
   call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:zeropos.uncomment()
@@ -279,6 +284,7 @@ function! s:suite.uncomment_visual_oneline() abort
   \])
   call caw#set_context(extend(deepcopy(s:VISUAL_MODE_CONTEXT),
   \ {'visualmode': 'V', 'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:zeropos.uncomment()

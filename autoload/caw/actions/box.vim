@@ -46,5 +46,9 @@ function! s:box.comment() abort
   let lines = [tops_and_bottoms] + lines + [tops_and_bottoms]
 
   " Put modified lines.
-  call append(top_lnum - 1, lines)
+  if top_lnum ==# 1 && getline(1) ==# ''
+    call setline(1, lines)
+  else
+    call append(top_lnum - 1, lines)
+  endif
 endfunction

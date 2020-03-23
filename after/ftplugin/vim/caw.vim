@@ -7,6 +7,8 @@ function! s:linecont_sp(lnum) abort
 endfunction
 let b:caw_hatpos_sp = function('s:linecont_sp')
 let b:caw_zeropos_sp = b:caw_hatpos_sp
+let b:caw_hatpos_ignore_syngroup = 1
+let b:caw_zeropos_ignore_syngroup = 1
 
 if !exists('b:did_caw_ftplugin')
   if exists('b:undo_ftplugin')

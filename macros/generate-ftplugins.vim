@@ -425,6 +425,8 @@ function! s:additional_vars() abort
   \   'endfunction',
   \   'let b:caw_hatpos_sp = function(''s:linecont_sp'')',
   \   'let b:caw_zeropos_sp = b:caw_hatpos_sp',
+  \   'let b:caw_hatpos_ignore_syngroup = 1',
+  \   'let b:caw_zeropos_ignore_syngroup = 1',
   \ ], "\n"),
   \}
 endfunction

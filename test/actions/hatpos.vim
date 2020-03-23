@@ -62,6 +62,7 @@ function! s:suite.comment_normal() abort
   \ '  }'
   \])
   call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:hatpos.comment()
@@ -84,6 +85,7 @@ function! s:suite.comment_visual_oneline() abort
   \])
   call caw#set_context(extend(deepcopy(s:VISUAL_MODE_CONTEXT),
   \ {'visualmode': 'V', 'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:hatpos.comment()
@@ -163,6 +165,7 @@ function! s:suite.comment_vim() abort
   \ '  \}'
   \])
   call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:hatpos.comment()
@@ -197,6 +200,7 @@ function! s:suite.uncomment_vim() abort
   \ '  \}'
   \])
   call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call cursor(2, 1)
 
   " execute
   call s:hatpos.uncomment()

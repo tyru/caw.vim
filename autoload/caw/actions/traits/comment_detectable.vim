@@ -30,7 +30,8 @@ function! s:comment_detectable.has_comment_normal(lnum) abort
   return !empty(self.get_commented_range(a:lnum, comments))
 endfunction
 
-function! s:comment_detectable.get_commented_col(lnum, needle) abort
+function! s:comment_detectable.get_commented_col(lnum, needle, ...) abort
+  let ignore_syngroup = a:0 ? a:1 : 0
   let line = getline(a:lnum)
   let idx = -1
   let start = 0
@@ -39,7 +40,7 @@ function! s:comment_detectable.get_commented_col(lnum, needle) abort
     if idx ==# -1
       break
     endif
-    if self.has_syntax('^Comment$', a:lnum, idx + 1)
+    if ignore_syngroup || self.has_syntax('^Comment$', a:lnum, idx + 1)
       break
     endif
     let start = idx + 1
