@@ -31,7 +31,7 @@ function! s:box.comment() abort
   call caw#assert(right_col > 0, 'right_col > 0')
 
   " Get and delete target lines.
-  let lines = caw#getline(top_lnum, bottom_lnum)
+  let lines = getline(top_lnum, bottom_lnum)
   silent execute top_lnum.','.bottom_lnum.'delete _'
 
   let width = right_col - left_col
@@ -46,5 +46,5 @@ function! s:box.comment() abort
   let lines = [tops_and_bottoms] + lines + [tops_and_bottoms]
 
   " Put modified lines.
-  call caw#append(top_lnum - 1, lines)
+  call append(top_lnum - 1, lines)
 endfunction

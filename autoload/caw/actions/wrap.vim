@@ -24,7 +24,7 @@ let s:wrap = {'fallback_types': ['hatpos']}
 function! s:wrap.comment_normal(lnum, ...) abort
   let left_col = get(a:000, 0, -1)
   let right_col = get(a:000, 1, -1)
-  let line = caw#getline(a:lnum)
+  let line = getline(a:lnum)
   if caw#context().mode ==# 'n'
   \   && caw#get_var('caw_wrap_skip_blank_line')
   \   && line =~# '^\s*$'
@@ -43,7 +43,7 @@ function! s:wrap.comment_normal(lnum, ...) abort
     \   caw#get_var('caw_wrap_sp_right') . right,
     \   left_col,
     \   right_col)
-    call caw#setline(a:lnum, line)
+    call setline(a:lnum, line)
   else
     let line = substitute(line, '^\s\+', '', '')
     if left !=# ''
@@ -53,7 +53,7 @@ function! s:wrap.comment_normal(lnum, ...) abort
       let line = line . caw#get_var('caw_wrap_sp_right') . right
     endif
     let line = caw#get_inserted_indent(a:lnum) . line
-    call caw#setline(a:lnum, line)
+    call setline(a:lnum, line)
   endif
 endfunction
 
@@ -83,7 +83,7 @@ function! s:wrap.comment_visual() abort
   \   caw#context().firstline,
   \   caw#context().lastline
   \)
-    if skip_blank_line && caw#getline(lnum) =~# '^\s*$'
+    if skip_blank_line && getline(lnum) =~# '^\s*$'
       continue    " Skip blank line.
     endif
     if align
@@ -154,7 +154,7 @@ function! s:wrap.uncomment_normal(lnum) abort
   if empty(range)
     return
   endif
-  let line = caw#getline(a:lnum)
+  let line = getline(a:lnum)
   let [left, right] = range.comment
   let sp_len = strlen(caw#get_var('caw_wrap_sp_left'))
   let line = substitute(line, '\V' . left . '\v\s{0,' . sp_len . '}', '', '')
@@ -163,5 +163,5 @@ function! s:wrap.uncomment_normal(lnum) abort
   " Trim only right because multiple aligned comment may leave more spaces
   " than caw_wrap_sp_right
   let line = caw#trim_right(line)
-  call caw#setline(a:lnum, line)
+  call setline(a:lnum, line)
 endfunction

@@ -30,15 +30,15 @@ function! s:dollarpos.comment_normal(lnum, ...) abort
   endif
   let cmt = comments[0]
 
-  call caw#setline(
+  call setline(
   \   a:lnum,
-  \   caw#getline(a:lnum)
+  \   getline(a:lnum)
   \       . caw#get_var('caw_dollarpos_sp_left')
   \       . cmt
   \       . caw#get_var('caw_dollarpos_sp_right')
   \)
   if startinsert
-    call caw#startinsert('A')
+    startinsert!
   endif
 endfunction
 
@@ -59,8 +59,8 @@ function! s:dollarpos.uncomment_normal(lnum) abort
   if empty(range)
     return
   endif
-  let line = caw#getline(a:lnum)
+  let line = getline(a:lnum)
   let left = range.start - 2 < 0 ? '' : line[: range.start - 2]
   let left = caw#trim_right(left)
-  call caw#setline(a:lnum, left)
+  call setline(a:lnum, left)
 endfunction

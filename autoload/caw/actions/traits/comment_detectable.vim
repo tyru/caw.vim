@@ -31,7 +31,7 @@ function! s:comment_detectable.has_comment_normal(lnum) abort
 endfunction
 
 function! s:comment_detectable.get_commented_col(lnum, needle) abort
-  let line = caw#getline(a:lnum)
+  let line = getline(a:lnum)
   let idx = -1
   let start = 0
   while 1
@@ -66,7 +66,7 @@ function! s:comment_detectable.has_all_comment() abort
   \   caw#context().firstline,
   \   caw#context().lastline
   \)
-    if caw#getline(lnum) !~# '^\s*$' && !self.has_comment_normal(lnum)
+    if getline(lnum) !~# '^\s*$' && !self.has_comment_normal(lnum)
       return 0
     endif
   endfor
@@ -74,8 +74,8 @@ function! s:comment_detectable.has_all_comment() abort
 endfunction
 
 function! s:comment_detectable.has_syntax(synpat, lnum, col) abort
-  for id in caw#synstack(a:lnum, a:col)
-    if caw#synIDattr(synIDtrans(id), 'name') =~# a:synpat
+  for id in synstack(a:lnum, a:col)
+    if synIDattr(synIDtrans(id), 'name') =~# a:synpat
       return 1
     endif
   endfor
@@ -83,7 +83,7 @@ function! s:comment_detectable.has_syntax(synpat, lnum, col) abort
 endfunction
 
 function! s:comment_detectable.search_synstack(lnum, cmt, synpat) abort
-  let line = caw#getline(a:lnum)
+  let line = getline(a:lnum)
   let cols = []
   let idx  = -1
   while 1

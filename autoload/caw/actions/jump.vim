@@ -32,9 +32,9 @@ function! s:jump.comment_jump(next) abort
   call s:ex_insert_str(a:next,
   \       cmt .  caw#get_var('caw_jump_sp'))
   if a:next
-    call caw#cursor(caw#context().firstline + 1, 1)
+    call cursor(caw#context().firstline + 1, 1)
   endif
-  call caw#startinsert('A')
+  startinsert!
 endfunction
 
 function! s:ex_insert_str(next, insert_str) abort

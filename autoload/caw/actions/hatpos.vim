@@ -26,7 +26,7 @@ function! s:hatpos.comment_normal(lnum, ...) abort
 
   let startinsert = get(a:000, 0, caw#get_var('caw_hatpos_startinsert_at_blank_line'))
   let min_indent_num = get(a:000, 1, -1)
-  let line = caw#getline(a:lnum)
+  let line = getline(a:lnum)
   let sp = line =~# '^\s*$' ?
   \               caw#get_var('caw_hatpos_sp_blank') :
   \               caw#get_var('caw_hatpos_sp', '', [a:lnum])
@@ -39,22 +39,22 @@ function! s:hatpos.comment_normal(lnum, ...) abort
 
   if min_indent_num >= 0
     if min_indent_num > strlen(line)
-      call caw#setline(a:lnum, caw#make_indent_str(min_indent_num))
-      let line = caw#getline(a:lnum)
+      call setline(a:lnum, caw#make_indent_str(min_indent_num))
+      let line = getline(a:lnum)
     endif
     call caw#assert(min_indent_num <= strlen(line), min_indent_num.' is accessible to '.string(line).'.')
     let before = min_indent_num ==# 0 ? '' : line[: min_indent_num - 1]
     let after  = min_indent_num ==# 0 ? line : line[min_indent_num :]
-    call caw#setline(a:lnum, before . cmt . sp . after)
+    call setline(a:lnum, before . cmt . sp . after)
   elseif line =~# '^\s*$'
     execute 'normal! '.a:lnum.'G"_cc' . cmt . sp
     if startinsert && caw#context().mode ==# 'n'
-      call caw#startinsert('A')
+      startinsert!
     endif
   else
     let indent = caw#get_inserted_indent(a:lnum)
-    let line = substitute(caw#getline(a:lnum), '^[ \t]\+', '', '')
-    call caw#setline(a:lnum, indent . cmt . sp . line)
+    let line = substitute(getline(a:lnum), '^[ \t]\+', '', '')
+    call setline(a:lnum, indent . cmt . sp . line)
   endif
 endfunction
 
@@ -72,7 +72,7 @@ function! s:hatpos.comment_visual() abort
   \   caw#context().firstline,
   \   caw#context().lastline
   \)
-    if skip_blank_line && caw#getline(lnum) =~# '^\s*$'
+    if skip_blank_line && getline(lnum) =~# '^\s*$'
       continue    " Skip blank line.
     endif
     if exists('min_indent_num')
@@ -100,12 +100,12 @@ function! s:hatpos.uncomment_normal(lnum) abort
   if empty(range)
     return
   endif
-  let line = caw#getline(a:lnum)
+  let line = getline(a:lnum)
   let left = range.start - 2 < 0 ? '' : line[: range.start - 2]
   let right = line[range.start - 1 + strlen(range.comment) :]
   let sp = caw#get_var('caw_hatpos_sp', '', [a:lnum])
   if sp !=# '' && stridx(right, sp) ==# 0
     let right = right[strlen(sp) :]
   endif
-  call caw#setline(a:lnum, left . right)
+  call setline(a:lnum, left . right)
 endfunction
