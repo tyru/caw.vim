@@ -18,6 +18,8 @@ install:
       [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
       [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
       $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
+  # context_filetype
+  - 'git -c advice.detachedHead=false clone https://github.com/Shougo/context_filetype.vim --quiet --branch v1.5.1 --single-branch --depth 1 %TEMP%\context_filetype'
   # themis
   - 'git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5.1 --single-branch --depth 1 %TEMP%\vim-themis'
   # https://groups.google.com/forum/#!msg/vim_dev/3AkHqiD1NLE/vFw52yh_AAAJ
@@ -27,5 +29,5 @@ build: off
 test_script:
   - ps: |
       & $Env:THEMIS_VIM --version
-      & $Env:TEMP\vim-themis\bin\themis.bat -r --reporter dot
+      & $Env:TEMP\vim-themis\bin\themis.bat -r --runtimepath $Env:TEMP\context_filetype --reporter dot
 deploy: off

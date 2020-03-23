@@ -29,6 +29,7 @@ matrix:
 before_script:
   - git clone --depth 1 --single-branch https://github.com/syngan/vim-vimlint /tmp/vim-vimlint
   - git clone --depth 1 --single-branch https://github.com/ynkdir/vim-vimlparser /tmp/vim-vimlparser
+  - git clone --depth 1 --single-branch https://github.com/Shougo/context_filetype.vim /tmp/context_filetype
   - git clone --depth 1 --single-branch --branch v1.5.2.1 https://github.com/thinca/vim-themis /tmp/vim-themis
 
 addons:
@@ -50,7 +51,7 @@ script:
   - git clean -f
   - if [ "$RUN_VINT" ]; then python --version; fi
   - if [ "$RUN_VINT" ]; then vint autoload plugin macros after; fi
-  - /tmp/vim-themis/bin/themis -r --reporter dot
+  - /tmp/vim-themis/bin/themis -r --runtimepath /tmp/context_filetype --reporter dot
   # check if both macros/generate-ftplugins.vim and after/ftplugin/ are updated
   - git clean -f
   - rm -rf after/ftplugin/

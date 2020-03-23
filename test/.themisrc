@@ -1,3 +1,6 @@
 filetype plugin indent on
 syntax enable
 call themis#option('recursive', 1)
+if $CONTEXT_FILETYPE_VIM !=# ''
+  call themis#option('runtimepath', [expand($CONTEXT_FILETYPE_VIM)])
+endif
