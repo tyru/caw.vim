@@ -29,7 +29,7 @@ function! s:jump.comment_jump(next) abort
   " Begin a new line and insert
   " the online comment leader with whitespaces.
   " And start Insert mode at the end of the inserted line.
-  call caw#actions#jump#ex_opencmd(a:next,
+  call s:ex_insert_str(a:next,
   \       cmt .  caw#get_var('caw_jump_sp'))
   if a:next
     call caw#cursor(caw#context().firstline + 1, 1)
@@ -37,7 +37,7 @@ function! s:jump.comment_jump(next) abort
   call caw#startinsert('A')
 endfunction
 
-function! caw#actions#jump#ex_opencmd(next, insert_str) abort
+function! s:ex_insert_str(next, insert_str) abort
   let save_fo = &l:formatoptions
   setlocal formatoptions-=o
   try

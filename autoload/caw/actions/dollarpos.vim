@@ -15,7 +15,7 @@ function! caw#actions#dollarpos#new() abort
   " Import comment database.
   let obj.comment_database = caw#new('comments.oneline')
 
-  return deepcopy(s:dollarpos)
+  return extend(obj, deepcopy(s:dollarpos))
 endfunction
 
 
