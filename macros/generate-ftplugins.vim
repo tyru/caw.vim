@@ -347,6 +347,7 @@ function! s:wrap_oneline() abort
   \   'javascript': ['/*', '*/'],
   \   'jgraph': ['(*', '*)'],
   \   'jsp': ['<%--', '--%>'],
+  \   'jsx': ['{/*', '*/}'],
   \   'julia': ['#=', '=#'],
   \   'kotlin': ['/*', '*/'],
   \   'kscript': ['/*', '*/'],
@@ -393,6 +394,7 @@ function! s:wrap_oneline() abort
   \   'systemverilog': ['/*', '*/'],
   \   'tads': ['/*', '*/'],
   \   'tsalt': ['/*', '*/'],
+  \   'tsx': ['{/*', '*/}'],
   \   'typescript': ['/*', '*/'],
   \   'uc': ['/*', '*/'],
   \   'velocity': ['#*', '*#'],
@@ -423,6 +425,8 @@ function! s:additional_vars() abort
   \   'endfunction',
   \   'let b:caw_hatpos_sp = function(''s:linecont_sp'')',
   \   'let b:caw_zeropos_sp = b:caw_hatpos_sp',
+  \   'let b:caw_hatpos_ignore_syngroup = 1',
+  \   'let b:caw_zeropos_ignore_syngroup = 1',
   \ ], "\n"),
   \}
 endfunction

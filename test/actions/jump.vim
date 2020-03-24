@@ -10,45 +10,221 @@ let s:NORMAL_MODE_CONTEXT = {
 \   'lastline': 1
 \}
 
-function! s:suite.before() abort
-    " Load filetype=c comment strings.
-    " setlocal filetype=c    " XXX: Why this isn't working?
-    unlet! b:did_caw_ftplugin
-    runtime! after/ftplugin/c/caw.vim
-endfunction
-
 function! s:suite.before_each() abort
-    let s:jump = caw#new('actions.jump')
+  new
+  let s:jump = caw#new('actions.jump')
 endfunction
 
 function! s:suite.after_each() abort
-    call vmock#verify()
-    call vmock#clear()
-    call caw#__clear_context__()
+  bw!
+endfunction
+
+function! s:set_context(base, ...) abort
+  let context = extend(deepcopy(a:base), a:0 ? a:1 : {})
+  call caw#set_context(context)
 endfunction
 
 
 function! s:suite.comment_next() abort
-    " vmock
-    call vmock#mock('caw#actions#jump#ex_opencmd').with(1, '// ')
-    call vmock#mock('caw#cursor').with(2, vmock#any())
-    call vmock#mock('caw#startinsert').with('A')
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, ['printf("hello\n");'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
-    " context
-    call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
+  " execute
+  call s:jump.comment_next()
 
-    call s:assert.equals(b:caw_oneline_comment, '//')
-    call s:jump.comment_next()
+  " assert
+  call s:assert.equals(getline(1, '$'), ['printf("hello\n");', '// '])
+endfunction
+
+function! s:suite.comment_next_indent() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }'
+  \])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
+
+  " execute
+  call s:jump.comment_next()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    // ',
+  \ '    func();',
+  \ '  }'
+  \])
+endfunction
+
+function! s:suite.comment_next_indent_2() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }'
+  \])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 2,
+  \ 'lastline': 2,
+  \})
+  call cursor(2, 1)
+
+  " execute
+  call s:jump.comment_next()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '    // ',
+  \ '  }'
+  \])
+endfunction
+
+function! s:suite.comment_next_indent_3() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }'
+  \])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 3,
+  \ 'lastline': 3,
+  \})
+  call cursor(3, 1)
+
+  " execute
+  call s:jump.comment_next()
+
+  " assert
+  " XXX: This result is caused by $VIMRUNTIME/indent/c.vim .
+  " Because original input is not normal C code.
+  call s:assert.equals(getline(1, '$'), [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }',
+  \ '// ',
+  \])
 endfunction
 
 function! s:suite.comment_prev() abort
-    " vmock
-    call vmock#mock('caw#actions#jump#ex_opencmd').with(0, '// ')
-    call vmock#mock('caw#startinsert').with('A')
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, ['printf("hello\n");'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
-    " context
-    call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
+  " execute
+  call s:jump.comment_prev()
 
-    call s:assert.equals(b:caw_oneline_comment, '//')
-    call s:jump.comment_prev()
+  " assert
+  call s:assert.equals(getline(1, '$'), ['// ', 'printf("hello\n");'])
+endfunction
+
+function! s:suite.comment_prev_indent() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }'
+  \])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
+
+  " execute
+  call s:jump.comment_prev()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), [
+  \ '// ',
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }'
+  \])
+endfunction
+
+function! s:suite.comment_prev_indent_2() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }'
+  \])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 2,
+  \ 'lastline': 2,
+  \})
+  call cursor(2, 1)
+
+  " execute
+  call s:jump.comment_prev()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    // ',
+  \ '    func();',
+  \ '  }'
+  \])
+endfunction
+
+function! s:suite.comment_prev_indent_3() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab cindent tabstop=2 shiftwidth=2
+  call setline(1, [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '  }'
+  \])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 3,
+  \ 'lastline': 3,
+  \})
+  call cursor(3, 1)
+
+  " execute
+  call s:jump.comment_prev()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    func();',
+  \ '    // ',
+  \ '  }',
+  \])
 endfunction

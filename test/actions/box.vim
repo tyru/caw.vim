@@ -10,91 +10,138 @@ let s:NORMAL_MODE_CONTEXT = {
 \   'lastline': 1
 \}
 
-function! s:suite.before() abort
-    " Load filetype=c comment strings.
-    " setlocal filetype=c    " XXX: Why this isn't working?
-    unlet! b:did_caw_ftplugin
-    runtime! after/ftplugin/c/caw.vim
-endfunction
-
 function! s:suite.before_each() abort
-    let s:box = caw#new('actions.box')
+  new
+  let s:box = caw#new('actions.box')
 endfunction
 
 function! s:suite.after_each() abort
-    call vmock#verify()
-    call vmock#clear()
-    call caw#__clear_context__()
+  bw!
+endfunction
+
+function! s:set_context(base, ...) abort
+  let context = extend(deepcopy(a:base), a:0 ? a:1 : {})
+  call caw#set_context(context)
 endfunction
 
 
 function! s:suite.comment() abort
-    " vmock
-    call vmock#mock('caw#getline').with(1, 1).return([
-    \   'printf("hello\n");'
-    \])
-    call vmock#mock('caw#append').with(0, [
-    \   '/**********************/',
-    \   '/* printf("hello\n"); */',
-    \   '/**********************/'
-    \])
+  " set up
+  setlocal filetype=c
+  call setline(1, ['printf("hello\n");'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
-    " context
-    call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
+  " execute
+  call s:box.comment()
 
-    call s:assert.equals(b:caw_wrap_multiline_comment,
-    \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
-    call s:box.comment()
+  " assert
+  call s:assert.equals(b:caw_wrap_multiline_comment,
+  \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
+  call s:assert.equals(getline(1, '$'), [
+  \   '/**********************/',
+  \   '/* printf("hello\n"); */',
+  \   '/**********************/'
+  \])
 endfunction
 
 function! s:suite.comment_indent_noexpandtab() abort
-    " vmock
-    call vmock#mock('caw#getline').with(1, 1).return([
-    \   "\t" . 'printf("hello\n");'
-    \])
-    call vmock#mock('caw#make_indent_str').with(1).return(
-    \   "\t"
-    \)
-    call vmock#mock('caw#append').with(0, [
-    \   "\t" . '/**********************/',
-    \   "\t" . '/* printf("hello\n"); */',
-    \   "\t" . '/**********************/'
-    \])
+  " set up
+  setlocal filetype=c
+  setlocal noexpandtab
+  call setline(1, ["\t" . 'printf("hello\n");'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
-    " options
-    setlocal noexpandtab
+  " execute
+  call s:box.comment()
 
-    " context
-    call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
-
-    call s:assert.equals(b:caw_wrap_multiline_comment,
-    \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
-    call s:box.comment()
+  " assert
+  call s:assert.equals(b:caw_wrap_multiline_comment,
+  \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
+  call s:assert.equals(getline(1, '$'), [
+  \   "\t" . '/**********************/',
+  \   "\t" . '/* printf("hello\n"); */',
+  \   "\t" . '/**********************/'
+  \])
 endfunction
 
 function! s:suite.comment_indent_expandtab() abort
-    " vmock
-    call vmock#mock('caw#getline').with(1, 1).return([
-    \   '  printf("hello\n");'
-    \])
-    call vmock#mock('caw#make_indent_str').with(2).return(
-    \   '  '
-    \)
-    call vmock#mock('caw#append').with(0, [
-    \   '  /**********************/',
-    \   '  /* printf("hello\n"); */',
-    \   '  /**********************/'
-    \])
+  " set up
+  setlocal filetype=c
+  setlocal expandtab
+  call setline(1, ['  printf("hello\n");'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
-    " options
-    " (actions.box doesn't see 'tabstop',
-    " it sees current line's indent string)
-    setlocal expandtab
+  " execute
+  call s:box.comment()
 
-    " context
-    call caw#__set_context__(deepcopy(s:NORMAL_MODE_CONTEXT))
+  " assert
+  call s:assert.equals(b:caw_wrap_multiline_comment,
+  \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
+  call s:assert.equals(getline(1, '$'), [
+  \   '  /**********************/',
+  \   '  /* printf("hello\n"); */',
+  \   '  /**********************/'
+  \])
+endfunction
 
-    call s:assert.equals(b:caw_wrap_multiline_comment,
-    \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
-    call s:box.comment()
+function! s:suite.comment_part() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab
+  call setline(1, ['  if (stridx(s, "#") == 0) {', '    func();', '  }'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 2,
+  \ 'lastline': 2,
+  \})
+  call cursor(2, 1)
+
+  " execute
+  call s:box.comment()
+
+  " assert
+  call s:assert.equals(b:caw_wrap_multiline_comment,
+  \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
+  call s:assert.equals(getline(1, '$'), [
+  \ '  if (stridx(s, "#") == 0) {',
+  \ '    /***********/',
+  \ '    /* func(); */',
+  \ '    /***********/',
+  \ '  }'])
+endfunction
+
+function! s:suite.comment_part_2() abort
+  " set up
+  setlocal filetype=c
+  setlocal expandtab
+  call setline(1, ['  if (stridx(s, "#") == 0) {', '    func();', '  }'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 1,
+  \ 'lastline': 3
+  \})
+
+  " execute
+  call s:box.comment()
+
+  " assert
+  call s:assert.equals(b:caw_wrap_multiline_comment,
+  \       {'right': '*/', 'bottom': '*', 'left': '/*', 'top': '*'})
+  call s:assert.equals(getline(1, '$'), ['  /******************************/',
+  \ '  /* if (stridx(s, "#") == 0) { */',
+  \ '  /*   func();                  */',
+  \ '  /* }                          */',
+  \ '  /******************************/',
+  \ ])
 endfunction

@@ -1,36 +1,38 @@
 scriptencoding utf-8
 
 function! caw#actions#traits#togglable#new() abort
-    return deepcopy(s:togglable)
+  return deepcopy(s:togglable)
 endfunction
 
 
 let s:togglable = {}
 
 " Below methods are missing.
-" Derived object must implement those.
+" Derived object must implement them.
 "
-" s:togglable.toggle requires:
-" - Derived.uncomment()
-" - Derived.comment()
+" Requires:
+" - has_all_comment(start, end)
+" - uncomment()
+" - comment()
 
 
 function! s:togglable.toggle() abort
-    if caw#context().mode ==# 'n'
-        if self.has_all_comment()
-            " The line has a comment string.
-            call self.uncomment()
-        else
-            " The line doesn't have a comment string.
-            call self.comment()
-        endif
+  let context = caw#context()
+  if context.mode ==# 'n'
+    if self.has_all_comment(context.firstline, context.lastline)
+      " The line has a comment string.
+      call self.uncomment()
     else
-        if self.has_all_comment()
-            " All lines have comment strings.
-            call self.uncomment()
-        else
-            " Some lines have comment strings, or no lines have comment strings.
-            call self.comment()
-        endif
+      " The line doesn't have a comment string.
+      call self.comment()
     endif
+  else
+    if self.has_all_comment(context.firstline, context.lastline)
+      " All lines have comment strings.
+      call self.uncomment()
+    else
+      " Some lines have comment strings, or no lines have comment strings.
+      call self.comment()
+    endif
+  endif
 endfunction

@@ -3,7 +3,6 @@ clone_depth: 10
 
 environment:
   matrix:
-    - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/vim74/oldest/win64/
     - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/vim80/oldest/win64/
     - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/latest/win64/
     # To test with latest official Vim binary, uncomment below line.
@@ -18,10 +17,12 @@ install:
       [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
       [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
       $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
-  # themis
-  - 'git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5.1 --single-branch --depth 1 %TEMP%\vim-themis'
-  # vmock
-  - 'git -c advice.detachedHead=false clone https://github.com/kannokanno/vmock --quiet --single-branch --depth 1 %TEMP%\vmock'
+  # test dependencies
+  - 'git -c advice.detachedHead=false clone https://github.com/MaxMEllon/vim-jsx-pretty --quiet --single-branch --depth 1 %TEMP%\vim-jsx-pretty'
+  - 'git -c advice.detachedHead=false --git-dir=%TEMP%\vim-jsx-pretty\.git checkout 05f9953fcaccc18a8f5c1ee9db06ac2b26662347'
+  - 'git -c advice.detachedHead=false clone https://github.com/Shougo/context_filetype.vim --quiet --single-branch --depth 1 %TEMP%\context_filetype'
+  - 'git -c advice.detachedHead=false --git-dir=%TEMP%\context_filetype\.git checkout f200fe69939089da9e61bd9a3ff75b4ef7adc708'
+  - 'git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5.4 --single-branch --depth 1 %TEMP%\vim-themis'
   # https://groups.google.com/forum/#!msg/vim_dev/3AkHqiD1NLE/vFw52yh_AAAJ
   - 'reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:32'
   - 'reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:64'
@@ -29,5 +30,5 @@ build: off
 test_script:
   - ps: |
       & $Env:THEMIS_VIM --version
-      & $Env:TEMP\vim-themis\bin\themis.bat -r --runtimepath $Env:TEMP\vmock --reporter dot
+      & $Env:TEMP\vim-themis\bin\themis.bat -r --runtimepath $Env:TEMP\vim-jsx-pretty --runtimepath $Env:TEMP\context_filetype --reporter dot
 deploy: off
