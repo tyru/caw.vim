@@ -483,15 +483,6 @@ g:caw_hatpos_sp
 	NOTE: An old variable name was |g:caw_i_sp|.
 	See |caw-faq-3| why I renamed the keymapping.
 
-						*g:caw_hatpos_sp_blank* *g:caw_i_sp_blank*
-g:caw_hatpos_sp_blank
-									(Default: "")
-	Inserted string after comment with |<Plug>(caw:hatpos:comment)|.
-	but applied only if a current line is blank line.
-
-	NOTE: An old variable name was |g:caw_i_sp_blank|.
-	See |caw-faq-3| why I renamed the keymapping.
-
 						*g:caw_hatpos_startinsert_at_blank_line*
 						*g:caw_i_startinsert_at_blank_line*
 g:caw_hatpos_startinsert_at_blank_line
@@ -559,15 +550,6 @@ g:caw_zeropos_sp
 	Inserted string after comment with |<Plug>(caw:zeropos:comment)|.
 
 	NOTE: An old variable name was |g:caw_I_sp|.
-	See |caw-faq-3| why I renamed the keymapping.
-
-						*g:caw_zeropos_sp_blank* *g:caw_I_sp_blank*
-g:caw_zeropos_sp_blank
-									(Default: "")
-	Inserted string after comment with |<Plug>(caw:zeropos:comment)|.
-	but applied only if a current line is blank line.
-
-	NOTE: An old variable name was |g:caw_I_sp_blank|.
 	See |caw-faq-3| why I renamed the keymapping.
 
 }}}
@@ -725,7 +707,6 @@ A. Because old keymappings and variables' names are hard to understand.
 	e.g.:
 	* |<Plug>(caw:i:toggle)| and |<Plug>(caw:tildepos:toggle)| were changed
 	  to |<Plug>(caw:hatpos:toggle)|.
-	* |g:caw_I_sp_blank| was changed to |g:caw_zeropos_sp_blank|.
 
 	hatpos
 		The keymappings do actions for the position where ^ command moves to.

@@ -59,14 +59,23 @@ function! s:def(name, value) abort
   let g:[a:name] = get(g:, a:name, a:value)
 endfunction
 
+if exists('g:caw_hatpos_sp_blank')
+  echohl WarningMsg
+  echomsg 'g:caw_hatpos_sp_blank is deprecated. please use g:caw_hatpos_sp instead.'
+  echohl None
+endif
+if exists('g:caw_zeropos_sp_blank')
+  echohl WarningMsg
+  echomsg 'g:caw_zeropos_sp_blank is deprecated. please use g:caw_zeropos_sp instead.'
+  echohl None
+endif
+
 call s:def_deprecated('caw_hatpos_sp', ' ')
-call s:def_deprecated('caw_hatpos_sp_blank', ' ')
 call s:def_deprecated('caw_hatpos_startinsert_at_blank_line', 1)
 call s:def_deprecated('caw_hatpos_skip_blank_line', 0)
 call s:def_deprecated('caw_hatpos_align', 1)
 
 call s:def_deprecated('caw_zeropos_sp', ' ')
-call s:def_deprecated('caw_zeropos_sp_blank', ' ')
 call s:def_deprecated('caw_zeropos_startinsert_at_blank_line', 1)
 call s:def_deprecated('caw_zeropos_skip_blank_line', 0)
 call s:def_deprecated('caw_zeropos_align', 1)
