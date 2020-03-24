@@ -60,13 +60,13 @@ function! s:def(name, value) abort
 endfunction
 
 call s:def_deprecated('caw_hatpos_sp', ' ')
-call s:def_deprecated('caw_hatpos_sp_blank', '')
+call s:def_deprecated('caw_hatpos_sp_blank', ' ')
 call s:def_deprecated('caw_hatpos_startinsert_at_blank_line', 1)
 call s:def_deprecated('caw_hatpos_skip_blank_line', 0)
 call s:def_deprecated('caw_hatpos_align', 1)
 
 call s:def_deprecated('caw_zeropos_sp', ' ')
-call s:def_deprecated('caw_zeropos_sp_blank', '')
+call s:def_deprecated('caw_zeropos_sp_blank', ' ')
 call s:def_deprecated('caw_zeropos_startinsert_at_blank_line', 1)
 call s:def_deprecated('caw_zeropos_skip_blank_line', 0)
 
