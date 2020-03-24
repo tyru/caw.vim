@@ -7,12 +7,8 @@ matrix:
   include:
     - os: linux
       env:
-        - VIM_VERSION=v7.4
-        - RUN_VINT=true
-    - os: linux
-      env:
         - VIM_VERSION=v8.0.0000
-        - RUN_VINT=true
+        - RUN_VINT=false
     - os: linux
       env:
         - VIM_VERSION=master
@@ -27,9 +23,11 @@ matrix:
         - brew cleanup
 
 before_script:
-  - git clone --depth 1 --single-branch https://github.com/MaxMEllon/vim-jsx-pretty /tmp/vim-jsx-pretty
-  - git clone --depth 1 --single-branch https://github.com/Shougo/context_filetype.vim /tmp/context_filetype
-  - git clone --depth 1 --single-branch --branch v1.5.2.1 https://github.com/thinca/vim-themis /tmp/vim-themis
+  - git -c advice.detachedHead=false clone https://github.com/MaxMEllon/vim-jsx-pretty --quiet --single-branch --depth 1 /tmp/vim-jsx-pretty
+  - git -c advice.detachedHead=false --git-dir=/tmp/vim-jsx-pretty/.git checkout 05f9953fcaccc18a8f5c1ee9db06ac2b26662347
+  - git -c advice.detachedHead=false clone https://github.com/Shougo/context_filetype.vim --quiet --single-branch --depth 1 /tmp/context_filetype
+  - git -c advice.detachedHead=false --git-dir=/tmp/context_filetype/.git checkout f200fe69939089da9e61bd9a3ff75b4ef7adc708
+  - git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5.4 --single-branch --depth 1 /tmp/vim-themis
 
 addons:
   homebrew:
