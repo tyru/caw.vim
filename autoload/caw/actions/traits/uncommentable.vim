@@ -8,11 +8,10 @@ endfunction
 let s:uncommentable = {}
 
 " Below methods are missing.
-" Derived object must implement those.
+" Derived object must implement them.
 "
-" s:uncommentable.uncomment(),
-" s:uncommentable.uncomment_visual() require:
-" - Derived.uncomment_normal()
+" Requires:
+" - get_uncomment_line(lnum, options)
 
 
 function! s:uncommentable.uncomment() abort
@@ -25,10 +24,14 @@ function! s:uncommentable.uncomment() abort
 endfunction
 
 function! s:uncommentable.uncomment_visual() abort
-  for lnum in range(
-  \   caw#context().firstline,
-  \   caw#context().lastline
-  \)
-    call self.uncomment_normal(lnum)
+  let context = caw#context()
+  let lines = []
+  for lnum in range(context.firstline, context.lastline)
+    let lines += [self.get_uncomment_line(lnum, {})]
   endfor
+  call caw#replace_lines(context.firstline, context.lastline, lines)
+endfunction
+
+function! s:uncommentable.uncomment_normal(lnum) abort
+  call caw#replace_line(a:lnum, self.get_uncomment_line(a:lnum, {}))
 endfunction

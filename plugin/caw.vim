@@ -69,6 +69,7 @@ call s:def_deprecated('caw_zeropos_sp', ' ')
 call s:def_deprecated('caw_zeropos_sp_blank', ' ')
 call s:def_deprecated('caw_zeropos_startinsert_at_blank_line', 1)
 call s:def_deprecated('caw_zeropos_skip_blank_line', 0)
+call s:def_deprecated('caw_zeropos_align', 1)
 
 call s:def_deprecated('caw_dollarpos_sp_left', repeat(' ', 4))
 call s:def_deprecated('caw_dollarpos_sp_right', ' ')

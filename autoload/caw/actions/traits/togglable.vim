@@ -8,17 +8,18 @@ endfunction
 let s:togglable = {}
 
 " Below methods are missing.
-" Derived object must implement those.
+" Derived object must implement them.
 "
-" s:togglable.toggle requires:
-" - Derived.has_all_comment()
-" - Derived.uncomment()
-" - Derived.comment()
+" Requires:
+" - has_all_comment(start, end)
+" - uncomment()
+" - comment()
 
 
 function! s:togglable.toggle() abort
-  if caw#context().mode ==# 'n'
-    if self.has_all_comment()
+  let context = caw#context()
+  if context.mode ==# 'n'
+    if self.has_all_comment(context.firstline, context.lastline)
       " The line has a comment string.
       call self.uncomment()
     else
@@ -26,7 +27,7 @@ function! s:togglable.toggle() abort
       call self.comment()
     endif
   else
-    if self.has_all_comment()
+    if self.has_all_comment(context.firstline, context.lastline)
       " All lines have comment strings.
       call self.uncomment()
     else

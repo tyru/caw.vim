@@ -21,30 +21,33 @@ endfunction
 
 let s:dollarpos = {'fallback_types': ['wrap']}
 
-function! s:dollarpos.comment_normal(lnum, ...) abort
-  let startinsert = a:0 ? a:1 : caw#get_var('caw_dollarpos_startinsert') && caw#context().mode ==# 'n'
+" vint: next-line -ProhibitUnusedVariable
+function! s:dollarpos.startinsert(lnum) abort
+  if caw#get_var('caw_dollarpos_startinsert') && caw#context().mode ==# 'n'
+    return 'startinsert!'
+  endif
+  return ''
+endfunction
 
+" vint: next-line -ProhibitUnusedVariable
+function! s:dollarpos.get_comment_line(lnum, options) abort
   let comments = self.comment_database.get_comments()
+  let line = getline(a:lnum)
   if empty(comments)
-    return
+    return line
   endif
   let cmt = comments[0]
 
-  call setline(
-  \   a:lnum,
-  \   getline(a:lnum)
+  return line
   \       . caw#get_var('caw_dollarpos_sp_left')
   \       . cmt
   \       . caw#get_var('caw_dollarpos_sp_right')
-  \)
-  if startinsert
-    startinsert!
-  endif
 endfunction
 
 function! s:dollarpos.get_commented_range(lnum, comments) abort
+  let ignore_syngroup = caw#get_var('caw_dollarpos_ignore_syngroup', 0, [a:lnum])
   for cmt in a:comments
-    let lcol = self.get_commented_col(a:lnum, cmt)
+    let lcol = self.get_commented_col(a:lnum, cmt, ignore_syngroup)
     if lcol ==# 0
       continue
     endif
@@ -53,14 +56,15 @@ function! s:dollarpos.get_commented_range(lnum, comments) abort
   return {}
 endfunction
 
-function! s:dollarpos.uncomment_normal(lnum) abort
-  let comments = self.comment_database.sorted_comments_by_length_desc()
+" vint: next-line -ProhibitUnusedVariable
+function! s:dollarpos.get_uncomment_line(lnum, options) abort
+  let comments = self.comment_database.get_possible_comments(caw#context())
   let range = self.get_commented_range(a:lnum, comments)
-  if empty(range)
-    return
-  endif
   let line = getline(a:lnum)
+  if empty(range)
+    return line
+  endif
   let left = range.start - 2 < 0 ? '' : line[: range.start - 2]
   let left = caw#trim_right(left)
-  call setline(a:lnum, left)
+  return left
 endfunction

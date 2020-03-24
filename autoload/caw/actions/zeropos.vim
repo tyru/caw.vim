@@ -9,28 +9,36 @@ endfunction
 
 let s:zeropos = {}
 
-function! s:zeropos.comment_normal(lnum, ...) abort
-  let startinsert = get(a:000, 0, caw#get_var('caw_zeropos_startinsert_at_blank_line')) && caw#context().mode ==# 'n'
+function! s:zeropos.get_var(varname, ...) abort
+  return call('caw#get_var', ['caw_zeropos_' . a:varname] + a:000)
+endfunction
+
+function! s:zeropos.startinsert(lnum) abort
+  if self.get_var('startinsert_at_blank_line') && getline(a:lnum) =~# '^\s*$'
+  \ && caw#context().mode ==# 'n'
+    return 'startinsert!'
+  endif
+  return ''
+endfunction
+
+" vint: next-line -ProhibitUnusedVariable
+function! s:zeropos.get_comment_line(lnum, options) abort
   let line = getline(a:lnum)
   let caw_zeropos_sp = line =~# '^\s*$' ?
-  \               caw#get_var('caw_zeropos_sp_blank') :
-  \               caw#get_var('caw_zeropos_sp', '', [a:lnum])
+  \               self.get_var('sp_blank') :
+  \               self.get_var('sp', '', [a:lnum])
 
   let comments = self.comment_database.get_comments()
   if empty(comments)
-    return
+    return line
   endif
   let cmt = comments[0]
 
   if line =~# '^\s*$'
-    if caw#get_var('caw_zeropos_skip_blank_line')
-      return
+    if self.get_var('skip_blank_line')
+      return line
     endif
-    call setline(a:lnum, cmt . caw_zeropos_sp)
-    if startinsert
-      startinsert!
-    endif
-  else
-    call setline(a:lnum, cmt . caw_zeropos_sp . line)
+    return cmt . caw_zeropos_sp
   endif
+  return cmt . caw_zeropos_sp . line
 endfunction

@@ -16,11 +16,11 @@ function! s:wrap_oneline.get_comments() abort
   for method in s:METHODS
     let comments += self[method]()
   endfor
-  return comments
+  return caw#uniq_keep_order(comments)
 endfunction
 
-function! s:wrap_oneline.sorted_comments_by_length_desc() abort
-  return self._sorted_comments_by_length_desc(function('s:by_length_desc'))
+function! s:wrap_oneline.get_possible_comments(context) abort
+  return self._get_possible_comments(a:context, 'caw_wrap_oneline_comment', function('s:by_length_desc'))
 endfunction
 
 function! s:by_length_desc(c1, c2) abort

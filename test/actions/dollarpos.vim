@@ -26,12 +26,20 @@ function! s:suite.after_each() abort
   bw!
 endfunction
 
+function! s:set_context(base, ...) abort
+  let context = extend(deepcopy(a:base), a:0 ? a:1 : {})
+  call caw#set_context(context)
+endfunction
+
 
 function! s:suite.comment() abort
   " set up
   setlocal filetype=c
   call setline(1, ['printf("hello\n");'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:dollarpos.comment()
@@ -48,8 +56,13 @@ function! s:suite.comment_visual_oneline() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(extend(deepcopy(s:VISUAL_MODE_CONTEXT),
-  \ {'visualmode': 'V', 'firstline': 2, 'lastline': 2}))
+  call s:set_context(s:VISUAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 2,
+  \ 'lastline': 2
+  \})
+  call cursor(2, 1)
 
   " execute
   call s:dollarpos.comment()
@@ -70,8 +83,12 @@ function! s:suite.comment_visual_multiline() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(extend(deepcopy(s:VISUAL_MODE_CONTEXT),
-  \ {'visualmode': 'V', 'firstline': 1, 'lastline': 3}))
+  call s:set_context(s:VISUAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 1,
+  \ 'lastline': 3
+  \})
 
   " execute
   call s:dollarpos.comment()
@@ -88,7 +105,10 @@ function! s:suite.uncomment() abort
   " set up
   setlocal filetype=c
   call setline(1, ['printf("hello\n");     // FIXME'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:dollarpos.uncomment()
@@ -101,7 +121,10 @@ function! s:suite.uncomment_many_sp() abort
   " set up
   setlocal filetype=c
   call setline(1, ['printf("hello\n");                  // FIXME'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:dollarpos.uncomment()
@@ -114,7 +137,10 @@ function! s:suite.uncomment_many_sp_blank() abort
   " set up
   setlocal filetype=c
   call setline(1, ['printf("hello\n");                  //'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:dollarpos.uncomment()
@@ -127,7 +153,10 @@ function! s:suite.uncomment_no_spaces() abort
   " set up
   setlocal filetype=c
   call setline(1, ['printf("hello\n");// FIXME'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:dollarpos.uncomment()
@@ -140,7 +169,10 @@ function! s:suite.uncomment_no_spaces_blank() abort
   " set up
   setlocal filetype=c
   call setline(1, ['printf("hello\n");//'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:dollarpos.uncomment()

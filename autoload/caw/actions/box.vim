@@ -7,9 +7,6 @@ function! caw#actions#box#new() abort
 endfunction
 
 
-" TODO:
-" - s:caw_box_uncomment()
-
 let s:box = {}
 
 function! s:box.comment() abort

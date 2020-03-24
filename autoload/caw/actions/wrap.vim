@@ -21,19 +21,25 @@ endfunction
 
 let s:wrap = {'fallback_types': ['hatpos']}
 
-function! s:wrap.comment_normal(lnum, ...) abort
-  let left_col = get(a:000, 0, -1)
-  let right_col = get(a:000, 1, -1)
+" vint: next-line -ProhibitUnusedVariable
+function! s:wrap.startinsert(lnum) abort
+  return ''
+endfunction
+
+
+function! s:wrap.get_comment_line(lnum, options) abort
+  let left_col = get(a:options, 'left_col', -1)
+  let right_col = get(a:options, 'right_col', -1)
   let line = getline(a:lnum)
   if caw#context().mode ==# 'n'
   \   && caw#get_var('caw_wrap_skip_blank_line')
   \   && line =~# '^\s*$'
-    return
+    return line
   endif
 
   let comments = self.comment_database.get_comments()
   if empty(comments)
-    return
+    return line
   endif
   let [left, right] = comments[0]
   if left_col > 0 && right_col > 0
@@ -43,26 +49,26 @@ function! s:wrap.comment_normal(lnum, ...) abort
     \   caw#get_var('caw_wrap_sp_right') . right,
     \   left_col,
     \   right_col)
-    call setline(a:lnum, line)
-  else
-    let line = substitute(line, '^\s\+', '', '')
-    if left !=# ''
-      let line = left . caw#get_var('caw_wrap_sp_left') . line
-    endif
-    if right !=# ''
-      let line = line . caw#get_var('caw_wrap_sp_right') . right
-    endif
-    let line = caw#get_inserted_indent(a:lnum) . line
-    call setline(a:lnum, line)
+    return line
   endif
+  let line = substitute(line, '^\s\+', '', '')
+  if left !=# ''
+    let line = left . caw#get_var('caw_wrap_sp_left') . line
+  endif
+  if right !=# ''
+    let line = line . caw#get_var('caw_wrap_sp_right') . right
+  endif
+  let line = caw#get_inserted_indent(a:lnum) . line
+  return line
 endfunction
 
 function! s:wrap.comment_visual() abort
+  let context = caw#context()
   let wiseness = get({
   \   'v': 'characterwise',
   \   'V': 'linewise',
   \   "\<C-v>": 'blockwise',
-  \}, caw#context().visualmode, '')
+  \}, context.visualmode, '')
   if wiseness !=# ''
   \   && has_key(self, 'comment_visual_' . wiseness)
     call call(self['comment_visual_' . wiseness], [], self)
@@ -74,24 +80,25 @@ function! s:wrap.comment_visual() abort
     let [left_col, right_col] =
     \   caw#get_both_sides_space_cols(
     \       caw#get_var('caw_wrap_skip_blank_line'),
-    \       caw#context().firstline,
-    \       caw#context().lastline)
+    \       context.firstline,
+    \       context.lastline)
   endif
 
   let skip_blank_line = caw#get_var('caw_wrap_skip_blank_line')
+  let lines = []
   for lnum in range(
-  \   caw#context().firstline,
-  \   caw#context().lastline
+  \   context.firstline,
+  \   context.lastline
   \)
-    if skip_blank_line && getline(lnum) =~# '^\s*$'
-      continue    " Skip blank line.
+    let line = getline(lnum)
+    if !skip_blank_line || line !~# '^\s*$'
+      let options = align ? {'left_col': left_col, 'right_col': right_col} : {}
+      let line = self.get_comment_line(lnum, options)
     endif
-    if align
-      call self.comment_normal(lnum, left_col, right_col)
-    else
-      call self.comment_normal(lnum)
-    endif
+    let lines += [line]
   endfor
+
+  call caw#replace_lines(context.firstline, context.lastline, lines)
 endfunction
 
 let s:op_self = {}
@@ -132,12 +139,18 @@ function! s:wrap.comment_visual_characterwise() abort
 endfunction
 
 function! s:wrap.get_commented_range(lnum, comments) abort
+  let line = caw#trim(getline(a:lnum))
+  let ignore_syngroup = caw#get_var('caw_wrap_ignore_syngroup', 0, [a:lnum])
   for [left, right] in a:comments
-    let lcol = self.get_commented_col(a:lnum, left)
+    " if the line is surrounded with left and right, ignore Comment syntax group
+    let surrounded = stridx(line, left) ==# 0
+    \ && strlen(line) - strlen(right) >=# 0
+    \ && strridx(line, right) ==# strlen(line) - strlen(right)
+    let lcol = self.get_commented_col(a:lnum, left, ignore_syngroup || surrounded)
     if lcol ==# 0
       continue
     endif
-    let rcol = self.get_commented_col(a:lnum, right)
+    let rcol = self.get_commented_col(a:lnum, right, ignore_syngroup || surrounded)
     if rcol ==# 0
       continue
     endif
@@ -148,13 +161,14 @@ function! s:wrap.get_commented_range(lnum, comments) abort
   return {}
 endfunction
 
-function! s:wrap.uncomment_normal(lnum) abort
-  let comments = self.comment_database.sorted_comments_by_length_desc()
+" vint: next-line -ProhibitUnusedVariable
+function! s:wrap.get_uncomment_line(lnum, options) abort
+  let comments = self.comment_database.get_possible_comments(caw#context())
   let range = self.get_commented_range(a:lnum, comments)
-  if empty(range)
-    return
-  endif
   let line = getline(a:lnum)
+  if empty(range)
+    return line
+  endif
   let [left, right] = range.comment
   let sp_len = strlen(caw#get_var('caw_wrap_sp_left'))
   let line = substitute(line, '\V' . left . '\v\s{0,' . sp_len . '}', '', '')
@@ -163,5 +177,5 @@ function! s:wrap.uncomment_normal(lnum) abort
   " Trim only right because multiple aligned comment may leave more spaces
   " than caw_wrap_sp_right
   let line = caw#trim_right(line)
-  call setline(a:lnum, line)
+  return line
 endfunction

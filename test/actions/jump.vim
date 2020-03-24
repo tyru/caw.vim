@@ -19,13 +19,21 @@ function! s:suite.after_each() abort
   bw!
 endfunction
 
+function! s:set_context(base, ...) abort
+  let context = extend(deepcopy(a:base), a:0 ? a:1 : {})
+  call caw#set_context(context)
+endfunction
+
 
 function! s:suite.comment_next() abort
   " set up
   setlocal filetype=c
   setlocal expandtab cindent tabstop=2 shiftwidth=2
   call setline(1, ['printf("hello\n");'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:jump.comment_next()
@@ -43,7 +51,10 @@ function! s:suite.comment_next_indent() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:jump.comment_next()
@@ -66,7 +77,12 @@ function! s:suite.comment_next_indent_2() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 2,
+  \ 'lastline': 2,
+  \})
   call cursor(2, 1)
 
   " execute
@@ -90,7 +106,12 @@ function! s:suite.comment_next_indent_3() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 3, 'lastline': 3}))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 3,
+  \ 'lastline': 3,
+  \})
   call cursor(3, 1)
 
   " execute
@@ -112,7 +133,10 @@ function! s:suite.comment_prev() abort
   setlocal filetype=c
   setlocal expandtab cindent tabstop=2 shiftwidth=2
   call setline(1, ['printf("hello\n");'])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:jump.comment_prev()
@@ -130,7 +154,10 @@ function! s:suite.comment_prev_indent() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(deepcopy(s:NORMAL_MODE_CONTEXT))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
 
   " execute
   call s:jump.comment_prev()
@@ -153,7 +180,12 @@ function! s:suite.comment_prev_indent_2() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 2, 'lastline': 2}))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 2,
+  \ 'lastline': 2,
+  \})
   call cursor(2, 1)
 
   " execute
@@ -177,7 +209,12 @@ function! s:suite.comment_prev_indent_3() abort
   \ '    func();',
   \ '  }'
   \])
-  call caw#set_context(extend(deepcopy(s:NORMAL_MODE_CONTEXT), {'firstline': 3, 'lastline': 3}))
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \ 'firstline': 3,
+  \ 'lastline': 3,
+  \})
   call cursor(3, 1)
 
   " execute

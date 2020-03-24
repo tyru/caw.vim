@@ -11,8 +11,24 @@ let s:op_doing = 0
 " Call actions' methods until it succeeded
 " (currently seeing b:changedtick but it is bad idea)
 function! caw#keymapping_stub(mode, action, method) abort
+  " Skip indent.
+  " Because some filetypes detect commented/uncommented on current line's syntax group.
+  if col('.') < indent('.') + 1
+    normal! ^
+  endif
+
+  " Context filetype support.
+  " https://github.com/Shougo/context_filetype.vim
+  if s:installed_context_filetype
+    let conft = context_filetype#get_filetype()
+  else
+    let conft = &l:filetype
+  endif
+
   " Set up context.
   let context = {}
+  let context.filetype = &l:filetype
+  let context.context_filetype = conft
   let context.mode = a:mode
   let context.visualmode = visualmode()
   if a:mode ==# 'n'
@@ -31,13 +47,8 @@ function! caw#keymapping_stub(mode, action, method) abort
   endif
   call caw#set_context(context)
 
-  " Context filetype support.
-  " https://github.com/Shougo/context_filetype.vim
-  if s:installed_context_filetype
-    let conft = context_filetype#get_filetype()
-    if conft !=# &l:filetype
-      call caw#load_ftplugin(conft)
-    endif
+  if conft !=# &l:filetype
+    call caw#load_ftplugin(conft)
   endif
 
   try
@@ -74,7 +85,7 @@ function! caw#keymapping_stub(mode, action, method) abort
     echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
     echohl None
   finally
-    if s:installed_context_filetype && context_filetype#get_filetype() !=# &l:filetype
+    if conft !=# &l:filetype
       call caw#load_ftplugin(&l:filetype)
     endif
     " Free context.
@@ -139,13 +150,12 @@ endfunction
 
 " Utilities: Misc. functions. {{{
 
-if s:installed_context_filetype && exists('*context_filetype#filetypes')
+if s:installed_context_filetype
   function! caw#get_related_filetypes(ft) abort
     let filetypes = get(context_filetype#filetypes(), a:ft, [])
-    call map(filetypes, 'v:val.filetype')
-    let dup = {}
+    let dup = {a:ft : 1}
     let related = []
-    for ft in filetypes
+    for ft in map(copy(filetypes), 'v:val.filetype')
       if !has_key(dup, ft)
         let related += [ft]
         let dup[ft] = 1
@@ -216,12 +226,34 @@ else
   endfunction
 endif
 
-function! caw#trim_whitespaces(str) abort
-  let str = a:str
-  let str = substitute(str, '^\s\+', '', '')
-  let str = substitute(str, '\s\+$', '', '')
-  return str
+function! caw#uniq_keep_order(list) abort
+  if len(a:list) <=# 1
+    return a:list
+  endif
+  let dup = {}
+  let results = [a:list[0]]
+  for l:V in a:list[1:]
+    let id = string(l:V)
+    if !has_key(dup, id)
+      let results += [l:V]
+      let dup[id] = 1
+    endif
+  endfor
+  return results
 endfunction
+
+if exists('*trim')
+  function! caw#trim(str) abort
+    return trim(a:str)
+  endfunction
+else
+  function! caw#trim(str) abort
+    let str = a:str
+    let str = substitute(str, '^\s\+', '', '')
+    let str = substitute(str, '\s\+$', '', '')
+    return str
+  endfunction
+endif
 
 function! caw#trim_left(str) abort
   return substitute(a:str, '^\s\+', '', '')
@@ -229,6 +261,19 @@ endfunction
 
 function! caw#trim_right(str) abort
   return substitute(a:str, '\s\+$', '', '')
+endfunction
+
+
+function! caw#replace_line(lnum, line) abort
+  if a:line !=# getline(a:lnum)
+    call setline(a:lnum, a:line)
+  endif
+endfunction
+
+function! caw#replace_lines(start, end, lines) abort
+  if a:lines !=# getline(a:start, a:end)
+    call setline(a:start, a:lines)
+  endif
 endfunction
 
 function! caw#get_min_indent_num(skip_blank_line, from_lnum, to_lnum) abort
