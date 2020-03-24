@@ -20,6 +20,7 @@ NEW BSD LICENSE {{{
 ==============================================================================
 CONTENTS								*caw-contents*
 
+Requirements					|caw-requirements|
 Introduction					|caw-introduction|
 Features						|caw-features|
 Supported filetypes				|caw-supported-filetypes|
@@ -54,6 +55,12 @@ TODO & Bugs						|caw-todo-and-bugs|
 Changelog						|caw-changelog|
 
 
+==============================================================================
+REQUIREMENTS							*caw-requirements* {{{
+
+* Vim 8.0 or later
+
+}}}
 ==============================================================================
 INTRODUCTION							*caw-introduction* {{{
 
