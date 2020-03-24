@@ -37,9 +37,7 @@ function! s:hatpos.get_comment_line(lnum, options) abort
   " NOTE: min_indent_num is byte length. not display width.
   let min_indent_num = get(a:options, 'min_indent_num', -1)
   let line = getline(a:lnum)
-  let sp = line =~# '^\s*$' ?
-  \               self.get_var('sp_blank') :
-  \               self.get_var('sp', '', [a:lnum])
+  let sp = self.get_var('sp', '', [a:lnum])
 
   let comments = self.comment_database.get_comments()
   if empty(comments)

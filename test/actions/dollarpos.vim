@@ -133,7 +133,7 @@ function! s:suite.uncomment_many_sp() abort
   call s:assert.equals(getline(1, '$'), ['printf("hello\n");'])
 endfunction
 
-function! s:suite.uncomment_many_sp_blank() abort
+function! s:suite.uncomment_many_sp_whitespaces() abort
   " set up
   setlocal filetype=c
   call setline(1, ['printf("hello\n");                  //'])

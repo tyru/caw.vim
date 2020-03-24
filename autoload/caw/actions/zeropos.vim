@@ -24,9 +24,7 @@ endfunction
 " vint: next-line -ProhibitUnusedVariable
 function! s:zeropos.get_comment_line(lnum, options) abort
   let line = getline(a:lnum)
-  let caw_zeropos_sp = line =~# '^\s*$' ?
-  \               self.get_var('sp_blank') :
-  \               self.get_var('sp', '', [a:lnum])
+  let caw_zeropos_sp = self.get_var('sp', '', [a:lnum])
 
   let comments = self.comment_database.get_comments()
   if empty(comments)
