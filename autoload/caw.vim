@@ -333,7 +333,7 @@ endfunction
 
 function! caw#load_ftplugin(ft) abort
   if exists('b:undo_ftplugin')
-    execute b:undo_ftplugin
+    silent! execute b:undo_ftplugin
   endif
   unlet! b:did_caw_ftplugin
   execute 'runtime! after/ftplugin/' . a:ft . '/caw.vim'
