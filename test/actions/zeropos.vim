@@ -413,3 +413,35 @@ function! s:suite.uncomment_visual_multiline_hatpos() abort
   \ '  }'
   \])
 endfunction
+
+function! s:suite.dont_uncomment_trailing_comment() abort
+  " set up
+  setlocal filetype=c
+  call setline(1, ['func(); // hello'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
+
+  " execute
+  call s:zeropos.uncomment()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), ['func(); // hello'])
+endfunction
+
+function! s:suite.toggle_comment_at_line_with_trailing_comment() abort
+  " set up
+  setlocal filetype=c
+  call setline(1, ['  func(); // hello'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
+
+  " execute
+  call s:zeropos.toggle()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), ['//   func(); // hello'])
+endfunction
