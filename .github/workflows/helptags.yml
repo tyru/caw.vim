@@ -1,0 +1,11 @@
+name: Vim helptags
+on: [push, pull_request]
+jobs:
+  tagname:
+    name: Check tagnames conflict
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Check tagnames
+        uses: tsuyoshicho/action-vimhelp-tagname-check@master

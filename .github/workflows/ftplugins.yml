@@ -1,0 +1,14 @@
+name: Generate ftplugins
+on: [push, pull_request]
+jobs:
+  ftplugins:
+    name: Generate ftplugins
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Generate ftplugins
+        run: |
+          rm -rf after/ftplugin/
+          bash -x macros/generate-ftplugins.sh
+          test -z "$(git status -s | tee >(cat >&2))"

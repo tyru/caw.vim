@@ -1,0 +1,32 @@
+name: Reviewdog
+on: [push, pull_request]
+jobs:
+  vint:
+    name: runner / vint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Vint
+        uses: reviewdog/action-vint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+      - name: Vint-pr-review
+        uses: reviewdog/action-vint@v1
+        if: github.event_name == 'pull_request'
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+  misspell:
+    name: runner / misspell
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Misspell-pr-review
+        uses: reviewdog/action-misspell@v1
+        if: github.event_name == 'pull_request'
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          locale: "US"
