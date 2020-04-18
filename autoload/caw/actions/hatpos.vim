@@ -96,12 +96,12 @@ endfunction
 
 function! s:hatpos.get_commented_range(lnum, comments) abort
   let ignore_syngroup = self.get_var('ignore_syngroup', 0, [a:lnum])
+  let begin_col = matchend(getline(a:lnum), '^\s*.')
   for cmt in a:comments
     let lcol = self.get_commented_col(a:lnum, cmt, ignore_syngroup)
-    if lcol ==# 0
-      continue
+    if lcol ==# begin_col
+      return {'start': lcol, 'end': lcol, 'comment': cmt}
     endif
-    return {'start': lcol, 'end': lcol, 'comment': cmt}
   endfor
   return {}
 endfunction
