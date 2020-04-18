@@ -470,7 +470,7 @@ function! s:write_all() abort
     silent edit `=dir.'/caw.vim'`
     silent %delete _
     silent read macros/after-ftplugin-template.vim
-    silent 1delete _
+    silent 1g/^$/delete _
 
     " vint: -ProhibitCommandRelyOnUser
     " vint: -ProhibitCommandWithUnintendedSideEffect
