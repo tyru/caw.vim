@@ -388,3 +388,35 @@ function! s:suite.uncomment_removes_indent_when_uncommented_line_is_empty() abor
   \ '    pass',
   \])
 endfunction
+
+function! s:suite.dont_uncomment_trailing_comment() abort
+  " set up
+  setlocal filetype=c
+  call setline(1, ['func(); // hello'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
+
+  " execute
+  call s:hatpos.uncomment()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), ['func(); // hello'])
+endfunction
+
+function! s:suite.toggle_comment_at_line_with_trailing_comment() abort
+  " set up
+  setlocal filetype=c
+  call setline(1, ['  func(); // hello'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
+
+  " execute
+  call s:hatpos.toggle()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), ['  // func(); // hello'])
+endfunction
