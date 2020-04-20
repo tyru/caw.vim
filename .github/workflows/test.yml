@@ -1,0 +1,83 @@
+name: Run tests
+on: [push, pull_request]
+env:
+  THEMIS_VERSION: v1.5.4
+jobs:
+  unixlike:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        vim: [v8.0.0000, head]
+        type: [vim, macvim]
+        download: [available]
+        # Linux vim 8.1 build only, action-setup-vim 1.0.1 or after auto switch
+        exclude:
+          - os: ubuntu-latest
+            type: macvim
+          - os: macos-latest
+            type: macvim
+            vim: v8.0.0000
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.type }} ${{ matrix.vim }}/${{ matrix.os }} test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup apt
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+      - name: Setup Vim
+        id: 'vim'
+        uses: thinca/action-setup-vim@v1
+        with:
+          vim_version: '${{ matrix.vim }}'
+          vim_type: '${{ matrix.type }}'
+          download: '${{ matrix.vim_download || matrix.download }}'
+      - name: Setup plugins
+        run: |
+          git -c advice.detachedHead=false clone https://github.com/MaxMEllon/vim-jsx-pretty --quiet --single-branch --depth 1 ${GITHUB_WORKSPACE}/vim-jsx-pretty
+          git -c advice.detachedHead=false clone https://github.com/Shougo/context_filetype.vim --quiet --single-branch --depth 1 ${GITHUB_WORKSPACE}/context_filetype
+          git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch ${THEMIS_VERSION} --single-branch --depth 1 ${GITHUB_WORKSPACE}/vim-themis
+      - name: Run test
+        env:
+          THEMIS_VIM: ${{ steps.vim.outputs.executable }}
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
+        run: |
+          ${THEMIS_VIM} --version
+          ${GITHUB_WORKSPACE}/vim-themis/bin/themis -r --runtimepath ${GITHUB_WORKSPACE}/vim-jsx-pretty --runtimepath ${GITHUB_WORKSPACE}/context_filetype --reporter dot
+  windows:
+    strategy:
+      matrix:
+        os: [windows-latest]
+        vim: [v8.0.0000, head]
+        type: [vim]
+        download: [available]
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.type }} ${{ matrix.vim }}/${{ matrix.os }} test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup Vim
+        id: 'vim'
+        uses: thinca/action-setup-vim@v1
+        with:
+          vim_version: '${{ matrix.vim }}'
+          vim_type: '${{ matrix.type }}'
+          download: '${{ matrix.vim_download || matrix.download }}'
+      - name: Setup plugins
+        shell: pwsh
+        run: |
+          git -c advice.detachedHead=false clone https://github.com/MaxMEllon/vim-jsx-pretty --quiet --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vim-jsx-pretty
+          git -c advice.detachedHead=false clone https://github.com/Shougo/context_filetype.vim --quiet --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\context_filetype
+          git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch ${Env:THEMIS_VERSION} --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vim-themis
+      - name: Run test
+        env:
+          THEMIS_VIM: ${{ steps.vim.outputs.executable }}
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
+        shell: cmd
+        run: |
+          set TEMP=%GITHUB_WORKSPACE%\tmp
+          set TMP=%TEMP%
+          mkdir %TEMP%
+          %THEMIS_VIM% --version
+          %GITHUB_WORKSPACE%\vim-themis\bin\themis.bat -r --runtimepath %GITHUB_WORKSPACE%\vim-jsx-pretty --runtimepath %GITHUB_WORKSPACE%\context_filetype --reporter dot

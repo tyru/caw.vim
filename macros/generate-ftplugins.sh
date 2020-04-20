@@ -1,2 +1,2 @@
 #!/bin/sh
-vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit
+vim -u NONE -i NONE --not-a-term -e -s -N -X -S macros/generate-ftplugins.vim -c quit
