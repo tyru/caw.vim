@@ -178,5 +178,5 @@ function! s:suite.uncomment_no_spaces_blank() abort
   call s:dollarpos.uncomment()
 
   " assert
-  call s:assert.equals(getline(1, '$'), ['printf("hello\n");'])
+  call s:assert.equals(getline(1, '$'), ['printf("hello\n");//'])
 endfunction
