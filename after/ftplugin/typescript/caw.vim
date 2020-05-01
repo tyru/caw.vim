@@ -3,6 +3,7 @@ scriptencoding utf-8
 
 let b:caw_oneline_comment = '//'
 let b:caw_wrap_oneline_comment = ['/*', '*/']
+let b:caw_search_possible_comments = 1
 
 if !exists('b:did_caw_ftplugin')
   if exists('b:undo_ftplugin')
