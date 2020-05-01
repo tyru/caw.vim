@@ -2,7 +2,7 @@
 
 Author:
   tyru <tyru.exe@gmail.com>
-Version: 1.0
+Version: 1.1.1
 License:
 NEW BSD LICENSE {{{
   Copyright (c) 2009, tyru
