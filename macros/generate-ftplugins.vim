@@ -431,6 +431,12 @@ function! s:additional_vars() abort
   \   'let b:caw_hatpos_ignore_syngroup = 1',
   \   'let b:caw_zeropos_ignore_syngroup = 1',
   \ ], "\n"),
+  \ 'javascript': join([
+  \   'let b:caw_search_possible_comments = 1',
+  \ ], "\n"),
+  \ 'typescript': join([
+  \   'let b:caw_search_possible_comments = 1',
+  \ ], "\n"),
   \}
 endfunction
 

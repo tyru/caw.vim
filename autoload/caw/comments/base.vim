@@ -8,7 +8,11 @@ endfunction
 let s:base = {}
 
 function! s:base._get_possible_comments(context, varname, by_length) abort
-  let related = self._get_related_ft_comments(a:context, a:varname)
+  if caw#get_var('caw_search_possible_comments', 0)
+    let related = self._get_related_ft_comments(a:context, a:varname)
+  else
+    let related = []
+  endif
   let comments = self.get_comments()
   return caw#uniq(sort(related + comments, a:by_length))
 endfunction

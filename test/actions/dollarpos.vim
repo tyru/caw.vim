@@ -180,3 +180,36 @@ function! s:suite.uncomment_no_spaces_blank() abort
   " assert
   call s:assert.equals(getline(1, '$'), ['printf("hello\n");'])
 endfunction
+
+" context_filetype.vim related problem
+function! s:suite.vim_uncomment_doesnt_remove_hash() abort
+  " set up
+  setlocal filetype=vim
+  call setline(1, ['" call foo#bar()'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'vim',
+  \ 'context_filetype': 'vim',
+  \})
+
+  " execute
+  call s:dollarpos.uncomment()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), [''])
+endfunction
+
+function! s:suite.c_uncomment_doesnt_remove_hash() abort
+  " set up
+  setlocal filetype=c
+  call setline(1, ['// foo() # bar()'])
+  call s:set_context(s:NORMAL_MODE_CONTEXT, {
+  \ 'filetype': 'c',
+  \ 'context_filetype': 'c',
+  \})
+
+  " execute
+  call s:dollarpos.uncomment()
+
+  " assert
+  call s:assert.equals(getline(1, '$'), [''])
+endfunction
