@@ -167,6 +167,7 @@ function! s:oneline() abort
   \   'model': '$',
   \   'monk': ';',
   \   'mush': '#',
+  \   'mysql': '--',
   \   'named': '//',
   \   'nasm': ';',
   \   'nastran': '$',
