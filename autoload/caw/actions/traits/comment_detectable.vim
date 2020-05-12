@@ -37,7 +37,7 @@ function! s:comment_detectable.get_commented_col(lnum, needle, ignore_syngroup) 
     if idx ==# -1
       break
     endif
-    if a:ignore_syngroup || self.has_syntax('^Comment$', a:lnum, idx + 1)
+    if a:ignore_syngroup || self.has_syntax('Comment$', a:lnum, idx + 1)
       break
     endif
     let start = idx + 1
