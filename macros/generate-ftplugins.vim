@@ -418,6 +418,7 @@ function! s:wrap_multiline() abort
   \   'c': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
   \   'cpp': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
   \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
+  \   'racket': {'left': '#|', 'top': '#', 'bottom': '#', 'right': '|#'},
   \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
   \   'swig': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
   \}
