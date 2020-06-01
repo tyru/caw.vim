@@ -215,6 +215,7 @@ function! s:oneline() abort
   \   'pug': '//-',
   \   'python': '#',
   \   'r': '#',
+  \   'racket': ';',
   \   'radiance': '#',
   \   'ratpoison': '#',
   \   'rc': '//',
@@ -385,6 +386,7 @@ function! s:wrap_oneline() abort
   \   'pov': ['/*', '*/'],
   \   'processing': ['/*', '*/'],
   \   'prolog': ['/*', '*/'],
+  \   'racket': ['#|', '|#'],
   \   'rc': ['/*', '*/'],
   \   'rust': ['/*', '*/'],
   \   'scala': ['/*', '*/'],
@@ -416,6 +418,7 @@ function! s:wrap_multiline() abort
   \   'c': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
   \   'cpp': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
   \   'perl': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
+  \   'racket': {'left': '#|', 'top': '#', 'bottom': '#', 'right': '|#'},
   \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
   \   'swig': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
   \}
