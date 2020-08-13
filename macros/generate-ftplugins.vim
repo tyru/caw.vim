@@ -214,6 +214,7 @@ function! s:oneline() abort
   \   'ptcap': '#',
   \   'pug': '//-',
   \   'python': '#',
+  \   'qmake': '#',
   \   'r': '#',
   \   'racket': ';',
   \   'radiance': '#',
