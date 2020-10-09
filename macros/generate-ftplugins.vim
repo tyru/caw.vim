@@ -264,6 +264,7 @@ function! s:oneline() abort
   \   'squid': '#',
   \   'st': '"',
   \   'stp': '--',
+  \   'stylus': '//',
   \   'swig': '//',
   \   'systemd': '#',
   \   'systemverilog': '//',
