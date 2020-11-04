@@ -38,6 +38,7 @@ function! s:comment_detectable.get_commented_col(lnum, needle, ignore_syngroup) 
       break
     endif
     if a:ignore_syngroup || self.has_syntax('Comment$', a:lnum, idx + 1)
+          \ || (has('nvim-0.5.0') && luaeval("require'caw'.has_syntax(_A[1], _A[2])", [a:lnum, idx + 1]))
       break
     endif
     let start = idx + 1
