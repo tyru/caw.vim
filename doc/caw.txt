@@ -458,8 +458,8 @@ its global variable if it is defined.
 Comment String							*caw-variables-comments* {{{
 --------------
 
-Below variables are normally defined in "after/ftplugin/**/*.vim".
-However, you can define them everywhere, like .vimrc.
+Variables below are normally defined at "after/ftplugin/**/*.vim".
+However, you can define them everywhere, such as .vimrc.
 If you define them in .vimrc, please note that you must define
 in |:autocmd| command like: >
 	autocmd FileType sh let b:caw_oneline_comment = ':'
