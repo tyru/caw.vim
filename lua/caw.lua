@@ -16,7 +16,7 @@ function M.has_syntax(lnum, col)
     return false
   end
   local query = require"vim.treesitter.query".get_query(lang, "highlights")
-  local tstree = vim.treesitter.get_parser(bufnr, lang):parse()
+  local tstree = vim.treesitter.get_parser(bufnr, lang):parse()[1]
   local tsnode = tstree:root()
 
   for _, match in query:iter_matches(tsnode, bufnr, lnum - 1, lnum) do
