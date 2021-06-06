@@ -32,9 +32,14 @@ function! s:oneline.get_comment_vars() abort
 endfunction
 
 function! s:oneline.get_comment_detect() abort
-  let m = matchlist(&l:commentstring, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
+  let c = self.parse_commentstring(&l:commentstring)
+  return !empty(c) ? [c] : []
+endfunction
+
+function! s:oneline.parse_commentstring(cms) abort
+  let m = matchlist(a:cms, '^\(.\{-}\)[ \t]*%s[ \t]*\(.*\)$')
   if !empty(m) && m[1] !=# '' && m[2] ==# ''
-    return [m[1]]
+    return m[1]
   endif
-  return []
+  return ''
 endfunction

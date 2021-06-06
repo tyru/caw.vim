@@ -96,6 +96,8 @@ call s:def('caw_box_sp_right', ' ')
 
 call s:def('caw_find_another_action', 1)
 
+call s:def('caw_integrated_plugin', 'auto')
+
 delfunction s:def_deprecated
 delfunction s:def
 " }}}
