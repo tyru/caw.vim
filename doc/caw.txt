@@ -25,6 +25,7 @@ Introduction					|caw-introduction|
 Features						|caw-features|
 Supported filetypes				|caw-supported-filetypes|
 Interface						|caw-interface|
+  Functions						|caw-functions|
   Keymappings					|caw-keymappings|
     Default keymappings			|caw-keymappings-default|
     Prefix keymapping			|caw-keymappings-prefix|
@@ -165,6 +166,16 @@ See "after/ftplugin/*" in this repository for current supported filetypes.
 }}}
 ==============================================================================
 INTERFACE								*caw-interface* {{{
+
+------------------------------------------------------------------------------
+FUNCTIONS								*caw-functions* {{{
+
+					*caw#update_comments_from_commentstring()*
+caw#update_comments_from_commentstring({commentstring})
+
+	This function parses {commentstring} and sets / unsets
+	|caw-variables-comments|.
+
 ------------------------------------------------------------------------------
 KEYMAPPINGS								*caw-keymappings* {{{
 
@@ -654,6 +665,19 @@ g:caw_operator_keymappings				*g:caw_operator_keymappings*
 g:caw_find_another_action				*g:caw_find_another_action*
 									(Default: 1)
 
+g:caw_integrated_plugin					*g:caw_integrated_plugin*
+									(Default: "auto")
+
+	This variable detemines that how caw detects comment string
+	from integrated plugins.
+
+	"context_filetype"
+	  Use https://github.com/Shougo/context_filetype.vim
+	"ts_context_commentstring"
+	  Use https://github.com/JoosepAlviste/nvim-ts-context-commentstring
+	"auto"
+	  Use context_filetype or ts_context_commentstring if it's installed
+
 }}}
 
 }}}
@@ -673,7 +697,7 @@ A. You can change prefix keymapping
 Q. How do I support a new filetype?
 A. You have several options.
 
-1. Set caw variables on |FileType| event
+1. Set caw variables on |FileType| event (preferred)
 
    caw supports comment settings by variables.
    See |caw-variables-comments| for the examples.
@@ -688,11 +712,13 @@ A. You have several options.
    (after/ftplugin/<filetype>/caw.vim in this repository),
    caw detects oneline / wrap oneline comment string by 'commentstring'.
 
-   I implemented this for fallback purpose because it may not be accurate,
-   and wrap multiline comment can't be detected by this method.
+   If you want to use 'commentstring' instead of caw variables,
+   you must tell caw to use 'commentstring' instead. >
 
-   It seems tpope/vim-commentary also supports this type of settings.
-
+	" Use &commentstring in javascriptreact and typescriptreact buffers
+	autocmd Filetype javascriptreact,typescriptreact
+	\ call caw#update_comments_from_commentstring(&commentstring)
+<
 3. If you are interested in sending pull request :)
    3.1. Put comment string to macros/generate-ftplugins.vim
    3.2. Run `vim -u NONE -i NONE -N -S macros/generate-ftplugins.vim -c quit`
