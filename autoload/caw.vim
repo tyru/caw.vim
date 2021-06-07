@@ -57,10 +57,11 @@ function! caw#keymapping_stub(mode, action, method) abort
   call caw#set_context(context)
 
   if integration ==# 'ts_context_commentstring'
-    let old_commentstring = &l:commentstring
-    lua require('ts_context_commentstring.internal').update_commentstring()
-    if &l:commentstring !=# old_commentstring
-      call caw#update_comments_from_commentstring(&l:commentstring)
+    let ts_cms = luaeval('require("ts_context_commentstring.internal").calculate_commentstring()')
+    if ts_cms !=# &l:commentstring
+      let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
+    else
+      let l:UndoVariables = {-> 'nop'}
     endif
   elseif conft !=# &l:filetype
     call caw#load_ftplugin(conft)
@@ -100,7 +101,9 @@ function! caw#keymapping_stub(mode, action, method) abort
     echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
     echohl None
   finally
-    if conft !=# &l:filetype
+    if integration ==# 'ts_context_commentstring'
+      call l:UndoVariables()
+    elseif conft !=# &l:filetype
       call caw#load_ftplugin(&l:filetype)
     endif
     " Free context.
@@ -379,44 +382,49 @@ function! caw#load_ftplugin(ft) abort
 endfunction
 
 function! caw#update_comments_from_commentstring(cms) abort
-  if !exists('b:did_caw_ftplugin')
-    " Raise error when caw ftplugin would override comment variables
-    echohl ErrorMsg
-    echomsg 'Call caw#update_comments_from_commentstring() after caw ftplugin is loaded'
-    echohl None
-    return
-  endif
-
-  let undo = []
-
   let parsed = caw#comments#parse_commentstring(a:cms)
+  let variables = []
+
+  if exists('b:caw_oneline_comment')
+    let variables += ['let b:caw_oneline_comment = ' . string(b:caw_oneline_comment)]
+  else
+    let variables += ['unlet! b:caw_oneline_comment']
+  endif
   if has_key(parsed, 'oneline')
     let b:caw_oneline_comment = parsed.oneline
-    let undo += ['b:caw_oneline_comment']
   else
     unlet! b:caw_oneline_comment
   endif
+
+  if exists('b:caw_wrap_oneline_comment')
+    let variables += ['let b:caw_wrap_oneline_comment = ' . string(b:caw_wrap_oneline_comment)]
+  else
+    let variables += ['unlet! b:caw_wrap_oneline_comment']
+  endif
   if has_key(parsed, 'wrap_oneline')
     let b:caw_wrap_oneline_comment = parsed.wrap_oneline
-    let undo += ['b:caw_wrap_oneline_comment']
   else
     unlet! b:caw_wrap_oneline_comment
   endif
+
+  if exists('b:caw_wrap_multiline_comment')
+    let variables += ['let b:caw_wrap_multiline_comment = ' . string(b:caw_wrap_multiline_comment)]
+  else
+    let variables += ['unlet! b:caw_wrap_multiline_comment']
+  endif
   if has_key(parsed, 'wrap_multiline')
     let b:caw_wrap_multiline_comment = parsed.wrap_multiline
-    let undo += ['b:caw_wrap_multiline_comment']
   else
     unlet! b:caw_wrap_multiline_comment
   endif
 
-  if !empty(undo)
-    if exists('b:undo_ftplugin')
-      let b:undo_ftplugin .= ' | '
-    else
-      let b:undo_ftplugin = ''
-    endif
-    let b:undo_ftplugin .= 'unlet! ' . join(undo)
-  endif
+  function! s:undo_variables() abort closure
+    for undo in variables
+      execute undo
+    endfor
+  endfunction
+
+  return funcref('s:undo_variables')
 endfunction
 
 
