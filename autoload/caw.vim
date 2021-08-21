@@ -60,8 +60,9 @@ function! caw#keymapping_stub(mode, action, method) abort
   if integration ==# 'ts_context_commentstring'
     let ts_cms = luaeval('require("ts_context_commentstring.internal").calculate_commentstring()')
     echom 'ts_cms:' ts_cms
-    echom 'b:caw_*' string(filter(copy(b:), 'v:key =~# "^caw_"'))
+    echom '(1) b:caw_*' string(filter(copy(b:), 'v:key =~# "^caw_"'))
     let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
+    echom '(2) b:caw_*' string(filter(copy(b:), 'v:key =~# "^caw_"'))
   elseif conft !=# &l:filetype
     call caw#load_ftplugin(conft)
   endif
