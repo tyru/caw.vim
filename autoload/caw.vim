@@ -391,6 +391,8 @@ function! caw#update_comments_from_commentstring(cms) abort
   endif
   if has_key(parsed, 'oneline')
     let b:caw_oneline_comment = parsed.oneline
+  else
+    unlet! b:caw_oneline_comment
   endif
 
   if exists('b:caw_wrap_oneline_comment')
@@ -400,6 +402,8 @@ function! caw#update_comments_from_commentstring(cms) abort
   endif
   if has_key(parsed, 'wrap_oneline')
     let b:caw_wrap_oneline_comment = parsed.wrap_oneline
+  else
+    unlet! b:caw_wrap_oneline_comment
   endif
 
   if exists('b:caw_wrap_multiline_comment')
@@ -409,6 +413,8 @@ function! caw#update_comments_from_commentstring(cms) abort
   endif
   if has_key(parsed, 'wrap_multiline')
     let b:caw_wrap_multiline_comment = parsed.wrap_multiline
+  else
+    unlet! b:caw_wrap_multiline_comment
   endif
 
   echom 'parsed:' string(parsed)
