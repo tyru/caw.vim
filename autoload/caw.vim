@@ -58,11 +58,12 @@ function! caw#keymapping_stub(mode, action, method) abort
 
   if integration ==# 'ts_context_commentstring'
     let ts_cms = luaeval('require("ts_context_commentstring.internal").calculate_commentstring()')
-    if ts_cms !=# &l:commentstring
-      let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
-    else
-      let l:UndoVariables = {-> 'nop'}
-    endif
+    let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
+    " if ts_cms !=# &l:commentstring
+    "   let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
+    " else
+    "   let l:UndoVariables = {-> 'nop'}
+    " endif
   elseif conft !=# &l:filetype
     call caw#load_ftplugin(conft)
   endif
