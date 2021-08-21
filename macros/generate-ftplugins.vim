@@ -287,6 +287,7 @@ function! s:oneline() abort
   \   'tssgm': "comment = '",
   \   'txt2tags': '%',
   \   'typescript': '//',
+  \   'typescriptreact': '//',
   \   'uc': '//',
   \   'uil': '!',
   \   'vb': "'",
@@ -406,6 +407,7 @@ function! s:wrap_oneline() abort
   \   'tsalt': ['/*', '*/'],
   \   'tsx': ['{/*', '*/}'],
   \   'typescript': ['/*', '*/'],
+  \   'typescriptreact': ['/*', '*/'],
   \   'uc': ['/*', '*/'],
   \   'velocity': ['#*', '*#'],
   \   'vera': ['/*', '*/'],
@@ -443,6 +445,9 @@ function! s:additional_vars() abort
   \   'let b:caw_search_possible_comments = 1',
   \ ], "\n"),
   \ 'typescript': join([
+  \   'let b:caw_search_possible_comments = 1',
+  \ ], "\n"),
+  \ 'typescriptreact': join([
   \   'let b:caw_search_possible_comments = 1',
   \ ], "\n"),
   \}
