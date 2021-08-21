@@ -59,11 +59,6 @@ function! caw#keymapping_stub(mode, action, method) abort
   if integration ==# 'ts_context_commentstring'
     let ts_cms = luaeval('require("ts_context_commentstring.internal").calculate_commentstring()')
     let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
-    " if ts_cms !=# &l:commentstring
-    "   let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
-    " else
-    "   let l:UndoVariables = {-> 'nop'}
-    " endif
   elseif conft !=# &l:filetype
     call caw#load_ftplugin(conft)
   endif
@@ -393,8 +388,6 @@ function! caw#update_comments_from_commentstring(cms) abort
   endif
   if has_key(parsed, 'oneline')
     let b:caw_oneline_comment = parsed.oneline
-  else
-    unlet! b:caw_oneline_comment
   endif
 
   if exists('b:caw_wrap_oneline_comment')
@@ -404,8 +397,6 @@ function! caw#update_comments_from_commentstring(cms) abort
   endif
   if has_key(parsed, 'wrap_oneline')
     let b:caw_wrap_oneline_comment = parsed.wrap_oneline
-  else
-    unlet! b:caw_wrap_oneline_comment
   endif
 
   if exists('b:caw_wrap_multiline_comment')
@@ -415,8 +406,6 @@ function! caw#update_comments_from_commentstring(cms) abort
   endif
   if has_key(parsed, 'wrap_multiline')
     let b:caw_wrap_multiline_comment = parsed.wrap_multiline
-  else
-    unlet! b:caw_wrap_multiline_comment
   endif
 
   function! s:undo_variables() abort closure
