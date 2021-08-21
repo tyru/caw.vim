@@ -56,8 +56,11 @@ function! caw#keymapping_stub(mode, action, method) abort
   endif
   call caw#set_context(context)
 
+  echom 'integration:' integration
   if integration ==# 'ts_context_commentstring'
     let ts_cms = luaeval('require("ts_context_commentstring.internal").calculate_commentstring()')
+    echom 'ts_cms:' ts_cms
+    echom 'b:caw_*' string(filter(copy(b:), 'v:key =~# "^caw_"'))
     let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
   elseif conft !=# &l:filetype
     call caw#load_ftplugin(conft)
@@ -407,6 +410,9 @@ function! caw#update_comments_from_commentstring(cms) abort
   if has_key(parsed, 'wrap_multiline')
     let b:caw_wrap_multiline_comment = parsed.wrap_multiline
   endif
+
+  echom 'parsed:' string(parsed)
+  echom 'variables:' string(variables)
 
   function! s:undo_variables() abort closure
     for undo in variables
