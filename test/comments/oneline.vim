@@ -19,7 +19,7 @@ endfunction
 
 function! s:suite.can_load_vim_ftplugin() abort
   setlocal filetype=vim
-  call s:assert.equals(b:caw_oneline_comment, '"')
+  call s:assert.is_function(b:caw_oneline_comment)
 endfunction
 
 function! s:suite.get_comments() abort

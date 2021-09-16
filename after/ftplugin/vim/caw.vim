@@ -1,7 +1,10 @@
 " vim:foldmethod=marker:fen:
 scriptencoding utf-8
 
-let b:caw_oneline_comment = '"'
+function! s:is_vim9line(lnum) abort
+  return search('\C\m^\s*vim9s\%[cript]\>', 'bnWz') >= 1
+endfunction
+let b:caw_oneline_comment = { lnum -> s:is_vim9line(lnum) ? '#' : '"' }
 function! s:linecont_sp(lnum) abort
   return getline(a:lnum) =~# '^\s*\\' ? '' : ' '
 endfunction
