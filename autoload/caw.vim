@@ -3,6 +3,7 @@ scriptencoding utf-8
 
 let s:installed_repeat_vim = (globpath(&runtimepath, 'autoload/repeat.vim') !=# '')
 let s:installed_context_filetype = (globpath(&runtimepath, 'autoload/context_filetype.vim') !=# '')
+let s:installed_ts_context_commentstring = (globpath(&runtimepath, 'plugin/ts_context_commentstring.vim') !=# '')
 let s:op_args = ''
 let s:op_doing = 0
 
@@ -17,9 +18,17 @@ function! caw#keymapping_stub(mode, action, method) abort
     normal! ^
   endif
 
+  " When integration == 'context_filetype'
+  "   Load comment string from the context filetype
+  " When integration == 'ts_context_commentstring'
+  "   Load comment string from ts_context_commentstring plugin
+  " When integration == ''
+  "   No additional setup will be done
+  let integration = s:get_integrated_plugin()
+
   " Context filetype support.
   " https://github.com/Shougo/context_filetype.vim
-  if s:installed_context_filetype
+  if integration ==# 'context_filetype'
     let conft = context_filetype#get_filetype()
   else
     let conft = &l:filetype
@@ -47,7 +56,14 @@ function! caw#keymapping_stub(mode, action, method) abort
   endif
   call caw#set_context(context)
 
-  if conft !=# &l:filetype
+  echom 'integration:' integration
+  if integration ==# 'ts_context_commentstring'
+    let ts_cms = luaeval('require("ts_context_commentstring.internal").calculate_commentstring()')
+    echom 'ts_cms:' ts_cms
+    echom '(1) b:caw_*' string(filter(copy(b:), 'v:key =~# "^caw_"'))
+    let l:UndoVariables = caw#update_comments_from_commentstring(ts_cms)
+    echom '(2) b:caw_*' string(filter(copy(b:), 'v:key =~# "^caw_"'))
+  elseif conft !=# &l:filetype
     call caw#load_ftplugin(conft)
   endif
 
@@ -85,7 +101,9 @@ function! caw#keymapping_stub(mode, action, method) abort
     echomsg '[' . v:exception . ']::[' . v:throwpoint . ']'
     echohl None
   finally
-    if conft !=# &l:filetype
+    if integration ==# 'ts_context_commentstring'
+      call l:UndoVariables()
+    elseif conft !=# &l:filetype
       call caw#load_ftplugin(&l:filetype)
     endif
     " Free context.
@@ -102,6 +120,34 @@ function! caw#keymapping_stub(mode, action, method) abort
       call repeat#set(lastmap)
     endif
   endtry
+endfunction
+
+" Returns "context_filetype" or "ts_context_commentstring" or ""
+function! s:get_integrated_plugin() abort
+  let integration = caw#get_var('caw_integrated_plugin')
+  if integration ==# 'context_filetype'
+    if !s:installed_context_filetype
+      echohl ErrorMsg
+      echomsg 'Shougo/context_filetype.vim is not installed!'
+      echohl None
+      return ''
+    endif
+    return 'context_filetype'
+  elseif integration ==# 'ts_context_commentstring'
+    if !s:installed_ts_context_commentstring
+      echohl ErrorMsg
+      echomsg 'JoosepAlviste/nvim-ts-context-commentstring is not installed!'
+      echohl None
+      return ''
+    endif
+    return 'ts_context_commentstring'
+  elseif s:installed_context_filetype
+    return 'context_filetype'
+  elseif s:installed_ts_context_commentstring
+    return 'ts_context_commentstring'
+  else
+    return ''
+  endif
 endfunction
 
 function! caw#keymapping_stub_deprecated(mode, action, method, old_action) abort
@@ -150,25 +196,21 @@ endfunction
 
 " Utilities: Misc. functions. {{{
 
-if s:installed_context_filetype
-  function! caw#get_related_filetypes(ft) abort
-    let filetypes = get(context_filetype#filetypes(), a:ft, [])
-    let dup = {a:ft : 1}
-    let related = []
-    for ft in map(copy(filetypes), 'v:val.filetype')
-      if !has_key(dup, ft)
-        let related += [ft]
-        let dup[ft] = 1
-      endif
-    endfor
-    return related
-  endfunction
-else
-  " vint: next-line -ProhibitUnusedVariable
-  function! caw#get_related_filetypes(ft) abort
+function! caw#get_related_filetypes(ft) abort
+  if s:get_integrated_plugin() !=# 'context_filetype'
     return []
-  endfunction
-endif
+  endif
+  let filetypes = get(context_filetype#filetypes(), a:ft, [])
+  let dup = {a:ft : 1}
+  let related = []
+  for ft in map(copy(filetypes), 'v:val.filetype')
+    if !has_key(dup, ft)
+      let related += [ft]
+      let dup[ft] = 1
+    endif
+  endfor
+  return related
+endfunction
 
 function! caw#assert(cond, msg) abort
   if !a:cond
@@ -337,6 +379,55 @@ function! caw#load_ftplugin(ft) abort
   endif
   unlet! b:did_caw_ftplugin
   execute 'runtime! after/ftplugin/' . a:ft . '/caw.vim'
+endfunction
+
+function! caw#update_comments_from_commentstring(cms) abort
+  let parsed = caw#comments#parse_commentstring(a:cms)
+  let variables = []
+
+  if exists('b:caw_oneline_comment')
+    let variables += ['let b:caw_oneline_comment = ' . string(b:caw_oneline_comment)]
+  else
+    let variables += ['unlet! b:caw_oneline_comment']
+  endif
+  if has_key(parsed, 'oneline')
+    let b:caw_oneline_comment = parsed.oneline
+  else
+    unlet! b:caw_oneline_comment
+  endif
+
+  if exists('b:caw_wrap_oneline_comment')
+    let variables += ['let b:caw_wrap_oneline_comment = ' . string(b:caw_wrap_oneline_comment)]
+  else
+    let variables += ['unlet! b:caw_wrap_oneline_comment']
+  endif
+  if has_key(parsed, 'wrap_oneline')
+    let b:caw_wrap_oneline_comment = parsed.wrap_oneline
+  else
+    unlet! b:caw_wrap_oneline_comment
+  endif
+
+  if exists('b:caw_wrap_multiline_comment')
+    let variables += ['let b:caw_wrap_multiline_comment = ' . string(b:caw_wrap_multiline_comment)]
+  else
+    let variables += ['unlet! b:caw_wrap_multiline_comment']
+  endif
+  if has_key(parsed, 'wrap_multiline')
+    let b:caw_wrap_multiline_comment = parsed.wrap_multiline
+  else
+    unlet! b:caw_wrap_multiline_comment
+  endif
+
+  echom 'parsed:' string(parsed)
+  echom 'variables:' string(variables)
+
+  function! s:undo_variables() abort closure
+    for undo in variables
+      execute undo
+    endfor
+  endfunction
+
+  return funcref('s:undo_variables')
 endfunction
 
 
