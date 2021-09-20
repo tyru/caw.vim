@@ -296,7 +296,6 @@ function! s:oneline() abort
   \   'verilog_systemverilog': '//',
   \   'vgrindefs': '#',
   \   'vhdl': '--',
-  \   'vim': '"',
   \   'vimperator': '"',
   \   'virata': '%',
   \   'vrml': '#',
@@ -430,7 +429,18 @@ function! s:wrap_multiline() abort
   \}
 endfunction
 
-function! s:additional_vars() abort
+function! s:additional_vars_begin() abort
+  return {
+  \ 'vim': join([
+  \   'function! s:is_vim9line(lnum) abort',
+  \   '  return search(''\C\m^\s*vim9s\%[cript]\>'', ''bnWz'') >= 1',
+  \   'endfunction',
+  \   'let b:caw_oneline_comment = { lnum -> s:is_vim9line(lnum) ? ''#'' : ''"'' }',
+  \ ], "\n"),
+  \}
+endfunction
+
+function! s:additional_vars_end() abort
   return {
   \ 'vim': join([
   \   'function! s:linecont_sp(lnum) abort',
@@ -481,9 +491,11 @@ function! s:write_all() abort
   let oneline = s:oneline()
   let wrap_oneline = s:wrap_oneline()
   let wrap_multiline = s:wrap_multiline()
-  let additional_vars = s:additional_vars()
+  let additional_vars_begin = s:additional_vars_begin()
+  let additional_vars_end = s:additional_vars_end()
   let all_keys = s:sort_unique(
   \   keys(oneline) + keys(wrap_oneline) + keys(wrap_multiline)
+  \     + keys(additional_vars_begin) + keys(additional_vars_end)
   \)
   for filetype in all_keys
     " Create /after/ftplugin/{filetype}/caw.vim
@@ -519,10 +531,17 @@ function! s:write_all() abort
     endif
 
     " More additional variables
-    if has_key(additional_vars, filetype)
-      %s@<ADDITIONAL_VARS>@\=additional_vars[filetype]@
+    if has_key(additional_vars_begin, filetype)
+      %s@<ADDITIONAL_VARS_BEGIN>@\=additional_vars_begin[filetype]@
     else
-      g/<ADDITIONAL_VARS>/d
+      g/<ADDITIONAL_VARS_BEGIN>/d
+    endif
+
+    " More additional variables
+    if has_key(additional_vars_end, filetype)
+      %s@<ADDITIONAL_VARS_END>@\=additional_vars_end[filetype]@
+    else
+      g/<ADDITIONAL_VARS_END>/d
     endif
 
     " vint: +ProhibitCommandRelyOnUser
