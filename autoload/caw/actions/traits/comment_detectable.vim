@@ -1,5 +1,7 @@
 scriptencoding utf-8
 
+let s:has_vim8_prop = exists('*prop_list') && exists('*prop_find')
+
 function! caw#actions#traits#comment_detectable#new() abort
   return deepcopy(s:comment_detectable)
 endfunction
@@ -71,6 +73,13 @@ function! s:comment_detectable.has_syntax(synpat, lnum, col) abort
       return 1
     endif
   endfor
+  if s:has_vim8_prop
+    for prop in prop_list(a:lnum)
+      if prop.type =~# a:synpat && prop.col <= a:col && a:col <= prop.col + prop.length
+        return 1
+      endif
+    endfor
+  endif
   return 0
 endfunction
 
