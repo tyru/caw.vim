@@ -278,6 +278,7 @@ function! s:oneline() abort
   \   'texmf': '%',
   \   'tf': ';',
   \   'tidy': '#',
+  \   'tla': '\*',
   \   'tli': '#',
   \   'tmux': '#',
   \   'toml': '#',
@@ -404,6 +405,7 @@ function! s:wrap_oneline() abort
   \   'systemverilog': ['/*', '*/'],
   \   'tads': ['/*', '*/'],
   \   'tsalt': ['/*', '*/'],
+  \   'tla': ['(*', '*)'],
   \   'tsx': ['{/*', '*/}'],
   \   'typescript': ['/*', '*/'],
   \   'typescriptreact': ['/*', '*/'],
@@ -426,6 +428,7 @@ function! s:wrap_multiline() abort
   \   'racket': {'left': '#|', 'top': '#', 'bottom': '#', 'right': '|#'},
   \   'ruby': {'left': '#', 'top': '#', 'bottom': '#', 'right': '#'},
   \   'swig': {'left': '/*', 'top': '*', 'bottom': '*', 'right': '*/'},
+  \   'tla': {'left': '(*', 'top': '*', 'bottom': '*', 'right': '*)'},
   \}
 endfunction
 
