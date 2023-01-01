@@ -23,9 +23,10 @@ function M.has_syntax(lnum, col)
     for id, node in pairs(match) do
       local _, start_col, _, end_col = node:range()
       local name = query.captures[id]
-      local highlight = vim.treesitter.highlighter.hl_map[name]
 
-      if col >= start_col and col < end_col and string.match(highlight, 'Comment') then
+      local is_comment = vim.treesitter.highlighter.hl_map == nil or string.match(vim.treesitter.highlighter.hl_map[name], 'Comment')
+
+      if col >= start_col and col < end_col and is_comment then
         return true
       end
     end
