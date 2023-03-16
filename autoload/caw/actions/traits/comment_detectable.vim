@@ -69,7 +69,7 @@ endfunction
 
 function! s:comment_detectable.has_syntax(synpat, lnum, col) abort
   for id in synstack(a:lnum, a:col)
-    if synIDattr(synIDtrans(id), 'name') =~# a:synpat
+    if synIDattr(id, 'name') =~# a:synpat || synIDattr(synIDtrans(id), 'name') =~# a:synpat
       return 1
     endif
   endfor
