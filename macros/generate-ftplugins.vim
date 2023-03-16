@@ -309,6 +309,7 @@ function! s:oneline() abort
   \   'xkb': '//',
   \   'xmath': '#',
   \   'xpm2': '!',
+  \   'yaml': '#',
   \   'z8a': ';',
   \   'zimbu': '#',
   \   'zsh': '#',
